@@ -12,6 +12,22 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      backgroundImage: {
+        'home-screen-blue': "url('/img/blue-bg.jpg')",
+        'home-screen-pink': "url('/img/pink-bg.jpg')",
+      },
+      dropShadow: {
+        'default': '10px 10px 20px rgba(0, 0, 0, 0.25)'
+      },
+      keyframes: {
+        slideUp: {
+          '0%': { opacity: '0', transform: 'translateY(20px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+      },
+      animation: {
+        slideUp: 'slideUp 0.7s ease-out',
+      }
     },
   },
   plugins: [],
