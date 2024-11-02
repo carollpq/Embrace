@@ -19,7 +19,7 @@ const GeneralButton: React.FC<GeneralButtonProps> = ({ text, onClick }) => {
   return (
     <div
       onClick={onClick || handleOAuthSignIn} // Use onClick if provided, otherwise use OAuth handler
-      className="flex items-center justify-center text-black/70 rounded-[50px] font-semibold bg-white/70 py-[0.75rem] px-[1.5rem] text-xl w-full drop-shadow-default text-center hover:cursor-pointer gap-4"
+      className="flex items-center justify-center text-black/70 rounded-[50px] font-medium bg-white/70 py-[0.75rem] px-[1.5rem] text-xl w-full drop-shadow-default text-center hover:cursor-pointer gap-4"
     >
       {/* Conditionally render icon based on the text prop */}
       {text === "Continue with Google" && <FaGoogle size={24} />}

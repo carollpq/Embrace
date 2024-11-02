@@ -19,7 +19,7 @@ export default function SigninPage() {
 
     try {
       await logIn(email, password); // Use logIn from AuthContext for sign-in
-      window.location.href = "/";
+      window.location.href = "/home";
     } catch (error) {
       alert("Sign-in failed. Please check your credentials.");
       console.log(error);
@@ -29,7 +29,7 @@ export default function SigninPage() {
   return (
     <div className="text-2xl py-20 flex-center flex-col gap-4 bg-home-screen-blue h-screen w-screen">
       {/* Form section */}
-      <h2 className="text-3xl animate-slideUp">Welcome Back!</h2>
+      <h2 className="text-3xl animate-slideUp text-white/80 mb-4">Welcome Back!</h2>
       <form
         className="flex-center flex-col max-w-[350px] gap-4 w-full animate-slideUp"
       >
@@ -45,7 +45,7 @@ export default function SigninPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <GeneralButton text="Log In" onClick={handleSubmit} />
+        <GeneralButton text="Log In" onClick={handleSubmit}/>
       </form>
 
       {/* Re-directs user to Sign Up page section */}

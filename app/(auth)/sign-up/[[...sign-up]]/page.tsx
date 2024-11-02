@@ -6,22 +6,23 @@ import Link from "next/link";
 import { FormEvent, useState } from "react";
 
 export default function SigninPage() {
-  const { logIn } = useAuth(); // Use logIn from AuthContext
+  const { signUp } = useAuth(); // Use logIn from AuthContext
+  const [name, setName] =useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!email || !password) {
-      alert("Please enter both email and password.");
+    if (!email || !password || !name) {
+      alert("Please enter name, email and password.");
       return;
     }
 
     try {
-      await logIn(email, password); // Use logIn from AuthContext for sign-in
-      window.location.href = "/";
+      await signUp(name, email, password); // Use signUp from AuthContext for sign-in
+      window.location.href = "/home";
     } catch (error) {
-      alert("Sign-in failed. Please check your credentials.");
+      alert("Sign-up failed. Please try again.");
       console.log(error);
     }
   };
@@ -29,10 +30,16 @@ export default function SigninPage() {
   return (
     <div className="text-2xl py-20 flex-center flex-col gap-4 bg-home-screen-blue h-screen w-screen">
       {/* Form section */}
-      <h2 className="text-3xl animate-slideUp delay-1000">Create An Account</h2>
+      <h2 className="text-3xl animate-slideUp delay-1000 text-white/80 mb-4">Create An Account</h2>
       <form
         className="flex-center flex-col max-w-[350px] gap-4 w-full animate-slideUp"
       >
+        <TextInput
+          label="Name"
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
         <TextInput
           label="Email"
           type="email"
@@ -45,7 +52,7 @@ export default function SigninPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <GeneralButton text="Log In" onClick={handleSubmit} />
+        <GeneralButton text="Sign Up" onClick={handleSubmit} />
       </form>
 
       {/* Re-directs user to Sign In page section */}
