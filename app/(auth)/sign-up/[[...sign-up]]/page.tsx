@@ -1,7 +1,7 @@
 "use client";
 import { useAuth } from "@/context/AuthContext";
 import GeneralButton from "@/components/ui/button";
-import TextInput from "@/components/TextInput";
+import TextInput from "@/components/AuthInput";
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 

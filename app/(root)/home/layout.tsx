@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import "../globals.css";
-import { Raleway } from "next/font/google";
+import "../../globals.css";
+import { Quicksand } from "next/font/google";
 import Navbar from "@/components/Navbar";
 
-const raleway = Raleway({ subsets: ["latin"] });
+const quicksand = Quicksand({ weight: ["400"], subsets: ["latin"] });
+
 
 export const metadata: Metadata = {
   title: "Embrace",
@@ -17,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={raleway.className}>
+      <body className={quicksand.className}>
         <Navbar />
         {children}
       </body>

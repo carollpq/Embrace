@@ -15,6 +15,8 @@ const config: Config = {
       backgroundImage: {
         'home-screen-blue': "url('/img/blue-bg.jpg')",
         'home-screen-pink': "url('/img/pink-bg.jpg')",
+        'profile-pic-jenna': "url('/img/Jenna.png')",
+        'profile-pic-marcus': "url('/img/Marcus.png')",
       },
       dropShadow: {
         'default': '10px 10px 20px rgba(0, 0, 0, 0.25)'

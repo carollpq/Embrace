@@ -28,7 +28,7 @@ body {
 
 @layer utilities {
   .button-transition {
-    @apply transition ease-in-out duration-300;
+    @apply transition ease-in-out duration-200;
   }
 
   .flex-center {

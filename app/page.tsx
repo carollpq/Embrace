@@ -6,6 +6,7 @@ const pacifico = Pacifico({ weight: ["400"], subsets: ["latin"] });
 const quicksand = Quicksand({ weight: ["500"], subsets: ["latin"] });
 
 export default function StartPage() {
+
   return (
     <div className="flex flex-col justify-center gap-16 items-center bg-home-screen-blue h-screen bg-center">
       <h1
