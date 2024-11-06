@@ -52,7 +52,7 @@ export default function SigninPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <GeneralButton text="Sign Up" onClick={handleSubmit} />
+        <GeneralButton className="bg-white/70 hover:bg-white/90 hover:text-black/90" text="Sign Up" onClick={handleSubmit} />
       </form>
 
       {/* Re-directs user to Sign In page section */}
@@ -72,8 +72,8 @@ export default function SigninPage() {
 
       {/* OAuth section */}
       <div className="flex-center flex-col max-w-[350px] w-full gap-4 animate-slideUp">
-        <GeneralButton text="Continue with Google" />
-        <GeneralButton text="Continue with Apple" />
+        <GeneralButton className="bg-white/70 hover:bg-white/90 hover:text-black/90" text="Continue with Google" />
+        <GeneralButton className="bg-white/70 hover:bg-white/90 hover:text-black/90" text="Continue with Apple" />
       </div>
     </div>
   );
