@@ -34,7 +34,7 @@ const ModeSelection = () => {
       {/* Navigation buttons */}
       <div className="flex flex-row justify-between w-[540px] gap-8 animate-slideUp delay-1000">
         <Link href="/home" className="w-full">
-          <GeneralButton className="bg-transparent border-4 border-white/40 text-white/70 hover:text-black/70 hover:bg-white/50 hover:border-transparent" text="Back"/>
+          <GeneralButton className="bg-transparent border-4 border-white/40 text-white/70 hover:text-black/70 hover:bg-white/50 hover:border-transparent py-[0.50rem]" text="Back"/>
         </Link>
         <Link href='/home/gender-selection' className="w-full">
           <GeneralButton className="bg-white/70 hover:bg-white/90 hover:text-black/90" text="Continue"/>
