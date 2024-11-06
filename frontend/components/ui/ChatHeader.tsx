@@ -6,7 +6,7 @@ const quicksand = Quicksand({ subsets: ["latin"] });
 
 const ChatHeader = () => {
   return (
-    <div className="flex flex-row justify-between top-0 left-0 text-xl py-5 px-12 bg-[#010f17]/50 drop-shadow-md">
+    <div className="flex flex-row justify-between top-0 left-0 text-xl py-5 px-12 bg-[#010f17]/40 drop-shadow-md">
       {/* Chatbot Persona */}
       <div className="justify-start items-center gap-[25px] inline-flex">
         {/* <Image

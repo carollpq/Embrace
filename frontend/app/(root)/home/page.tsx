@@ -12,7 +12,7 @@ export default function Home() {
         Ready to talk?
       </p>
       <div className="flex-center flex-row gap-10  w-screen animate-slideUp delay-1000">
-        <Link href="/chatInterface">
+        <Link href="/home/mode-selection">
           <button className="button-transition hover:bg-[#1d1d1d] hover:text-white text-center text-2xl text-black/60 w-[200px] py-4 bg-white rounded-[30px] drop-shadow-default">
             Start
           </button>
