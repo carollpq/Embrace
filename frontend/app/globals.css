@@ -35,3 +35,23 @@ body {
     @apply flex justify-center items-center;
   }
 }
+
+/* Hide the scrollbar but keep scrolling functionality */
+.overflow-y-auto {
+  -ms-overflow-style: none;  /* For Internet Explorer and Edge */
+  scrollbar-width: none;      /* For Firefox */
+}
+
+.overflow-y-auto::-webkit-scrollbar {
+  display: none;             /* For Chrome, Safari, and Opera */
+}
+
+/* Hide scrollbar but keep scrolling */
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* For Internet Explorer and Edge */
+  scrollbar-width: none;      /* For Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;             /* For Chrome, Safari, and Opera */
+}

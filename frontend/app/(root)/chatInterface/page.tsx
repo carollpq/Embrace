@@ -30,7 +30,7 @@ const ChatInterface: React.FC = () => {
   
   return (
     <div className="flex flex-col h-[85vh] justify-between mt-4">
-      <div className="flex-1 basis-auto overflow-y-auto h-[100px]">
+      <div className="flex-1 basis-auto overflow-y-auto h-[100px] hide-scrollbar">
         {messages && messages.map((message, index) => <ChatMessage message={message} key={index} />)}
       </div>
       <div className="mb-[40px]">
