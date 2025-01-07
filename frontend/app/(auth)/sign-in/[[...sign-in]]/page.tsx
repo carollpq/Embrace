@@ -31,7 +31,7 @@ export default function SigninPage() {
       });
 
       if (result.status == 200 || result.status == 201) {
-        router.push("/home");
+        router.push("/home-page");
       } else {
         console.log(result);
         alert("Sign-in failed. Please check your credentials.");

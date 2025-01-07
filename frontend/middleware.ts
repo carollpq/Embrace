@@ -11,7 +11,7 @@ export async function middleware(req:NextRequest) {
     const publicPaths = path === "/" || path === "/sign-up";
 
     if(publicPaths && token) {
-        return NextResponse.redirect(new URL("/home", req.nextUrl))
+        return NextResponse.redirect(new URL("/home-page", req.nextUrl))
     }
 
     if(!publicPaths && !token) {
@@ -20,5 +20,5 @@ export async function middleware(req:NextRequest) {
 }
 
 export const config = {
-    matcher: ["/", "/sign-up", "/home"],
+    matcher: ["/", "/sign-up", "/home-page"],
 };

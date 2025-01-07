@@ -1,54 +1,27 @@
 "use client";
 
 import style from "../styles/InputBox.module.css";
-import { useState, useRef, ChangeEvent, KeyboardEvent } from "react";
-
-// Define the type for the component props
-interface InputBoxProps {
-  handleSubmit: (message: string) => void; // Function to handle message submission
-}
+import { useRef, ChangeEvent, KeyboardEvent } from "react";
 
 /** Lives in the lower section of \<ChatInterface />, below \<Chat />. Responsible for handling the input from users and then submitting messages to the backend. */
-const InputBox: React.FC<InputBoxProps> = ({
-  handleSubmit
+const InputBox = ({
+  handleSubmit,
+  handleInputChange,
+  input
+}: {
+  handleSubmit: () => void;
+  handleInputChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  input: string;
 }) => {
-  const [chatMessage, setChatMessage] = useState<string>("");
-  const [message, setMessage] = useState<string>("");
+ 
   const inputBoxTextArea = useRef<HTMLTextAreaElement>(null);
 
-  const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    // console.log(e.target.value); //DEBUG View the current value of the input box in console on each keystroke.
-
-    // Update state with the current value of the input box
-    setChatMessage(e.target.value);
-    if (e.target.value.length > 0 && e.target.value.length < 255) {
-      setMessage("");
-    }
-  };
-
-  /** Call the handleSubmit function passed down from <ChatInterface /> when the user submits a message, and clear the input box and state. */
-  const localHandleSubmit = () => {
-    if (chatMessage === "") {
-      setMessage(
-        "Oops! Looks like you forgot to type a message. Please enter your message before sending."
-      );
-      return;
-    }
-    // If message box is empty, do nothing
-    handleSubmit(chatMessage);
-
-    // Clear the input box and state
-    setChatMessage("");
-    if (inputBoxTextArea.current) {
-      inputBoxTextArea.current.value = "";
-    }
-  };
 
   /** Handle the user pressing the Enter key to submit a message. */
   const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
-      localHandleSubmit();
+      handleSubmit();
     }
   };
 
@@ -57,20 +30,17 @@ const InputBox: React.FC<InputBoxProps> = ({
       {/* Text Box */}
       <textarea
         autoFocus={true}
-        onChange={handleChange}
+        onChange={handleInputChange}
         onKeyDown={handleKeyDown}
+        value={input}
         rows={1}
-        className={
-          message
-            ? style["chat-input-textarea-red-border"]
-            : style["chat-input-textarea"]
-        }
+        className={style["chat-input-textarea"]}
         placeholder="Send a message"
         ref={inputBoxTextArea}
       />
 
       {/* Send Button */}
-      <div className={style["chat-svg-container"]} onClick={localHandleSubmit}>
+      <div className={style["chat-svg-container"]} onClick={handleSubmit}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width={20}
@@ -85,12 +55,12 @@ const InputBox: React.FC<InputBoxProps> = ({
       </div>
 
       {/* Error Modal */}
-      {message && (
+      {/* {message && (
         <div className={style["message-modal"]}>
           {message}
           <div className={style["arrow"]}></div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

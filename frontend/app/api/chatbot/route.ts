@@ -1,6 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { NextResponse } from "next/server";
-import { saveOrUpdateChatThread, getLatestChatThread, getAllChatThreads, getChatThreadById } from "../../../utils/config/dbConfig";
+import { Message } from "ai";
+
+export const runtime = "edge";
 
 const apiKey = process.env.GEMINI_API_KEY;
 if (!apiKey) {
@@ -23,76 +24,95 @@ const generationConfig = {
 };
 
 // Hanle POST requests
-export async function POST(request: Request) {
+export async function POST(req: Request, res: Request) {
   try {
-    const body =  await request.json();
-    const { userId, userMessage } = body;
+    const body =  await req.json();
 
-    if (!userId || !userMessage) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    if (!Array.isArray(body.messages)) {
+      return new Response(JSON.stringify({ error: "Invalid payload: 'messages' must be an array." }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
-    const latestThread = await getLatestChatThread(userId);
-    const chatHistory = latestThread?.messages || [];
+    const messages: Message[] = body.messages;
+
+    // const chatSession = model.startChat({
+    //   generationConfig,
+    //   history: [
+    //     {
+    //       role: "user",
+    //       parts: [
+    //         {text: "Hi I'm a bit stressed"},
+    //       ],
+    //     },
+    //     {
+    //       role: "model",
+    //       parts: [
+    //         {text: "Oh, hey there. It's okay, we all get stressed sometimes. It's like a little storm cloud hanging over us, isn't it? Tell me what's been going on, and we can try to find some sunshine. No pressure, just share what you feel comfortable with. I'm here to listen.\n"},
+    //       ],
+    //     },
+    //     {
+    //       role: "user",
+    //       parts: [
+    //         {text: "I've been overwhelmed with my coursework lately, and whenever I start getting overwhelmed I have no one by my side to turn to calm me down, so I end up constantly breaking down"},
+    //       ],
+    //     },
+    //     {
+    //       role: "model",
+    //       parts: [
+    //         {text: "Oh, sweetheart, that sounds incredibly tough. It's like you're carrying the weight of the world on your shoulders, and then having to face it all alone. It breaks my heart to hear you're going through this. It's completely understandable that you'd break down when you feel that overwhelmed and alone. \n\nIt makes perfect sense that your mind and emotions would be struggling right now, and it takes a lot of strength to even share what you're going through. I'm so glad you did, and I'm here for you right now. Let's take a deep breath together. You are not alone. We can get through this.\n"},
+    //       ],
+    //     },
+    //     {
+    //       role: "user",
+    //       parts: [
+    //         {text: "Thank you. I just feel like I'm constantly alone. I reach out to people to help them out, but when i need help the most no one is there to put in as much effort as i would"},
+    //       ],
+    //     },
+    //     {
+    //       role: "model",
+    //       parts: [
+    //         {text: "Oh, my dear, that feeling of loneliness when you need support is a heavy one, isn't it? It's like pouring your heart into helping others and then turning around to find an empty space when you need it most. It's not fair at all, and it's completely understandable that it hurts deeply. It's natural to feel abandoned or like you're not worth the same effort you give to others. \n\nYou deserve to have people who show up for you with the same love and care that you give to others. It takes so much vulnerability to open up and reach out, so the feeling of rejection from others must be so painful. You're not alone in feeling this way. I'm here to be present for you.\n"},
+    //       ],
+    //     },
+    //   ],
+    // });
+
+    const chatHistory = messages.map((msg) => ({
+      role: msg.role === "user" ? "user" : "model",
+      parts: [{ text: msg.content }],
+    }));
 
     const chatSession = model.startChat({
       generationConfig,
-      history: chatHistory.map((msg) => ({
-        role: msg.sender === "user" ? "user" : "model",
-        parts: [{ text: msg.content }], // Wrap message content
-      })),
+      history: chatHistory,
     });
 
-    const response = await chatSession.sendMessage(userMessage);
+    const userMessage = messages[messages.length - 1]?.content || "Hello"; // Last user message
+    const result = await chatSession.sendMessage(userMessage);
 
-    if (!response || !response.response?.text) {
-      return NextResponse.json({ error: "Failed to generate a response." }, { status: 500 });
-    }
+    const modelMessage = { 
+      role: "model", 
+      content: result.response.text()
+    };
+    console.log("Model response:", modelMessage); // Log response from the model
 
-    const modelMessage = { sender: "model", content: response.response.text };
+    return new Response(JSON.stringify(modelMessage), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
 
-    const updatedMessages: { sender: "model" | "user"; content: string }[] = [
-      ...chatHistory.map((msg) => ({
-        sender: msg.sender === "user" || msg.sender === "model" ? msg.sender : "user", // Validate sender
-        content: typeof msg.content === "string" ? msg.content : "",
-      })),
-      { sender: "user", content: userMessage },
-      { sender: "model", content: response.response.text() },
-    ];
-    await saveOrUpdateChatThread(userId, updatedMessages);
 
-    return NextResponse.json({ response: modelMessage.content }, { status: 200 });
   } catch (error) {
     console.error("Error handling POST request:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 };
 
-// Handle GET requests
-export async function GET(request: Request) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const userId = searchParams.get("userId");
-    const threadId = searchParams.get("threadId");
 
-    if (!userId) {
-      return NextResponse.json({ error: "Missing required userId" }, { status: 400 });
-    }
-
-    if (threadId) {
-      const chatThread = await getChatThreadById(threadId);
-      if (!chatThread) {
-        return NextResponse.json({ error: "Chat thread not found" }, { status: 404 });
-      }
-      return NextResponse.json(chatThread, { status: 200 });
-    }
-
-    const chatThreads = await getAllChatThreads(userId);
-    return NextResponse.json(chatThreads, { status: 200 });
-  } catch (error) {
-    console.error("Error handling GET request:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
-  }
-}
 
 

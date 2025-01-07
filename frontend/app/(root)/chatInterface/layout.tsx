@@ -13,22 +13,6 @@ export type Message = {
   content: string;
 };
 
-interface ChatContextProps {
-  messages: Message[];
-  loading: boolean;
-  loadChatThread: (threadId: string) => void;
-}
-
-const ChatContext = createContext<
-  ChatContextProps & { setMessages: React.Dispatch<React.SetStateAction<Message[]>> } | undefined
->(undefined);
-
-export function useChat() {
-  const context = useContext(ChatContext);
-  if (!context) throw new Error("useChat must be used within ChatProvider");
-  return context;
-}
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -55,16 +39,18 @@ export default function RootLayout({
   };
 
   return (
-    <ChatContext.Provider value={{ messages, setMessages, loading, loadChatThread }}>
+    //<ChatContext.Provider value={{ messages, setMessages, loading, loadChatThread }}>
       <main
         className={`${quicksand.className} bg-home-screen-blue bg-black/40 flex flex-row h-screen w-screen justify-between`}
       >
-        <Sidebar onLoadChat={loadChatThread}/>
+        <Sidebar 
+        //onLoadChat={loadChatThread}
+        />
         <div className="flex flex-col w-full h-screen">
           <ChatHeader />
           {children}
         </div>
       </main>
-    </ChatContext.Provider>
+    //</ChatContext.Provider>
   );
 }

@@ -8,7 +8,9 @@ import SavedChat from "@/components/SavedChat";
 
 const pacifico = Pacifico({ weight: ["400"], subsets: ["latin"] });
 
-const Sidebar = ({ onLoadChat }: { onLoadChat: (threadId: string) => void }) => {
+const Sidebar = (
+ // { onLoadChat }: { onLoadChat: (threadId: string) => void }
+) => {
   const [showSideBar, setShowSideBar] = useState(true);
 
   const toggleSideBar = () => {
