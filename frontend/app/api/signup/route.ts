@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { connect } from "@/utils/config/dbConfig";
 import User from "@/utils/models/User";
 import bcryptjs from "bcryptjs";
+import { SignJWT } from "jose";  // Import SignJWT from jose
 
 export async function POST(req: NextRequest) {
   await connect();
@@ -20,7 +21,7 @@ export async function POST(req: NextRequest) {
     const ifUserExists = await User.findOne({email});
     if (ifUserExists) {
       return NextResponse.json(
-        { error: "User alrrady exists "},
+        { error: "User already exists "},
         { status: 400 }
       );
     }
@@ -32,11 +33,32 @@ export async function POST(req: NextRequest) {
         name, email, password: hashedPassword,
     }).save();
 
-    return NextResponse.json({
+    // Generate JWT token using jose
+    const secretKey = new TextEncoder().encode(process.env.JWT_SECRET); // Make sure the secret is encoded properly
+
+    // Generate JWT token using jose
+    const token = await new SignJWT({ id: savedUser._id, email: savedUser.email, name: savedUser.name })
+      .setProtectedHeader({ alg: 'HS256' }) // Set the header (protected or unprotected)
+      .setIssuedAt()  // Set issued time
+      .setExpirationTime("1h")
+      .sign(secretKey);
+      
+
+    // Set the token in cookies
+    const response = NextResponse.json({
       message: "User created successfully",
-      success:true,
+      success: true,
       user: { id: savedUser._id, name: savedUser.name, email: savedUser.email },
-    })
+    });
+
+    // Set cookie with token
+    response.cookies.set("token", token, {
+      httpOnly: true, // Token will not be accessible via JavaScript
+      secure: process.env.NODE_ENV === "production", // Set secure flag for production
+      path: "/", // Make cookie accessible across the entire domain
+    });
+
+    return response;
   } catch (error: any) {
     console.error("Error during signup:", error);
     return NextResponse.json({error: error.message}, { status: 500 });

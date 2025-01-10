@@ -4,12 +4,13 @@ import TextInput from "@/components/AuthInput";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { useSession } from "@/context/Provider";
 
 export default function SigninPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+  const { recheckSession } = useSession();
 
   const handleSubmit = async () => {
     try {
@@ -24,17 +25,21 @@ export default function SigninPage() {
         alert("Invalid email ID.");
         return;
       }
-      const result = await signIn("credentials", {
-         email: email, 
-         password: password,
-         redirect: false 
+
+      // Send a POST request to the /api/sign-in endpoint
+      const response = await fetch("/api/signin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
       });
 
-      if (result.status == 200 || result.status == 201) {
+      const result = await response.json();
+      if (response.ok) {
+        // Redirect to /home-page on successful login
+        recheckSession();
         router.push("/home-page");
       } else {
-        console.log(result);
-        alert("Sign-in failed. Please check your credentials.");
+        alert(result.error || "Sign-in failed. Please check your credentials.");
       }
     } catch (error) {
       console.error(error);

@@ -5,12 +5,14 @@ import TextInput from "@/components/AuthInput";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "@/context/Provider";
 
 export default function SignUpPage() {
   const [name, setName] =useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+  const { recheckSession } = useSession();
 
   const handleSubmit = async () => {
     try {
@@ -37,6 +39,7 @@ export default function SignUpPage() {
 
       if (response.status == 200 || response.status == 201) {
         console.log("User added successfully!");
+        recheckSession();
         router.push("/home-page");
       } else {
         const errorData = await response.json();

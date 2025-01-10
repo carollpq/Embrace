@@ -11,7 +11,6 @@ const ChatInterface: React.FC = () => {
     onResponse: async (response) => {
       try {
         const jsonResponse = await response.json(); // Parse the API response
-        console.log("Parsed API Response:", jsonResponse);
 
         if (jsonResponse?.content) {
           setMessages((prevMessages) => [
@@ -24,9 +23,6 @@ const ChatInterface: React.FC = () => {
       }
     },
   });
-
-  // Debugging: Log messages to see if they are being updated
-  console.log("Current messages:", messages);
   
   return (
     <div className="flex flex-col h-[85vh] justify-between mt-4">

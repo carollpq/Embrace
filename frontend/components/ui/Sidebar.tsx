@@ -4,7 +4,6 @@ import React from "react";
 import { Pacifico } from "next/font/google";
 import Link from "next/link";
 import { useState } from "react";
-import SavedChat from "@/components/SavedChat";
 
 const pacifico = Pacifico({ weight: ["400"], subsets: ["latin"] });
 
@@ -34,7 +33,7 @@ const Sidebar = (
             className="hover:cursor-pointer"
             // onClick={toggleSideBar}
           />
-          <Link href="/home">
+          <Link href="/home-page">
             <span className={`${pacifico.className} text-2xl`}>Embrace</span>
           </Link>
         </div>

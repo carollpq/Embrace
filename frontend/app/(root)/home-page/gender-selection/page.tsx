@@ -36,7 +36,7 @@ const GenderSelection = () => {
             text="Continue"
           />
         </Link>
-        <Link href="/home/mode-selection">
+        <Link href="/home-page/mode-selection">
           <GeneralButton
             className="py-[0.50rem] bg-transparent border-4 border-white/40 text-white/70 hover:text-black/70 hover:bg-white/50 hover:border-transparent"
             text="Back"

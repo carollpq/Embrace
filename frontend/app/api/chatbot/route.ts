@@ -96,7 +96,6 @@ export async function POST(req: Request, res: Request) {
       role: "model", 
       content: result.response.text()
     };
-    console.log("Model response:", modelMessage); // Log response from the model
 
     return new Response(JSON.stringify(modelMessage), {
       status: 200,

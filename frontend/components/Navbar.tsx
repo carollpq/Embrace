@@ -3,11 +3,12 @@
 import React from 'react'
 import { Pacifico } from 'next/font/google'
 import Link from 'next/link';
-import { signOut } from "next-auth/react";
+import { useSession } from "@/context/Provider"
 
 const pacifico = Pacifico({ weight: ["400"], subsets: ["latin"] });
 
 const Navbar = () => {
+  const { logout } = useSession();
   return (
     <div className='flex flex-row justify-between absolute top-0 left-0 w-screen text-xl py-8 px-14'>
         {/* Logo */}
@@ -18,7 +19,7 @@ const Navbar = () => {
             <Link href='/'>Contact Us</Link>
             <Link href='/'>About Us</Link>
             {/*Insert Profile icon here*/}
-            <Link href='/' onClick={() => signOut()}>Log Out</Link>
+            <Link href='/' onClick={logout}>Log Out</Link>
         </div>
     </div>
   )
