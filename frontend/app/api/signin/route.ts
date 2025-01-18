@@ -45,7 +45,7 @@ export async function POST(req) {
       httpOnly: true, 
       secure: process.env.NODE_ENV === "production", // Only set secure in production
       path: "/", // Make cookie accessible across the entire domain
-      //sameSite: "lax",
+      sameSite: "lax",
     });
 
     return response;

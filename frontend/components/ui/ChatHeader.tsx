@@ -1,10 +1,13 @@
 import React from "react";
 import { Quicksand } from "next/font/google";
 import Image from "next/image";
+import { useSession } from "@/context/Provider";
 
 const quicksand = Quicksand({ subsets: ["latin"] });
 
 const ChatHeader = () => {
+  const { selectedPersona } = useSession();
+
   return (
     <div className="flex flex-row justify-between top-0 left-0 text-xl py-5 px-12 bg-[#010f17]/40 drop-shadow-md">
       {/* Chatbot Persona */}
@@ -16,11 +19,11 @@ const ChatHeader = () => {
           height={24}
           onClick={toggleSideBar}
         /> */}
-        <div className="w-12 h-12 bg-black/20 rounded-full bg-profile-pic-jenna bg-cover"></div>
+        <div className={`w-12 h-12 bg-black/20 rounded-full bg-cover ${selectedPersona == "Jenna" ? "bg-profile-pic-jenna" : "bg-profile-pic-marcus"}`}></div>
         <div
           className={`text-center text-white/80 text-xl font-semibold ${quicksand.className}`}
         >
-          Jenna
+          {selectedPersona}
         </div>
       </div>
       {/* Right side header items */}

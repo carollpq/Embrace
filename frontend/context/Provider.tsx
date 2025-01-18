@@ -7,12 +7,21 @@ type SessionContextType = {
   session: { name: string; email: string } | null;
   logout: () => void;
   recheckSession: () => void;
+  selectedMode: string | null;
+  setSelectedMode: (mode: string) => void;
+  selectedPersona: string | null;
+  setSelectedPersona: (persona: string) => void;
+  nightMode: boolean;
+  setNightMode: (mode: boolean) => void;
 };
 
 const SessionContext = createContext<SessionContextType | null>(null);
 
-export const SessionProvider = ({ children }) => {
+export const SessionProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<{ name: string; email: string } | null>(null);
+  const [selectedMode, setSelectedMode] = useState<string | null>(null);
+  const [selectedPersona, setSelectedPersona] = useState<string | null>(null);
+  const [nightMode, setNightMode] = useState<boolean>(false);
   const router = useRouter();
 
   const recheckSession = async () => {
@@ -41,7 +50,19 @@ export const SessionProvider = ({ children }) => {
   };
 
   return (
-    <SessionContext.Provider value={{ session, logout, recheckSession }}>
+    <SessionContext.Provider 
+      value={{ 
+        session, 
+        logout, 
+        recheckSession,
+        selectedMode,
+        setSelectedMode,
+        selectedPersona,
+        setSelectedPersona,
+        nightMode,
+        setNightMode
+      }}
+    >
       {children}
     </SessionContext.Provider>
   );

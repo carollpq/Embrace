@@ -1,7 +1,7 @@
 "use client";
 
 import style from "../styles/InputBox.module.css";
-import { useRef, ChangeEvent, KeyboardEvent } from "react";
+import { useRef, KeyboardEvent } from "react";
 
 /** Lives in the lower section of \<ChatInterface />, below \<Chat />. Responsible for handling the input from users and then submitting messages to the backend. */
 const InputBox = ({

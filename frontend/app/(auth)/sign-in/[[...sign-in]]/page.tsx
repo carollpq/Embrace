@@ -10,7 +10,7 @@ export default function SigninPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
-  const { recheckSession } = useSession();
+  const { recheckSession, nightMode } = useSession();
 
   const handleSubmit = async () => {
     try {
@@ -48,7 +48,7 @@ export default function SigninPage() {
   };
 
   return (
-    <div className="text-2xl py-20 flex-center flex-col gap-4 bg-home-screen-blue h-screen w-screen">
+    <div className={`text-2xl py-20 flex-center flex-col gap-4 h-screen w-screen ${nightMode ? "bg-home-screen-blue" : "bg-day-mode-screen-2"}`}>
       {/* Form section */}
       <h2 className="text-3xl animate-slideUp text-white/80 mb-4">Welcome Back!</h2>
       <form

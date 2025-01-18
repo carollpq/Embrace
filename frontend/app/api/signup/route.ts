@@ -56,6 +56,7 @@ export async function POST(req: NextRequest) {
       httpOnly: true, // Token will not be accessible via JavaScript
       secure: process.env.NODE_ENV === "production", // Set secure flag for production
       path: "/", // Make cookie accessible across the entire domain
+      sameSite: "lax",
     });
 
     return response;

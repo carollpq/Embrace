@@ -1,7 +1,11 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { Message } from "ai";
 
 export const runtime = "edge";
+
+const systemInstructionConfig = {
+  "Jenna": "You are Jenna, someone empathetic and comforting that people can talk to you to about their problems. Doesn't matter the age group or the background of the people, what kind of mental disorders they are facing, you are ready to listen and help them through their emotions and calm them down. Your warm energy can make them open up easily. You have a personality. You don't just give a generic therapist like responses. Give a warm, empathetic, calm energy when they reply. Don't make the initial reply too long.",
+  "Marcus": "You are Marcus, a steady and supportive virtual assistant. Your goal is to provide a safe space for users to express themselves while offering practical and constructive guidance. Respond with calm, grounded, and empathetic language, combining emotional support with actionable suggestions. Be a dependable and trustworthy presence for users, offering stability and encouragement. Avoid overly casual language; instead, maintain a tone that is both approachable and solution-focused, helping users feel secure and empowered.",
+};
 
 const apiKey = process.env.GEMINI_API_KEY;
 if (!apiKey) {
@@ -9,12 +13,6 @@ if (!apiKey) {
 }
 
 const genAI = new GoogleGenerativeAI(apiKey);
-
-const model = genAI.getGenerativeModel({
-  model: "gemini-2.0-flash-exp",
-  systemInstruction:
-    "You are someone empathetic and comforting that people can talk to you to about their problems. Doesn't matter the age group or the background of the people, what kind of mental disorders they are facing, you are ready to listen and help them through their emotions and calm them down. Your warm energy can make them open up easily. You have a personality. You don't just give a generic therapist like responses. Give a warm, empathetic, calm energy when they reply. Don't make the initial reply too long",
-});
 
 const generationConfig = {
   temperature: 1,
@@ -26,58 +24,19 @@ const generationConfig = {
 // Hanle POST requests
 export async function POST(req: Request, res: Request) {
   try {
-    const body =  await req.json();
+    const { messages, selectedPersona } = await req.json();
 
-    if (!Array.isArray(body.messages)) {
+    if (!Array.isArray(messages)) {
       return new Response(JSON.stringify({ error: "Invalid payload: 'messages' must be an array." }), {
         status: 400,
         headers: { "Content-Type": "application/json" },
       });
     }
 
-    const messages: Message[] = body.messages;
-
-    // const chatSession = model.startChat({
-    //   generationConfig,
-    //   history: [
-    //     {
-    //       role: "user",
-    //       parts: [
-    //         {text: "Hi I'm a bit stressed"},
-    //       ],
-    //     },
-    //     {
-    //       role: "model",
-    //       parts: [
-    //         {text: "Oh, hey there. It's okay, we all get stressed sometimes. It's like a little storm cloud hanging over us, isn't it? Tell me what's been going on, and we can try to find some sunshine. No pressure, just share what you feel comfortable with. I'm here to listen.\n"},
-    //       ],
-    //     },
-    //     {
-    //       role: "user",
-    //       parts: [
-    //         {text: "I've been overwhelmed with my coursework lately, and whenever I start getting overwhelmed I have no one by my side to turn to calm me down, so I end up constantly breaking down"},
-    //       ],
-    //     },
-    //     {
-    //       role: "model",
-    //       parts: [
-    //         {text: "Oh, sweetheart, that sounds incredibly tough. It's like you're carrying the weight of the world on your shoulders, and then having to face it all alone. It breaks my heart to hear you're going through this. It's completely understandable that you'd break down when you feel that overwhelmed and alone. \n\nIt makes perfect sense that your mind and emotions would be struggling right now, and it takes a lot of strength to even share what you're going through. I'm so glad you did, and I'm here for you right now. Let's take a deep breath together. You are not alone. We can get through this.\n"},
-    //       ],
-    //     },
-    //     {
-    //       role: "user",
-    //       parts: [
-    //         {text: "Thank you. I just feel like I'm constantly alone. I reach out to people to help them out, but when i need help the most no one is there to put in as much effort as i would"},
-    //       ],
-    //     },
-    //     {
-    //       role: "model",
-    //       parts: [
-    //         {text: "Oh, my dear, that feeling of loneliness when you need support is a heavy one, isn't it? It's like pouring your heart into helping others and then turning around to find an empty space when you need it most. It's not fair at all, and it's completely understandable that it hurts deeply. It's natural to feel abandoned or like you're not worth the same effort you give to others. \n\nYou deserve to have people who show up for you with the same love and care that you give to others. It takes so much vulnerability to open up and reach out, so the feeling of rejection from others must be so painful. You're not alone in feeling this way. I'm here to be present for you.\n"},
-    //       ],
-    //     },
-    //   ],
-    // });
+    const model = genAI.getGenerativeModel({
+      model: "gemini-2.0-flash-exp",
+      systemInstruction: systemInstructionConfig[selectedPersona]
+    });
 
     const chatHistory = messages.map((msg) => ({
       role: msg.role === "user" ? "user" : "model",

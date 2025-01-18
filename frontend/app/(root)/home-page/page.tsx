@@ -3,17 +3,18 @@
 import Link from "next/link";
 import { useSession } from "@/context/Provider";
 import { useEffect } from "react";
+import Toggle from "@/components/ui/toggle";
 
 export default function Home() {
 
-  const { session } = useSession();
+  const { session, nightMode } = useSession();
 
   useEffect(() => {
     console.log("Session on Home Page:", session); // Log session to debug
   }, [session]);
 
   return (
-    <div className="flex flex-col justify-center gap-16 items-center bg-home-screen-blue h-screen bg-center">
+    <div className={`flex flex-col justify-center gap-16 items-center h-screen bg-center ${nightMode ? "bg-home-screen-blue" : "bg-home-screen-pink bg-black/20 bg-blend-overlay"} transition-colors duration-500 ease-in-out`}>
       {session && <h2
         className="text-5xl animate-slideUp delay-1000"
       >
@@ -29,6 +30,7 @@ export default function Home() {
           </button>
         </Link>
       </div>
+      <Toggle />
     </div>
   );
 }

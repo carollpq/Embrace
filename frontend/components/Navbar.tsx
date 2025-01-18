@@ -19,7 +19,7 @@ const Navbar = () => {
             <Link href='/'>Contact Us</Link>
             <Link href='/'>About Us</Link>
             {/*Insert Profile icon here*/}
-            <Link href='/' onClick={logout}>Log Out</Link>
+            <span className="hover:cursor-pointer" onClick={logout}>Log Out</span>
         </div>
     </div>
   )

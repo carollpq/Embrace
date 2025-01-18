@@ -1,14 +1,18 @@
+"use client";
 import Link from "next/link";
 import { Pacifico, Quicksand } from "next/font/google";
+import Toggle from "@/components/ui/toggle";
+import { useSession } from "@/context/Provider";
 
 
 const pacifico = Pacifico({ weight: ["400"], subsets: ["latin"] });
 const quicksand = Quicksand({ weight: ["500"], subsets: ["latin"] });
 
 export default function StartPage() {
-
+  const { nightMode } = useSession();
+  
   return (
-    <div className="flex flex-col justify-center gap-16 items-center bg-home-screen-blue h-screen bg-center">
+    <div className={`flex flex-col justify-center gap-16 items-center h-screen bg-center transition-colors duration-500 ease-in-out ${nightMode ? "bg-home-screen-blue" : "bg-home-screen-pink bg-black/20 bg-blend-overlay"}`}>
       <h1
         className={`${pacifico.className} text-8xl animate-slideUp delay-1000`}
       >
@@ -29,6 +33,7 @@ export default function StartPage() {
           </button>
         </Link>
       </div>
+      <Toggle />
     </div>
   );
 }
