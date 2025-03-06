@@ -71,3 +71,46 @@
     left: calc(50% - 5px);
     top: -5px;
   }
+
+  /* Pulsating effect */
+.listening {
+  animation: pulse 1.5s infinite;
+  background-color: #ff5252 !important; /* Change the color when listening */
+}
+
+/* Keyframes for pulsating animation */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 10px rgba(255, 82, 82, 0.5);
+  }
+  50% {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(255, 82, 82, 0.8);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 10px rgba(255, 82, 82, 0.5);
+  }
+}
+
+/* Mic SVG animation */
+.mic-animate {
+  animation: mic-scale 1.5s infinite;
+}
+
+/* Keyframes for mic scaling */
+@keyframes mic-scale {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

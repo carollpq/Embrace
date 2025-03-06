@@ -12,6 +12,7 @@
     "@ai-sdk/openai": "^0.0.71",
     "@aws-sdk/client-polly": "^3.726.1",
     "@google/generative-ai": "^0.21.0",
+    "@types/dom-speech-recognition": "^0.0.4",
     "ai": "^3.4.31",
     "aws-sdk": "^2.1692.0",
     "axios": "^1.7.9",

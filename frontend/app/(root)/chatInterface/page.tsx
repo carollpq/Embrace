@@ -9,7 +9,7 @@ import { useSession } from "@/context/Provider";
 const ChatInterface: React.FC = () => {
   const messageContainerRef = useRef<HTMLDivElement | null>(null); // Reference for the messages container
 
-  const { selectedPersona } = useSession();
+  const { selectedPersona, selectedMode } = useSession();
 
   const { messages, input, handleInputChange, handleSubmit, setMessages } = useChat({
     api: 'api/chatbot',

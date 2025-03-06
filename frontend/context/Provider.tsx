@@ -17,6 +17,7 @@ type SessionContextType = {
 
 const SessionContext = createContext<SessionContextType | null>(null);
 
+// JSX Component
 export const SessionProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<{ name: string; email: string } | null>(null);
   const [selectedMode, setSelectedMode] = useState<string | null>(null);
@@ -68,6 +69,7 @@ export const SessionProvider = ({ children }: { children: React.ReactNode }) => 
   );
 };
 
+// Named function
 export const useSession = () => {
   const context = useContext(SessionContext);
   if (!context) {

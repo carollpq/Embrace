@@ -36,6 +36,7 @@ body {
   }
 }
 
+/*FIX THIS DUPLICATION!!*/
 /* Hide the scrollbar but keep scrolling functionality */
 .overflow-y-auto {
   -ms-overflow-style: none;  /* For Internet Explorer and Edge */
