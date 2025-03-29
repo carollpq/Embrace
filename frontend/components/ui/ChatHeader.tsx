@@ -6,20 +6,33 @@ import { useSession } from "@/context/Provider";
 const quicksand = Quicksand({ subsets: ["latin"] });
 
 const ChatHeader = () => {
-  const { selectedPersona } = useSession();
+  const { selectedPersona, setShowSideBar, showSideBar } = useSession();
+
+  const toggleSideBar = () => {
+    setShowSideBar(!showSideBar);
+  };
 
   return (
     <div className="flex flex-row justify-between top-0 left-0 text-xl py-5 px-12 bg-[#010f17]/40 drop-shadow-md">
       {/* Chatbot Persona */}
       <div className="justify-start items-center gap-[25px] inline-flex">
-        {/* <Image
-          src="/icons/bars-solid.svg"
-          alt="Hamburger icon"
-          width={24}
-          height={24}
-          onClick={toggleSideBar}
-        /> */}
-        <div className={`w-12 h-12 bg-black/20 rounded-full bg-cover ${selectedPersona == "Jenna" ? "bg-profile-pic-jenna" : "bg-profile-pic-marcus"}`}></div>
+        {!showSideBar && (
+          <Image
+            src="/icons/bars-solid.svg"
+            alt="Hamburger icon"
+            width={24}
+            height={24}
+            onClick={toggleSideBar}
+            className="hover:cursor-pointer"
+          />
+        )}
+        <div
+          className={`w-12 h-12 bg-black/20 rounded-full bg-cover ${
+            selectedPersona == "Jenna"
+              ? "bg-profile-pic-jenna"
+              : "bg-profile-pic-marcus"
+          }`}
+        ></div>
         <div
           className={`text-center text-white/80 text-xl font-semibold ${quicksand.className}`}
         >

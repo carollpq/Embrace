@@ -9,7 +9,7 @@ import { useSession } from "@/context/Provider";
 const ChatInterface: React.FC = () => {
   const messageContainerRef = useRef<HTMLDivElement | null>(null); // Reference for the messages container
 
-  const { selectedPersona, selectedMode } = useSession();
+  const { selectedPersona, showSideBar } = useSession();
 
   const { messages, input, handleInputChange, handleSubmit, setMessages } = useChat({
     api: 'api/chatbot',
@@ -40,10 +40,10 @@ const ChatInterface: React.FC = () => {
   }, [messages]);
   
   return (
-    <div className="flex flex-col h-[85vh] justify-between mt-4">
+    <div className={`flex flex-col h-[85vh] justify-between mt-4`}>
       <div 
         ref={messageContainerRef}
-        className="flex-1 basis-auto overflow-y-auto h-[100px] hide-scrollbar"
+        className={`flex-1 basis-auto overflow-y-auto h-[100px] hide-scrollbar`}
       >
         {messages && messages.map((message, index) => <ChatMessage message={message} key={index} />)}
       </div>

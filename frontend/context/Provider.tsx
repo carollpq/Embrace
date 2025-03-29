@@ -15,6 +15,8 @@ type SessionContextType = {
   setSelectedTTS: (tts: string) => void;
   nightMode: boolean;
   setNightMode: (mode: boolean) => void;
+  showSideBar: boolean;
+  setShowSideBar: (show: boolean) => void;
 };
 
 const SessionContext = createContext<SessionContextType | null>(null);
@@ -26,6 +28,7 @@ export const SessionProvider = ({ children }: { children: React.ReactNode }) => 
   const [selectedPersona, setSelectedPersona] = useState<string | null>(null);
   const [selectedTTS, setSelectedTTS] = useState<string | null>("coqui");
   const [nightMode, setNightMode] = useState<boolean>(false);
+  const [showSideBar, setShowSideBar] = useState(true);
   const router = useRouter();
 
   const recheckSession = async () => {
@@ -66,7 +69,9 @@ export const SessionProvider = ({ children }: { children: React.ReactNode }) => 
         selectedTTS,
         setSelectedTTS,
         nightMode,
-        setNightMode
+        setNightMode,
+        showSideBar,
+        setShowSideBar,
       }}
     >
       {children}

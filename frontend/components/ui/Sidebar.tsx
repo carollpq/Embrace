@@ -11,7 +11,7 @@ const pacifico = Pacifico({ weight: ["400"], subsets: ["latin"] });
 const Sidebar = () =>
   // { onLoadChat }: { onLoadChat: (threadId: string) => void }
   {
-    const [showSideBar, setShowSideBar] = useState(true);
+    const { selectedMode, setSelectedMode, showSideBar, setShowSideBar } = useSession();
 
     const toggleSideBar = () => {
       setShowSideBar(!showSideBar);
@@ -32,7 +32,7 @@ const Sidebar = () =>
               width={24}
               height={24}
               className="hover:cursor-pointer"
-              // onClick={toggleSideBar}
+              onClick={toggleSideBar}
             />
             <Link href="/home-page">
               <span className={`${pacifico.className} text-2xl`}>Embrace</span>
@@ -50,19 +50,19 @@ const Sidebar = () =>
           {/* Conversation mode container */}
           <div className="flex flex-col gap-3">
             {/* Text to text */}
-            <div className="bg-[#021017]/80 rounded-lg drop-shadow-md text-left py-2 px-6 flex flex-row justify-between items-center hover:bg-white/50 hover:text-black hover:cursor-pointer">
+            <div onClick={() => setSelectedMode("text-and-text")} className={`${selectedMode === "text-and-text" ? "bg-white/50 text-black" : "bg-[#021017]/80"} rounded-lg drop-shadow-md text-left py-2 px-6 flex flex-row justify-between items-center hover:bg-white/50 hover:text-black hover:cursor-pointer`}>
               <span>Text and text</span>
             </div>
             {/* Text to voice */}
-            <div className="bg-[#021017]/80 rounded-lg drop-shadow-md text-left py-2 px-6 flex flex-row justify-between items-center hover:bg-white/50 hover:text-black hover:cursor-pointer">
+            <div onClick={() => setSelectedMode("text-and-voice")} className={`${selectedMode === "text-and-voice" ? "bg-white/50 text-black" : "bg-[#021017]/80"} rounded-lg drop-shadow-md text-left py-2 px-6 flex flex-row justify-between items-center hover:bg-white/50 hover:text-black hover:cursor-pointer`}>
               <span>Text and voice</span>
             </div>
             {/* Voice to text */}
-            <div className="bg-[#021017]/80 rounded-lg drop-shadow-md text-left py-2 px-6 flex flex-row justify-between items-center hover:bg-white/50 hover:text-black hover:cursor-pointer">
+            <div onClick={() => setSelectedMode("voice-and-text")} className={`${selectedMode === "voice-and-text" ? "bg-white/50 text-black" : "bg-[#021017]/80"} rounded-lg drop-shadow-md text-left py-2 px-6 flex flex-row justify-between items-center hover:bg-white/50 hover:text-black hover:cursor-pointer`}>
               <span>Voice and text</span>
             </div>
             {/* Voice to voice */}
-            <div className="bg-[#021017]/80 rounded-lg drop-shadow-md text-left py-2 px-6 flex flex-row justify-between items-center hover:bg-white/50 hover:text-black hover:cursor-pointer">
+            <div onClick={() => setSelectedMode("voice-and-voice")} className={`${selectedMode === "voice-and-voice" ? "bg-white/50 text-black" : "bg-[#021017]/80"} rounded-lg drop-shadow-md text-left py-2 px-6 flex flex-row justify-between items-center hover:bg-white/50 hover:text-black hover:cursor-pointer`}>
               <span>Voice and voice</span>
             </div>
           </div>
