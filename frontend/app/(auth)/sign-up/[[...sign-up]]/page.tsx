@@ -11,6 +11,7 @@ export default function SignUpPage() {
   const [name, setName] =useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { recheckSession, nightMode } = useSession();
 
@@ -29,6 +30,8 @@ export default function SignUpPage() {
         return;
       }
       
+      setLoading(true);
+
       const response = await fetch("/api/signup", {
         method: "POST",
         headers: {
@@ -76,7 +79,7 @@ export default function SignUpPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <GeneralButton className="bg-white/70 hover:bg-white/90 hover:text-black/90" text="Sign Up" onClick={handleSubmit} />
+        <GeneralButton className="bg-white/70 hover:bg-white/90 hover:text-black/90" text="Sign Up" isLoading={loading} onClick={handleSubmit} />
       </form>
 
       {/* Re-directs user to Sign In page section */}

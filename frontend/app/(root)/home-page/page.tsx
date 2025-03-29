@@ -16,11 +16,11 @@ export default function Home() {
   return (
     <div className={`flex flex-col justify-center gap-16 items-center h-screen bg-center ${nightMode ? "bg-home-screen-blue" : "bg-home-screen-pink bg-black/20 bg-blend-overlay"} transition-colors duration-500 ease-in-out`}>
       {session && <h2
-        className="text-5xl animate-slideUp delay-1000"
+        className="text-5xl font-semibold animate-slideUp delay-1000"
       >
-        Welcome back, {session.name}
+        Welcome, {session.name}
       </h2>}
-      <p className="text-3xl animate-slideUp delay-1000 text-white/70">
+      <p className="text-3xl font-medium animate-slideUp delay-1000 text-white/70">
         Ready to talk?
       </p>
       <div className="flex-center flex-row gap-10  w-screen animate-slideUp delay-1000">

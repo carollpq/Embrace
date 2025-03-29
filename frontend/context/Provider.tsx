@@ -11,6 +11,8 @@ type SessionContextType = {
   setSelectedMode: (mode: string) => void;
   selectedPersona: string | null;
   setSelectedPersona: (persona: string) => void;
+  selectedTTS: string | null;
+  setSelectedTTS: (tts: string) => void;
   nightMode: boolean;
   setNightMode: (mode: boolean) => void;
 };
@@ -22,6 +24,7 @@ export const SessionProvider = ({ children }: { children: React.ReactNode }) => 
   const [session, setSession] = useState<{ name: string; email: string } | null>(null);
   const [selectedMode, setSelectedMode] = useState<string | null>(null);
   const [selectedPersona, setSelectedPersona] = useState<string | null>(null);
+  const [selectedTTS, setSelectedTTS] = useState<string | null>("coqui");
   const [nightMode, setNightMode] = useState<boolean>(false);
   const router = useRouter();
 
@@ -60,6 +63,8 @@ export const SessionProvider = ({ children }: { children: React.ReactNode }) => 
         setSelectedMode,
         selectedPersona,
         setSelectedPersona,
+        selectedTTS,
+        setSelectedTTS,
         nightMode,
         setNightMode
       }}
