@@ -17,6 +17,8 @@ type SessionContextType = {
   setNightMode: (mode: boolean) => void;
   showSideBar: boolean;
   setShowSideBar: (show: boolean) => void;
+  isLoggingOut: boolean;
+  setIsLoggingOut: (mode: boolean) => void;
 };
 
 const SessionContext = createContext<SessionContextType | null>(null);
@@ -29,6 +31,7 @@ export const SessionProvider = ({ children }: { children: React.ReactNode }) => 
   const [selectedTTS, setSelectedTTS] = useState<string | null>("coqui");
   const [nightMode, setNightMode] = useState<boolean>(false);
   const [showSideBar, setShowSideBar] = useState(true);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const router = useRouter();
 
   const recheckSession = async () => {
@@ -72,6 +75,8 @@ export const SessionProvider = ({ children }: { children: React.ReactNode }) => 
         setNightMode,
         showSideBar,
         setShowSideBar,
+        isLoggingOut,
+        setIsLoggingOut,
       }}
     >
       {children}

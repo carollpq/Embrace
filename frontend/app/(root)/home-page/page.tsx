@@ -6,31 +6,48 @@ import { useEffect } from "react";
 import Toggle from "@/components/ui/toggle";
 
 export default function Home() {
-
-  const { session, nightMode } = useSession();
+  const { session, nightMode, isLoggingOut } = useSession();
 
   useEffect(() => {
     console.log("Session on Home Page:", session); // Log session to debug
   }, [session]);
 
   return (
-    <div className={`flex flex-col justify-center gap-16 items-center h-screen bg-center ${nightMode ? "bg-home-screen-blue" : "bg-home-screen-pink bg-black/20 bg-blend-overlay"} transition-colors duration-500 ease-in-out`}>
-      {session && <h2
-        className="text-5xl font-semibold animate-slideUp delay-1000"
-      >
-        Welcome, {session.name}
-      </h2>}
-      <p className="text-3xl font-medium animate-slideUp delay-1000 text-white/70">
-        Ready to talk?
-      </p>
-      <div className="flex-center flex-row gap-10  w-screen animate-slideUp delay-1000">
-        <Link href="/home-page/mode-selection">
-          <button className="button-transition hover:bg-[#1d1d1d] hover:text-white text-center text-2xl text-black/60 w-[200px] py-4 bg-white rounded-[30px] drop-shadow-default">
-            Start
-          </button>
-        </Link>
-      </div>
-      <Toggle />
+    <div
+      className={`flex flex-col justify-center gap-16 items-center h-screen bg-center ${
+        nightMode
+          ? "bg-home-screen-blue"
+          : "bg-home-screen-pink bg-black/20 bg-blend-overlay"
+      } transition-colors duration-500 ease-in-out`}
+    >
+      {isLoggingOut ? (
+        <div className="flex flex-col items-center gap-4">
+          <h2 className="text-2xl font-medium text-white/60 animate-slideUp delay-1000">
+            Logging Out ...
+          </h2>
+          {/* Spinning Loader */}
+          <div className="w-12 h-12 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin delay-1000 mt-3"></div>
+        </div>
+      ) : (
+        <>
+          {session && (
+            <h2 className="text-5xl font-semibold animate-slideUp delay-1000">
+              Welcome, {session.name}
+            </h2>
+          )}
+          <p className="text-3xl font-medium animate-slideUp delay-1000 text-white/70">
+            Ready to talk?
+          </p>
+          <div className="flex-center flex-row gap-10  w-screen animate-slideUp delay-1000">
+            <Link href="/home-page/mode-selection">
+              <button className="button-transition hover:bg-[#1d1d1d] hover:text-white text-center text-2xl text-black/60 w-[200px] py-4 bg-white rounded-[30px] drop-shadow-default">
+                Start
+              </button>
+            </Link>
+          </div>
+          <Toggle />
+        </>
+      )}
     </div>
   );
 }
