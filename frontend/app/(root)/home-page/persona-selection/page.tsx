@@ -37,7 +37,7 @@ const PersonaSelection = () => {
     >
       {isLoading ? (
         <div className="flex flex-col items-center gap-4">
-          <h2 className="text-2xl font-medium text-white/60 animate-slideUp delay-1000">
+          <h2 className="text-2xl font-medium text-white/70 animate-slideUp delay-1000">
             Loading Your Chat Page, Be Ready to Talk Soon!
           </h2>
           {/* Spinning Loader */}

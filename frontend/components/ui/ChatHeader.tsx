@@ -18,7 +18,7 @@ const ChatHeader = () => {
   return (
     <div className="flex flex-row justify-between top-0 left-0 text-xl py-3 px-9 bg-[#010f17]/40 drop-shadow-md">
       {/* Chatbot Persona */}
-      <div className="flex flex-row gap-5">
+      <div className="flex flex-row gap-5 flex-center">
         {!showSideBar && (
           <Image
             src="/icons/bars-solid.svg"
@@ -85,7 +85,7 @@ const ChatHeader = () => {
       <div
         className={`text-[17px] flex flex-row justify-between items-center gap-8 ${quicksand.className}`}
       >
-        <div className="flex flex-row justify-center items-center gap-2">
+        <div className="flex flex-row justify-center items-center gap-2 hover:cursor-pointer">
           <span className="text-white/60">Help</span>
           {/* Need to change this to white */}
           <Image

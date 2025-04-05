@@ -8,21 +8,23 @@ import { useSession } from "@/context/Provider";
 
 const ChatInterface: React.FC = () => {
   const messageContainerRef = useRef<HTMLDivElement | null>(null); // Reference for the messages container
+  const { selectedPersona } = useSession();
 
-  const { selectedPersona, showSideBar } = useSession();
-
-  const { messages, input, handleInputChange, handleSubmit, setMessages } = useChat({
-    api: 'api/chatbot',
-    body: {selectedPersona},
+  const {
+    messages,
+    input,
+    handleInputChange,
+    handleSubmit,
+    setMessages,
+  } = useChat({
+    api: "api/chatbot",
+    body: { selectedPersona },
     onResponse: async (response) => {
       try {
         const jsonResponse = await response.json(); // Parse the API response
 
         if (jsonResponse?.content) {
-          setMessages((prevMessages) => [
-            ...prevMessages,
-            jsonResponse
-          ]);
+          setMessages((prevMessages) => [...prevMessages, jsonResponse]);
         }
       } catch (error) {
         console.error("Error parsing the response:", error);
@@ -30,6 +32,7 @@ const ChatInterface: React.FC = () => {
     },
   });
 
+  // Scroll on new messages
   useEffect(() => {
     if (messageContainerRef.current) {
       messageContainerRef.current.scrollTo({
@@ -38,14 +41,18 @@ const ChatInterface: React.FC = () => {
       });
     }
   }, [messages]);
-  
+
+
   return (
     <div className={`flex flex-col h-[85vh] justify-between mt-4`}>
-      <div 
+      <div
         ref={messageContainerRef}
         className={`flex-1 basis-auto overflow-y-auto h-[100px] hide-scrollbar`}
       >
-        {messages && messages.map((message, index) => <ChatMessage message={message} key={index} />)}
+        {
+          messages.map((message, index) => (
+            <ChatMessage message={message} key={index} />
+          ))}
       </div>
       <div className="mb-[40px]">
         <InputBox

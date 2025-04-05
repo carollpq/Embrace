@@ -15,6 +15,17 @@ export default function Home() {
 
   useEffect(() => {
     setLoading(false);
+    const warmUpGemini = async () => {
+      try {
+        const res = await fetch("/api/chatbot/init");
+        const data = await res.json();
+        console.log("Gemini warm-up status:", data.message || data.error);
+      } catch (err) {
+        console.error("Gemini warm-up error:", err);
+      }
+    };
+  
+    warmUpGemini(); // Fire and forget
   }, []);
 
   return (
@@ -27,7 +38,7 @@ export default function Home() {
     >
       {isLoggingOut ? (
         <div className="flex flex-col items-center gap-4">
-          <h2 className="text-3xl font-medium text-white/60 animate-slideUp delay-1000">
+          <h2 className="text-3xl font-medium text-white/70 animate-slideUp delay-1000">
             Logging Out ...
           </h2>
           {/* Spinning Loader */}
