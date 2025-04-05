@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie"; // Import js-cookie
 
 type SessionContextType = {
   session: { name: string; email: string } | null;
@@ -24,18 +25,40 @@ type SessionContextType = {
 const SessionContext = createContext<SessionContextType | null>(null);
 
 // JSX Component
-export const SessionProvider = ({ children }: { children: React.ReactNode }) => {
-  const [session, setSession] = useState<{ name: string; email: string } | null>(null);
-  const [selectedMode, setSelectedMode] = useState<string | null>(null);
-  const [selectedPersona, setSelectedPersona] = useState<string | null>(null);
-  const [selectedTTS, setSelectedTTS] = useState<string | null>("coqui");
-  const [nightMode, setNightMode] = useState<boolean>(false);
-  const [showSideBar, setShowSideBar] = useState(true);
+export const SessionProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const [hasMounted, setHasMounted] = useState(false);
+
+  const [session, setSession] = useState<{
+    name: string;
+    email: string;
+  } | null>(null);
+  const [selectedMode, setSelectedMode] = useState<string | null>(
+    Cookies.get("selectedMode") || null
+  );
+  const [selectedPersona, setSelectedPersona] = useState<string | null>(
+    Cookies.get("selectedPersona") || null
+  );
+  const [selectedTTS, setSelectedTTS] = useState<string | null>(
+    Cookies.get("selectedTTS") || "coqui"
+  );
+  const [nightMode, setNightMode] = useState<boolean>(
+    Cookies.get("nightMode") === "true"
+  );
+  const [showSideBar, setShowSideBar] = useState<boolean>(
+    Cookies.get("showSideBar") !== "false"
+  );
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const router = useRouter();
 
   const recheckSession = async () => {
-    const res = await fetch("/api/session", { method: "GET" });
+    const res = await fetch("/api/session", {
+      method: "GET",
+      credentials: "include",
+    });
 
     if (res.ok) {
       const data = await res.json();
@@ -50,38 +73,58 @@ export const SessionProvider = ({ children }: { children: React.ReactNode }) => 
   };
 
   useEffect(() => {
+    setHasMounted(true);
     recheckSession(); // Check session on initial render
   }, []);
 
+  // Save settings to cookies whenever they change
+  useEffect(() => {
+    if (selectedMode) Cookies.set("selectedMode", selectedMode, { expires: 7 });
+    if (selectedPersona)
+      Cookies.set("selectedPersona", selectedPersona, { expires: 7 });
+    if (selectedTTS) Cookies.set("selectedTTS", selectedTTS, { expires: 7 });
+    Cookies.set("nightMode", nightMode.toString(), { expires: 7 });
+    Cookies.set("showSideBar", showSideBar.toString(), { expires: 7 });
+  }, [selectedMode, selectedPersona, selectedTTS, nightMode, showSideBar]);
+
   const logout = async () => {
-    await fetch("/api/logout", { method: "POST" });
+    await fetch("/api/logout", { method: "POST", credentials: "include" });
     setSession(null);
+    Cookies.remove("selectedMode");
+    Cookies.remove("selectedPersona");
+    Cookies.remove("selectedTTS");
+    Cookies.remove("nightMode");
+    Cookies.remove("showSideBar");
     router.push("/"); // Redirect to home page after logout
   };
 
-  return (
-    <SessionContext.Provider 
-      value={{ 
-        session, 
-        logout, 
-        recheckSession,
-        selectedMode,
-        setSelectedMode,
-        selectedPersona,
-        setSelectedPersona,
-        selectedTTS,
-        setSelectedTTS,
-        nightMode,
-        setNightMode,
-        showSideBar,
-        setShowSideBar,
-        isLoggingOut,
-        setIsLoggingOut,
-      }}
-    >
-      {children}
-    </SessionContext.Provider>
-  );
+  if (!hasMounted) {
+    return null;
+  } else {
+    return (
+      <SessionContext.Provider
+        value={{
+          session,
+          logout,
+          recheckSession,
+          selectedMode,
+          setSelectedMode,
+          selectedPersona,
+          setSelectedPersona,
+          selectedTTS,
+          setSelectedTTS,
+          nightMode,
+          setNightMode,
+          showSideBar,
+          setShowSideBar,
+          isLoggingOut,
+          setIsLoggingOut,
+        }}
+      >
+        {children}
+      </SessionContext.Provider>
+    );
+  }
 };
 
 // Named function

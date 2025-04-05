@@ -10,6 +10,9 @@ const pacifico = Pacifico({ weight: ["400"], subsets: ["latin"] });
 const Navbar = () => {
 
   const { logout, setIsLoggingOut, isLoggingOut } = useSession();
+
+  if (isLoggingOut) return null; // Hide navbar if logging out
+  
   return (
     <div className="flex flex-row justify-between absolute top-0 left-0 w-screen text-xl py-8 px-14">
       {/* Logo */}

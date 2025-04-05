@@ -4,13 +4,22 @@ import { Pacifico, Quicksand } from "next/font/google";
 import Toggle from "@/components/ui/toggle";
 import { useSession } from "@/context/Provider";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 const pacifico = Pacifico({ weight: ["400"], subsets: ["latin"] });
 const quicksand = Quicksand({ weight: ["500"], subsets: ["latin"] });
 
 export default function StartPage() {
-  const { nightMode, setIsLoggingOut } = useSession();
+  const { session, nightMode, setIsLoggingOut } = useSession();
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter(); 
+
+  // Redirect to /home-page if session exists
+  useEffect(() => {
+    if (session) {
+      router.replace("/home-page"); 
+    }
+  }, [session, router]);
 
   useEffect(() => {
     setIsLoggingOut(false);

@@ -23,6 +23,7 @@ export default function SignUpPage() {
   const handleSubmit = async () => {
     try {
       if (!email || !password || !name) {
+        setLoading(false);
         alert("Please enter name, email and password.");
         return;
       } else {
@@ -31,6 +32,7 @@ export default function SignUpPage() {
 
       const emailRegex = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
       if (!emailRegex.test(email)) {
+        setLoading(false);
         alert("Invalid email ID.");
         return;
       }
@@ -54,6 +56,7 @@ export default function SignUpPage() {
         alert(errorData.message || "Sign-up failed. Please try again.");
       }
     } catch (error) {
+      setLoading(false);
       alert("Sign-up failed. Please try again.");
       console.error(error);
     }

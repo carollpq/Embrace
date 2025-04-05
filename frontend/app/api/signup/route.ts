@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
     const token = await new SignJWT({ id: savedUser._id, email: savedUser.email, name: savedUser.name })
       .setProtectedHeader({ alg: 'HS256' }) // Set the header (protected or unprotected)
       .setIssuedAt()  // Set issued time
-      .setExpirationTime("1h")
+      .setExpirationTime("3h")
       .sign(secretKey);
       
 
@@ -57,6 +57,7 @@ export async function POST(req: NextRequest) {
       secure: process.env.NODE_ENV === "production", // Set secure flag for production
       path: "/", // Make cookie accessible across the entire domain
       sameSite: "lax",
+      maxAge: 60 * 60 * 3, // 3 hours
     });
 
     return response;

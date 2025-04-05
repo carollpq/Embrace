@@ -1,8 +1,8 @@
-"use client"
+"use client";
 import GeneralButton from "@/components/ui/button";
 import SelectionCard from "@/components/ui/SelectionCard";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSession } from "@/context/Provider";
 import { useRouter } from "next/navigation";
 
@@ -11,6 +11,11 @@ const ModeSelection = () => {
 
   const { setSelectedMode, nightMode } = useSession();
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(false);
+  }, []);
 
   const handleCardClick = (mode: string) => {
     setSelectedMode(mode); // Set the selected mode in your session
@@ -19,15 +24,22 @@ const ModeSelection = () => {
 
   const checkIsSelected = () => {
     if (!selectedCard) {
+      setLoading(false);
       alert("Please select a mode of conversation to move onto the next page.");
     } else {
-      router.push('/home-page/persona-selection');
+      router.push("/home-page/persona-selection");
     }
-  }
+  };
 
   return (
-    <div className={`flex flex-col h-screen relative items-center justify-center gap-4 ${nightMode ? "bg-home-screen-blue" : "bg-day-mode-screen-2"}`}>
-      <h2 className="text-2xl font-medium text-white/60 animate-slideUp delay-1000">Select Your Mode of Communication</h2>
+    <div
+      className={`flex flex-col h-screen relative items-center justify-center gap-4 ${
+        nightMode ? "bg-home-screen-blue" : "bg-day-mode-screen-2"
+      }`}
+    >
+      <h2 className="text-2xl font-medium text-white/60 animate-slideUp delay-1000">
+        Select Your Mode of Communication
+      </h2>
       {/* Selection cards */}
       <div className="grid grid-cols-2 grid-rows-2 gap-8 animate-slideUp delay-1000">
         <SelectionCard
@@ -62,9 +74,20 @@ const ModeSelection = () => {
       {/* Navigation buttons */}
       <div className="flex flex-row justify-between w-[540px] gap-8 animate-slideUp delay-1000">
         <Link href="/home-page" className="w-full">
-          <GeneralButton className="bg-transparent border-4 border-white/40 text-white/70 hover:text-black/70 hover:bg-white/50 hover:border-transparent py-[0.50rem]" text="Back"/>
+          <GeneralButton
+            className="bg-transparent border-4 border-white/40 text-white/70 hover:text-black/70 hover:bg-white/50 hover:border-transparent py-[0.50rem]"
+            text="Back"
+          />
         </Link>
-        <GeneralButton className="bg-white/70 hover:bg-white/90 hover:text-black/90" text="Continue" onClick={checkIsSelected}/>
+        <GeneralButton
+          className="bg-white/70 hover:bg-white/90 hover:text-black/90"
+          text="Continue"
+          isLoading={loading}
+          onClick={() => {
+            setLoading(true);
+            checkIsSelected();
+          }}
+        />
       </div>
     </div>
   );

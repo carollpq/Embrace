@@ -2,15 +2,20 @@
 
 import Link from "next/link";
 import { useSession } from "@/context/Provider";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Toggle from "@/components/ui/toggle";
 
 export default function Home() {
   const { session, nightMode, isLoggingOut } = useSession();
+  const [loading, setLoading] = useState(false); // <-- Loading state
 
   useEffect(() => {
     console.log("Session on Home Page:", session); // Log session to debug
   }, [session]);
+
+  useEffect(() => {
+    setLoading(false);
+  }, []);
 
   return (
     <div
@@ -22,7 +27,7 @@ export default function Home() {
     >
       {isLoggingOut ? (
         <div className="flex flex-col items-center gap-4">
-          <h2 className="text-2xl font-medium text-white/60 animate-slideUp delay-1000">
+          <h2 className="text-3xl font-medium text-white/60 animate-slideUp delay-1000">
             Logging Out ...
           </h2>
           {/* Spinning Loader */}
@@ -39,9 +44,9 @@ export default function Home() {
             Ready to talk?
           </p>
           <div className="flex-center flex-row gap-10  w-screen animate-slideUp delay-1000">
-            <Link href="/home-page/mode-selection">
-              <button className="button-transition hover:bg-[#1d1d1d] hover:text-white text-center text-2xl text-black/60 w-[200px] py-4 bg-white rounded-[30px] drop-shadow-default">
-                Start
+            <Link href="/home-page/mode-selection" onClick={() => setLoading(true)}>
+              <button className="flex-center button-transition hover:bg-[#1d1d1d] hover:text-white text-center text-2xl text-black/60 w-[200px] py-4 bg-white rounded-[30px] drop-shadow-default">
+                {loading ?  <div className="animate-spin h-5 w-5 border-4 border-black/60 hover:border-white/60 border-t-transparent rounded-full"></div> : "Start" }
               </button>
             </Link>
           </div>

@@ -22,12 +22,14 @@ export default function SigninPage() {
     try {
       
       if (!email || !password) {
+        setLoading(false);
         alert("Please enter both email and password.");
         return;
       }
 
       const emailRegex = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
       if (!emailRegex.test(email)) {
+        setLoading(false);
         alert("Invalid email ID.");
         return;
       }
@@ -47,10 +49,12 @@ export default function SigninPage() {
         recheckSession();
         router.push("/home-page");
       } else {
+        setLoading(false);
         alert(result.error || "Sign-in failed. Please check your credentials.");
       }
     } catch (error) {
       console.error(error);
+      setLoading(false);
       alert("Sign-in failed.");
     }
   };

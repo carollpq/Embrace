@@ -36,16 +36,17 @@ export async function POST(req) {
     const token = await new SignJWT({ id: user._id, email: user.email, name: user.name })
       .setProtectedHeader({ alg: 'HS256' })  // Set the JWT algorithm (HS256)
       .setIssuedAt()  // Set issued time
-      .setExpirationTime("1h")  // Set expiration time
+      .setExpirationTime("3h")  // Set expiration time
       .sign(secretKey);  // Sign with the JWT secret
 
     // Set cookie
     const response = NextResponse.json({ success: true, message: "Login successful" });
-    response.cookies.set("token", token, { 
-      httpOnly: true, 
-      secure: process.env.NODE_ENV === "production", // Only set secure in production
-      path: "/", // Make cookie accessible across the entire domain
-      sameSite: "lax",
+    response.cookies.set("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax", // Can be "strict" if you want maximum CSRF protection
+      path: "/",
+      maxAge: 60 * 60 * 3, // 3 hours
     });
 
     return response;
