@@ -74,7 +74,7 @@ const personaVoices = {
   Marcus: "Matthew",
 };
 
-export async function playPersonaSpeech(text: string, persona: string) {
+export async function playPersonaSpeech(text: string, persona: string | null) {
   const voiceId = personaVoices[persona];
   if (!voiceId) {
     console.error(`Voice ID not found for persona: ${persona}`);

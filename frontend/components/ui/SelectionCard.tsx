@@ -23,11 +23,11 @@ const SelectionCard: React.FC<SelectionCardProps> = ({ title, description, svg, 
       <div className="flex flex-row px-8 flex-wrap">
         <span className="font-semibold text-sm absolute left-8 top-16 pr-8">{description}</span>
         <Image
-          className="absolute bottom-0 right-0"
+          className="absolute bottom-0 right-5"
           src={svg}
           alt=""
-          width={150}
-          height={150}
+          width={125}
+          height={125}
         />
       </div>
     </div>

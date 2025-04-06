@@ -37,19 +37,19 @@ export const SessionProvider = ({
     email: string;
   } | null>(null);
   const [selectedMode, setSelectedMode] = useState<string | null>(
-    Cookies.get("selectedMode") || null
+    Cookies.get("selectedMode") || "text-and-text"
   );
   const [selectedPersona, setSelectedPersona] = useState<string | null>(
-    Cookies.get("selectedPersona") || null
+    Cookies.get("selectedPersona") || "Jenna"
   );
   const [selectedTTS, setSelectedTTS] = useState<string | null>(
-    Cookies.get("selectedTTS") || "coqui"
+    Cookies.get("selectedTTS") || "polly"
   );
   const [nightMode, setNightMode] = useState<boolean>(
-    Cookies.get("nightMode") === "true"
+    Cookies.get("nightMode") || "false"
   );
   const [showSideBar, setShowSideBar] = useState<boolean>(
-    Cookies.get("showSideBar") !== "false"
+    Cookies.get("showSideBar") || "false"
   );
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const router = useRouter();

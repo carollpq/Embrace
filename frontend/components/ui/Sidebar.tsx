@@ -76,10 +76,10 @@ const Sidebar = () =>
             <div className="bg-[#021017]/80 rounded-lg drop-shadow-md text-left py-2 px-6 flex flex-row justify-between items-center hover:bg-white/50 hover:text-black hover:cursor-pointer">
               <span>Saved messages</span>
               <Image
-                src="/icons/gear-solid.svg"
+                src="/icons/save-icon.svg"
                 alt="Hamburger icon"
-                width={16}
-                height={16}
+                width={18}
+                height={18}
               />
             </div>
             {/* Settings button */}

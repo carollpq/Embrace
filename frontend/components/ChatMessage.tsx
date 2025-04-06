@@ -2,7 +2,7 @@
 
 import style from "../styles/ChatMessage.module.css";
 import { Message } from "ai/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { playPersonaSpeech } from "@/utils/tts/polly";
 import { playBrowserTTS } from "@/utils/tts/browserTTS";
 import { useSession } from "@/context/Provider";
@@ -22,21 +22,7 @@ const ChatMessage = ({ message }: {message: Message}) => {
   const { selectedMode, selectedPersona, selectedTTS } = useSession();
   const [displayedText, setDisplayedText] = useState(isUser ? message.content : ""); // starts empty for bot
   const [isTyping, setIsTyping] = useState(!isUser);
-
-  // useEffect(() => {
-  //   // Trigger TTS only for chatbot messages
-  //   if (!isUser && message.content && (selectedMode == "text-and-voice" || selectedMode == "voice-and-voice")) {
-  //     const cleanedText = removeEmojis(message.content); // Remove emojis before TTS
-
-  //     if (selectedTTS === "polly") {
-  //       playPersonaSpeech(cleanedText, selectedPersona).catch((error) =>
-  //         console.error("Error playing Polly TTS:", error)
-  //       );
-  //     } else {
-  //       playBrowserTTS(cleanedText);
-  //     }
-  //   }
-  // }, [message.content, isUser, selectedPersona, selectedMode, selectedTTS]);
+  const hasPlayedTTS = useRef(false); // Track if TTS has already played for this message
 
   // Typing effect for assistant
   useEffect(() => {
@@ -56,26 +42,16 @@ const ChatMessage = ({ message }: {message: Message}) => {
       }, TYPING_SPEED);
 
       return () => clearInterval(interval);
-
-      // Word-by-word version (optional):
-      // const words = message.content.split(" ");
-      // const interval = setInterval(() => {
-      //   setDisplayedText((prev) => prev + (prev ? " " : "") + words[i]);
-      //   i++;
-      //   if (i >= words.length) {
-      //     clearInterval(interval);
-      //     setIsTyping(false);
-      //   }
-      // }, WORD_SPEED);
     }
   }, [message.content, isUser]);
 
+  // Trigger TTS only once for chatbot messages
   useEffect(() => {
     if (
-      !isUser && !isTyping &&
-      displayedText === message.content &&
+      !isUser &&
       message.content &&
-      (selectedMode == "text-and-voice" || selectedMode == "voice-and-voice")
+      (selectedMode == "text-and-voice" || selectedMode == "voice-and-voice") &&
+      !hasPlayedTTS.current // Only play if not already played
     ) {
       const cleanedText = removeEmojis(message.content);
 
@@ -84,10 +60,12 @@ const ChatMessage = ({ message }: {message: Message}) => {
           console.error("Error playing Polly TTS:", error)
         );
       } else {
-        playBrowserTTS(cleanedText);
+        playBrowserTTS(cleanedText, selectedPersona);
       }
+
+      hasPlayedTTS.current = true; // Mark that TTS has been played for this message
     }
-  }, [displayedText, selectedPersona, selectedMode, selectedTTS, message.content, isUser, isTyping]);
+  }, [message.content, isUser, selectedMode, selectedTTS, selectedPersona]);
 
   return (
     <div className="flex flex-col justify-center pt-3">

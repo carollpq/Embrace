@@ -56,7 +56,7 @@ const ChatHeader = () => {
 
           {/* Popup Card */}
           {showPopUp && (
-            <div className="absolute left-0 mt-4 w-64 bg-black/60 shadow-lg rounded-lg py-4 px-5 text-black z-10">
+            <div className="absolute left-0 mt-4 w-64 bg-black/90 shadow-lg rounded-lg py-4 px-5 text-black z-10">
               <div className="flex flex-row items-center justify-between">
                 <h3 className="text-lg font-semibold text-white">
                   About {selectedPersona}
