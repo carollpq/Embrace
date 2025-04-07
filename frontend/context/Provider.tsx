@@ -20,6 +20,8 @@ type SessionContextType = {
   setShowSideBar: (show: boolean) => void;
   isLoggingOut: boolean;
   setIsLoggingOut: (mode: boolean) => void;
+  showHelp: boolean;
+  setShowHelp: (mode: boolean) => void;
 };
 
 const SessionContext = createContext<SessionContextType | null>(null);
@@ -31,7 +33,6 @@ export const SessionProvider = ({
   children: React.ReactNode;
 }) => {
   const [hasMounted, setHasMounted] = useState(false);
-
   const [session, setSession] = useState<{
     name: string;
     email: string;
@@ -52,6 +53,7 @@ export const SessionProvider = ({
     Cookies.get("showSideBar") || "false"
   );
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
   const router = useRouter();
 
   const recheckSession = async () => {
@@ -119,6 +121,8 @@ export const SessionProvider = ({
           setShowSideBar,
           isLoggingOut,
           setIsLoggingOut,
+          showHelp,
+          setShowHelp,
         }}
       >
         {children}

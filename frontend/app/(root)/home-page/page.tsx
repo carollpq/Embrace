@@ -47,7 +47,7 @@ export default function Home() {
       ) : (
         <>
           {session && (
-            <h2 className="text-5xl font-semibold animate-slideUp delay-1000">
+            <h2 className="text-5xl font-medium animate-slideUp delay-1000">
               Welcome, {session.name}
             </h2>
           )}
@@ -57,7 +57,7 @@ export default function Home() {
           <div className="flex-center flex-row gap-10  w-screen animate-slideUp delay-1000">
             <Link href="/home-page/mode-selection" onClick={() => setLoading(true)}>
               <button className="flex-center button-transition hover:bg-[#1d1d1d] hover:text-white text-center text-2xl text-black/60 w-[200px] py-4 bg-white rounded-[30px] drop-shadow-default">
-                {loading ?  <div className="animate-spin h-5 w-5 border-4 border-black/60 hover:border-white/60 border-t-transparent rounded-full"></div> : "Start" }
+                {loading ?  <div className="animate-spin h-5 w-5 border-4 border-black/60 border-t-transparent rounded-full"></div> : "Start" }
               </button>
             </Link>
           </div>

@@ -36,6 +36,24 @@ body {
   }
 }
 
+.textbox-highlight-glow {
+  box-shadow: 0 0 12px 4px rgba(0, 123, 255, 0.6);
+  transition: all 0.3s ease;
+  animation: textBoxPulseGlow 1.5s infinite;
+}
+
+@keyframes textBoxPulseGlow {
+  0% {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.9);
+  }
+  100% {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+  }
+}
+
 /*FIX THIS DUPLICATION!!*/
 /* Hide the scrollbar but keep scrolling functionality */
 .overflow-y-auto {

@@ -1,19 +1,53 @@
 import React from "react";
 import { Quicksand } from "next/font/google";
 import Image from "next/image";
+import HelpTooltip from "@/components/ui/HelpTooltip";
 import { useSession } from "@/context/Provider";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const quicksand = Quicksand({ subsets: ["latin"] });
 
 const ChatHeader = () => {
-  const { selectedPersona, setShowSideBar, showSideBar, setSelectedPersona } =
-    useSession();
+  const {
+    selectedPersona,
+    setShowSideBar,
+    showSideBar,
+    setSelectedPersona,
+    selectedTTS,
+    setSelectedTTS,
+    selectedMode,
+    showHelp,
+    setShowHelp,
+  } = useSession();
   const [showPopUp, setShowPopUp] = useState(false);
+  const popupRef = useRef<HTMLDivElement>(null);
 
   const toggleSideBar = () => {
     setShowSideBar(!showSideBar);
   };
+
+  // Detect outside click
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        popupRef.current &&
+        !popupRef.current.contains(event.target as Node)
+      ) {
+        setShowPopUp(false);
+      }
+    };
+
+    if (showPopUp) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    // Cleanup
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showPopUp]);
 
   return (
     <div className="flex flex-row justify-between top-0 left-0 text-xl py-3 px-9 bg-[#010f17]/40 drop-shadow-md">
@@ -31,7 +65,7 @@ const ChatHeader = () => {
         )}
         <div className="relative">
           <div
-            className="flex items-center gap-4 hover:cursor-pointer hover:bg-white/10 hover:rounded py-2 px-3"
+            className={`flex items-center gap-4 hover:cursor-pointer hover:bg-white/10 rounded-xl py-2 px-3 ${showHelp ? "textbox-highlight-glow" : ""}`}
             onClick={() => setShowPopUp(!showPopUp)}
           >
             <div
@@ -56,7 +90,10 @@ const ChatHeader = () => {
 
           {/* Popup Card */}
           {showPopUp && (
-            <div className="absolute left-0 mt-4 w-64 bg-black/90 shadow-lg rounded-lg py-4 px-5 text-black z-10">
+            <div
+              ref={popupRef}
+              className="absolute left-0 mt-4 w-[20rem] bg-black shadow-lg rounded-lg py-4 px-5 text-black z-10"
+            >
               <div className="flex flex-row items-center justify-between">
                 <h3 className="text-lg font-semibold text-white">
                   About {selectedPersona}
@@ -77,23 +114,58 @@ const ChatHeader = () => {
                   ? "Jenna is a compassionate AI ready to support your journey."
                   : "Marcus is a friendly AI here to guide and listen to you."}
               </p>
+              {/*Voice mode selection*/}
+              {(selectedMode === "text-and-voice" ||
+                selectedMode === "voice-and-voice") && (
+                <>
+                  <div className="flex flex-row items-center justify-between mt-5">
+                    <h4 className="text-sm font-normal text-white">
+                      Voice mode :{" "}
+                      {selectedTTS === "polly" ? "Online" : "Offline"}
+                    </h4>
+                    <p
+                      className="underline text-white/70 text-xs hover:cursor-pointer"
+                      onClick={() =>
+                        setSelectedTTS(
+                          selectedTTS === "polly" ? "browser" : "polly"
+                        )
+                      }
+                    >
+                      Switch mode
+                    </p>
+                  </div>
+                  <p className="text-sm text-white/50 mt-2">
+                    {selectedTTS === "polly"
+                      ? "Online TTS gives realistic voices but may delay playback."
+                      : "Offline TTS plays instantly but sounds robotic."}
+                  </p>
+                </>
+              )}
             </div>
           )}
         </div>
+        {/* Help Popup Card */}
+        {showHelp && (
+          <HelpTooltip
+            text="This is your current persona that you are talking to. You can switch the persona or voice mode here !"
+            className="ml-[25rem] mt-[7rem]"
+          />
+        )}
       </div>
       {/* Right side header items */}
       <div
         className={`text-[17px] flex flex-row justify-between items-center gap-8 ${quicksand.className}`}
       >
-        <div className="flex flex-row justify-center items-center gap-2 hover:cursor-pointer">
-          <span className="text-white/60">Help</span>
-          {/* Need to change this to white */}
+        <div
+          className="flex flex-row justify-center items-center gap-2 hover:cursor-pointer"
+          onClick={() => setShowHelp(!showHelp)}
+        >
+          <span className={showHelp ? "text-white font-medium" : "text-white/60"}>Help</span>
           <Image
             src="/icons/circle-info-solid.svg"
             alt="Help Icon"
             width={20}
             height={20}
-            className="text-white/60"
           />
         </div>
 

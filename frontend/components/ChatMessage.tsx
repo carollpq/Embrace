@@ -17,16 +17,20 @@ function removeEmojis(text: string): string {
 const TYPING_SPEED = 20; // ms per character
 // const WORD_SPEED = 100; // ms per word (if switching to word-by-word mode)
 
-const ChatMessage = ({ message }: {message: Message}) => {
+const ChatMessage = ({ message }: { message: Message }) => {
   const isUser = message.role === "user";
+  const isTypingPlaceholder =
+    message.role === "assistant" && message.content === "__typing__";
   const { selectedMode, selectedPersona, selectedTTS } = useSession();
-  const [displayedText, setDisplayedText] = useState(isUser ? message.content : ""); // starts empty for bot
+  const [displayedText, setDisplayedText] = useState(
+    isUser ? message.content : ""
+  ); // starts empty for bot
   const [isTyping, setIsTyping] = useState(!isUser);
   const hasPlayedTTS = useRef(false); // Track if TTS has already played for this message
 
   // Typing effect for assistant
   useEffect(() => {
-    if (!isUser && message.content) {
+    if (!isUser && message.content && message.content !== "__typing__") {
       let i = 0;
       setDisplayedText(""); // clear before typing
       setIsTyping(true);
@@ -50,6 +54,7 @@ const ChatMessage = ({ message }: {message: Message}) => {
     if (
       !isUser &&
       message.content &&
+      message.content !== "__typing__" &&
       (selectedMode == "text-and-voice" || selectedMode == "voice-and-voice") &&
       !hasPlayedTTS.current // Only play if not already played
     ) {
@@ -70,11 +75,23 @@ const ChatMessage = ({ message }: {message: Message}) => {
   return (
     <div className="flex flex-col justify-center pt-3">
       <div
-        className={`${isUser ? style["chat-message-user"] : style["chat-message-chatbot"]} ${
+        className={`${
+          isUser ? style["chat-message-user"] : style["chat-message-chatbot"]
+        } ${
           isUser ? "bg-black/80" : "bg-[#e1f4ff]/80"
-        } rounded-lg px-5 text-lg font-normal whitespace-pre-line`}
+        } rounded-lg px-5 text-lg font-normal whitespace-pre-line shadow-lg`}
       >
-        {isUser ? message.content : `${displayedText}${isTyping ? "▋" : ""}`} {/* Blinking cursor ▋ */}
+        {isTypingPlaceholder ? (
+          <div className="flex space-x-1 items-center">
+            <span className="w-2 h-2 bg-gray-500 rounded-full animate-typing-dot" style={{ animationDelay: '0s' }}/>
+            <span className="w-2 h-2 bg-gray-500 rounded-full animate-typing-dot" style={{ animationDelay: '0.2s' }}/>
+            <span className="w-2 h-2 bg-gray-500 rounded-full animate-typing-dot" style={{ animationDelay: '0.4s' }}/>
+          </div>
+        ) : isUser ? (
+          message.content
+        ) : (
+          `${displayedText}${isTyping ? "▋" : ""}`
+        )}
       </div>
     </div>
   );

@@ -10,7 +10,7 @@ const pacifico = Pacifico({ weight: ["400"], subsets: ["latin"] });
 const quicksand = Quicksand({ weight: ["500"], subsets: ["latin"] });
 
 export default function StartPage() {
-  const { session, nightMode, setIsLoggingOut } = useSession();
+  const { session, nightMode, setIsLoggingOut, } = useSession();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter(); 
 

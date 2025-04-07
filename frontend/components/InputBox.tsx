@@ -4,6 +4,7 @@ import style from "../styles/InputBox.module.css";
 import { useState, useRef, KeyboardEvent } from "react";
 import { startSpeechRecognition } from "@/utils/stt";
 import { useSession } from "@/context/Provider";
+import HelpTooltip from "@/components/ui/HelpTooltip";
 
 /** Lives in the lower section of \<ChatInterface />, below \<Chat />. Responsible for handling the input from users and then submitting messages to the backend. */
 const InputBox = ({
@@ -17,7 +18,7 @@ const InputBox = ({
 }) => {
   const inputBoxTextArea = useRef<HTMLTextAreaElement>(null);
   const [isListening, setIsListening] = useState(false);
-  const { selectedMode, selectedPersona } = useSession();
+  const { selectedMode, selectedPersona, showHelp } = useSession();
 
   /** Handle the user pressing the Enter key to submit a message. */
   const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -49,7 +50,7 @@ const InputBox = ({
   };
 
   return (
-    <div className={style["chat-input-holder"]}>
+    <div className={`${style["chat-input-holder"]} relative`}>
       {selectedMode === "voice-and-text" ||
       selectedMode === "voice-and-voice" ? (
         <div className="flex flex-col justify-center items-center gap-6">
@@ -84,12 +85,12 @@ const InputBox = ({
             onKeyDown={handleKeyDown}
             value={input}
             rows={1}
-            className={style["chat-input-textarea"]}
-            placeholder="Send a message"
+            className={`${style["chat-input-textarea"]} ${showHelp ? "textbox-highlight-glow" : ""}`}
+            placeholder="Send a message..."
             ref={inputBoxTextArea}
           />
           {/*Display send button if 'text' mode is selected*/}
-          <div className={style["chat-svg-container"]} onClick={handleSubmit}>
+          <div className={`${style["chat-svg-container"]} ${showHelp ? "textbox-highlight-glow" : ""}`} onClick={handleSubmit}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width={20}
@@ -112,6 +113,14 @@ const InputBox = ({
           <div className={style["arrow"]}></div>
         </div>
       )} */}
+
+      {/* Help Popup Card */}
+      {showHelp && (
+          <HelpTooltip
+            text="Type your messages here, click the send button or press enter to send the message"
+            className="right-40 bottom-20"
+          />
+        )}
     </div>
   );
 };
