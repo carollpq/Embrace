@@ -10,7 +10,7 @@ interface HelpTooltipProps {
 const HelpTooltip = ({ text, className = "" }: HelpTooltipProps) => {
   return (
     <div
-      className={`absolute z-90 bg-white text-black text-sm p-3 rounded-lg shadow-xl w-[12rem] animate-slideUp delay-1000 ${className}`}
+      className={`absolute z-50 bg-white text-black text-sm p-3 rounded-lg shadow-xl w-[12rem] animate-slideUp delay-1000 ${className}`}
     >
       {text}
     </div>

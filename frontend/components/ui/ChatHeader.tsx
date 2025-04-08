@@ -50,7 +50,7 @@ const ChatHeader = () => {
   }, [showPopUp]);
 
   return (
-    <div className="flex flex-row justify-between top-0 left-0 text-xl py-3 px-9 bg-[#010f17]/40 drop-shadow-md">
+    <div className="relative flex flex-row justify-between top-0 left-0 text-xl py-3 px-9 bg-[#010f17]/40 drop-shadow-md">
       {/* Chatbot Persona */}
       <div className="flex flex-row gap-5 flex-center">
         {!showSideBar && (
@@ -63,7 +63,7 @@ const ChatHeader = () => {
             className="hover:cursor-pointer"
           />
         )}
-        <div className="relative">
+        <div className="relative z-0">
           <div
             className={`flex items-center gap-4 hover:cursor-pointer hover:bg-white/10 rounded-xl py-2 px-3 ${showHelp ? "textbox-highlight-glow" : ""}`}
             onClick={() => setShowPopUp(!showPopUp)}
@@ -148,7 +148,7 @@ const ChatHeader = () => {
         {showHelp && (
           <HelpTooltip
             text="This is your current persona that you are talking to. You can switch the persona or voice mode here !"
-            className="ml-[25rem] mt-[7rem]"
+            className="ml-[25rem] mt-[7rem] z-[9999]"
           />
         )}
       </div>
@@ -160,7 +160,7 @@ const ChatHeader = () => {
           className="flex flex-row justify-center items-center gap-2 hover:cursor-pointer"
           onClick={() => setShowHelp(!showHelp)}
         >
-          <span className={showHelp ? "text-white font-medium" : "text-white/60"}>Help</span>
+          <span className={showHelp ? "text-white font-medium z-[9999]" : "text-white/60"}>Help</span>
           <Image
             src="/icons/circle-info-solid.svg"
             alt="Help Icon"

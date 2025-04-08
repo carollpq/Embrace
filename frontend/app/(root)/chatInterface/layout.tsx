@@ -18,14 +18,23 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { nightMode, showSideBar } = useSession();
+  const { nightMode, showSideBar, showHelp } = useSession();
 
   return (
     <main
-      className={`${quicksand.className} ${nightMode ? "bg-home-screen-blue" : "bg-day-mode-screen-2"} bg-black/40 flex flex-row h-screen w-screen justify-between`}
+      className={`${quicksand.className} ${
+        nightMode ? "bg-home-screen-blue" : "bg-day-mode-screen-2"
+      } flex flex-row h-screen w-screen justify-between`}
     >
+      {showHelp && (
+        <div className="absolute inset-0 bg-black/40 z-30 pointer-events-none" />
+      )}
       <Sidebar />
-      <div className={`${!showSideBar ? "w-screen absolute" : "w-full" } flex flex-col h-screen`}>
+      <div
+        className={`${
+          !showSideBar ? "w-screen absolute" : "w-full relative "
+        } flex flex-col h-screen transform transition-transform duration-300 ease-in-out z-40`}
+      >
         <ChatHeader />
         {children}
       </div>

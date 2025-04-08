@@ -50,7 +50,7 @@ const InputBox = ({
   };
 
   return (
-    <div className={`${style["chat-input-holder"]} relative`}>
+    <div className={`${style["chat-input-holder"]}`}>
       {selectedMode === "voice-and-text" ||
       selectedMode === "voice-and-voice" ? (
         <div className="flex flex-col justify-center items-center gap-6">
@@ -85,12 +85,12 @@ const InputBox = ({
             onKeyDown={handleKeyDown}
             value={input}
             rows={1}
-            className={`${style["chat-input-textarea"]} ${showHelp ? "textbox-highlight-glow" : ""}`}
+            className={`${style["chat-input-textarea"]} ${showHelp ? "textbox-highlight-glow z-40" : ""}`}
             placeholder="Send a message..."
             ref={inputBoxTextArea}
           />
           {/*Display send button if 'text' mode is selected*/}
-          <div className={`${style["chat-svg-container"]} ${showHelp ? "textbox-highlight-glow" : ""}`} onClick={handleSubmit}>
+          <div className={`${style["chat-svg-container"]} ${showHelp ? "textbox-highlight-glow z-40" : ""}`} onClick={handleSubmit}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width={20}

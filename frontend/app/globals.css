@@ -37,40 +37,42 @@ body {
 }
 
 .textbox-highlight-glow {
-  box-shadow: 0 0 12px 4px rgba(0, 123, 255, 0.6);
+  box-shadow: 0 0 12px 4px rgba(0, 123, 255, 0.7);
   transition: all 0.3s ease;
   animation: textBoxPulseGlow 1.5s infinite;
+  z-index: 9999; /* bring to front */
+  position: relative; /* ensure z-index works */
 }
 
 @keyframes textBoxPulseGlow {
   0% {
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
   }
   50% {
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.9);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 1);
   }
   100% {
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
   }
 }
 
 /*FIX THIS DUPLICATION!!*/
 /* Hide the scrollbar but keep scrolling functionality */
 .overflow-y-auto {
-  -ms-overflow-style: none;  /* For Internet Explorer and Edge */
-  scrollbar-width: none;      /* For Firefox */
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+  scrollbar-width: none; /* For Firefox */
 }
 
 .overflow-y-auto::-webkit-scrollbar {
-  display: none;             /* For Chrome, Safari, and Opera */
+  display: none; /* For Chrome, Safari, and Opera */
 }
 
 /* Hide scrollbar but keep scrolling */
 .hide-scrollbar {
-  -ms-overflow-style: none;  /* For Internet Explorer and Edge */
-  scrollbar-width: none;      /* For Firefox */
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+  scrollbar-width: none; /* For Firefox */
 }
 
 .hide-scrollbar::-webkit-scrollbar {
-  display: none;             /* For Chrome, Safari, and Opera */
+  display: none; /* For Chrome, Safari, and Opera */
 }

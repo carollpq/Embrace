@@ -4,8 +4,9 @@ import InputBox from "@/components/InputBox";
 import HelpTooltip from "@/components/ui/HelpTooltip";
 import ChatMessage from "@/components/ChatMessage";
 import { useChat } from "ai/react";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useLayoutEffect } from "react";
 import { useSession } from "@/context/Provider";
+import { motion, AnimatePresence } from "framer-motion";
 
 const ChatInterface: React.FC = () => {
   const messageContainerRef = useRef<HTMLDivElement | null>(null); // Reference for the messages container
@@ -32,7 +33,10 @@ const ChatInterface: React.FC = () => {
         );
 
         if (jsonResponse?.content) {
-          setMessages((prevMessages) => [...prevMessages, jsonResponse]);
+          // Delay assistant message by 500ms
+          setTimeout(() => {
+            setMessages((prevMessages) => [...prevMessages, jsonResponse]);
+          }, 500);
         }
       } catch (error) {
         console.error("Error parsing the response:", error);
@@ -45,18 +49,20 @@ const ChatInterface: React.FC = () => {
     await originalHandleSubmit(e);
 
     // Immediately show typing animation placeholder
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      {
-        id: Date.now().toString(), // or crypto.randomUUID() for uniqueness
-        role: "assistant",
-        content: "__typing__",
-      },
-    ]);
+    setTimeout(() => {
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        {
+          id: Date.now().toString(), // or crypto.randomUUID() for uniqueness
+          role: "assistant",
+          content: "__typing__",
+        },
+      ]);
+    }, 1000);
   };
 
   // Scroll on new messages
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (messageContainerRef.current) {
       messageContainerRef.current.scrollTo({
         top: messageContainerRef.current.scrollHeight,
@@ -79,9 +85,19 @@ const ChatInterface: React.FC = () => {
             </div>
           )}
           {/* Messages */}
-          {messages.map((message, index) => (
-            <ChatMessage message={message} key={index} />
-          ))}
+          <AnimatePresence initial={false}>
+            {messages.map((message, index) => (
+              <motion.div
+                key={message.id || index}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+              >
+                <ChatMessage message={message} key={index} />
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
         <div className="mb-[40px]">
           <InputBox
