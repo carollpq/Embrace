@@ -21,7 +21,7 @@ const ChatMessage = ({ message }: { message: Message }) => {
   const isUser = message.role === "user";
   const isTypingPlaceholder =
     message.role === "assistant" && message.content === "__typing__";
-  const { selectedMode, selectedPersona, selectedTTS } = useSession();
+  const { selectedMode, selectedPersona, selectedTTS, fontSize } = useSession();
   const [displayedText, setDisplayedText] = useState(
     isUser ? message.content : ""
   ); // starts empty for bot
@@ -79,7 +79,7 @@ const ChatMessage = ({ message }: { message: Message }) => {
           isUser ? style["chat-message-user"] : style["chat-message-chatbot"]
         } ${
           isUser ? "bg-black/80" : "bg-[#e1f4ff]/80"
-        } rounded-lg px-5 text-lg font-normal whitespace-pre-line shadow-lg`}
+        } rounded-lg px-5 text-lg font-normal whitespace-pre-line shadow-lg ${fontSize === "sm" ? "text-sm-msg" : fontSize === "lg" ? "text-lg-msg" : fontSize === "xl" ? "text-xl-msg" : "text-base-msg"}`}
       >
         {isTypingPlaceholder ? (
           <div className="flex space-x-1 items-center">

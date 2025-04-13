@@ -41,6 +41,12 @@ const config: Config = {
       transitionProperty: {
         colors: "background-color, color, border-color",
       },
+      fontSize: {
+        'sm-msg': '1rem',
+        'base-msg': '1.25rem',
+        'lg-msg': '1.5rem',
+        'xl-msg': '1.75rem',
+      },
     },
   },
   plugins: [],

@@ -18,13 +18,22 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { nightMode, showSideBar, showHelp } = useSession();
+  const { nightMode, showSideBar, showHelp, fontSize, highContrast } =
+    useSession();
 
   return (
     <main
       className={`${quicksand.className} ${
         nightMode ? "bg-home-screen-blue" : "bg-day-mode-screen-2"
-      } flex flex-row h-screen w-screen justify-between`}
+      } flex flex-row h-screen w-screen justify-between ${
+        fontSize === "sm"
+          ? "text-sm"
+          : fontSize === "lg"
+          ? "text-lg"
+          : fontSize === "xl"
+          ? "text-xl"
+          : "text-base"
+      } ${highContrast ? "contrast-125" : ""}`}
     >
       {showHelp && (
         <div className="absolute inset-0 bg-black/40 z-30 pointer-events-none" />

@@ -60,7 +60,7 @@ export const SessionProvider = ({
   const [fontSize, setFontSize] = useState<string | null>(
     Cookies.get("fontSize") || "text-base"
   );
-  const [highContrast, setHighContrast] = useState<string | null>(
+  const [highContrast, setHighContrast] = useState<boolean>(
     Cookies.get("highContrast") || false
   );
   const [isLoggingOut, setIsLoggingOut] = useState(false);

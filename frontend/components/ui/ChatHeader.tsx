@@ -18,6 +18,7 @@ const ChatHeader = () => {
     selectedMode,
     showHelp,
     setShowHelp,
+    fontSize,
   } = useSession();
   const [showPopUp, setShowPopUp] = useState(false);
   const popupRef = useRef<HTMLDivElement>(null);
@@ -154,7 +155,7 @@ const ChatHeader = () => {
       </div>
       {/* Right side header items */}
       <div
-        className={`text-[17px] flex flex-row justify-between items-center gap-8 ${quicksand.className}`}
+        className={`${fontSize === "sm" ? "text-sm" : fontSize === "lg" ? "text-lg" : fontSize === "xl" ? "text-xl" : "text-base"} flex flex-row justify-between items-center gap-8 ${quicksand.className}`}
       >
         <div
           className="flex flex-row justify-center items-center gap-2 hover:cursor-pointer"
@@ -167,11 +168,6 @@ const ChatHeader = () => {
             width={20}
             height={20}
           />
-        </div>
-
-        <div className="flex items-center justify-center gap-2">
-          <div className="p-2.5 px-3 rounded-md bg-black/50">PQ</div>
-          <span>Pei Qian</span>
         </div>
       </div>
     </div>
