@@ -63,7 +63,7 @@ const ChatHeader = () => {
             className="hover:cursor-pointer"
           />
         )}
-        <div className="relative z-0">
+        <div className="relative">
           <div
             className={`flex items-center gap-4 hover:cursor-pointer hover:bg-white/10 rounded-xl py-2 px-3 ${showHelp ? "textbox-highlight-glow" : ""}`}
             onClick={() => setShowPopUp(!showPopUp)}
@@ -92,7 +92,7 @@ const ChatHeader = () => {
           {showPopUp && (
             <div
               ref={popupRef}
-              className="absolute left-0 mt-4 w-[20rem] bg-black shadow-lg rounded-lg py-4 px-5 text-black z-10"
+              className="absolute left-0 mt-4 w-[20rem] bg-black shadow-lg rounded-lg py-4 px-5 text-black z-[9999] pointer-events-auto"
             >
               <div className="flex flex-row items-center justify-between">
                 <h3 className="text-lg font-semibold text-white">

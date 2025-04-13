@@ -1,10 +1,11 @@
 "use client";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import { Pacifico } from "next/font/google";
 import Link from "next/link";
 import { useSession } from "@/context/Provider";
 import HelpTooltip from "@/components/ui/HelpTooltip";
+import Settings from "./Settings";
 
 const pacifico = Pacifico({ weight: ["400"], subsets: ["latin"] });
 
@@ -16,6 +17,8 @@ const Sidebar = () => {
     setShowSideBar,
     showHelp,
   } = useSession();
+
+  const [showSettings, setShowSettings] = useState(false);
 
   const toggleSideBar = () => {
     setShowSideBar(!showSideBar);
@@ -46,10 +49,6 @@ const Sidebar = () => {
           >
             <span className={`${pacifico.className} text-2xl`}>Embrace</span>
           </Link>
-        </div>
-        {/* Words of Affirmation section */}
-        <div className="bg-[#021017] text-white py-8 px-6 text-center rounded-lg drop-shadow-md">
-          &quot;Some words of affirmation here&quot;
         </div>
         {/* Other chats section */}
         <div className="flex flex-col text-lg font-medium">
@@ -154,6 +153,7 @@ const Sidebar = () => {
             className={`bg-[#021017]/80 rounded-lg drop-shadow-md text-left py-2 px-6 flex flex-row justify-between items-center hover:bg-white/70 hover:text-black hover:cursor-pointer ${
               showHelp ? "textbox-highlight-glow" : ""
             }`}
+            onClick={() => setShowSettings(!showSettings)}
           >
             <span>Settings</span>
             <Image
@@ -163,6 +163,7 @@ const Sidebar = () => {
               height={16}
             />
           </div>
+          {showSettings && (<Settings />)}
         </div>
         {/* Help Popup Card */}
         {showHelp && (

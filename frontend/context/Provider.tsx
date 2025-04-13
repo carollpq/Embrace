@@ -22,6 +22,11 @@ type SessionContextType = {
   setIsLoggingOut: (mode: boolean) => void;
   showHelp: boolean;
   setShowHelp: (mode: boolean) => void;
+  // SET THIS
+  fontSize: string | null;
+  setFontSize: (size: string) => void;
+  highContrast: boolean | null;
+  setHighContrast: (mode: boolean) => void;
 };
 
 const SessionContext = createContext<SessionContextType | null>(null);
@@ -47,10 +52,16 @@ export const SessionProvider = ({
     Cookies.get("selectedTTS") || "polly"
   );
   const [nightMode, setNightMode] = useState<boolean>(
-    Cookies.get("nightMode") || "false"
+    Cookies.get("nightMode") || false
   );
   const [showSideBar, setShowSideBar] = useState<boolean>(
-    Cookies.get("showSideBar") || "false"
+    Cookies.get("showSideBar") || false
+  );
+  const [fontSize, setFontSize] = useState<string | null>(
+    Cookies.get("fontSize") || "text-base"
+  );
+  const [highContrast, setHighContrast] = useState<string | null>(
+    Cookies.get("highContrast") || false
   );
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
@@ -85,9 +96,11 @@ export const SessionProvider = ({
     if (selectedPersona)
       Cookies.set("selectedPersona", selectedPersona, { expires: 7 });
     if (selectedTTS) Cookies.set("selectedTTS", selectedTTS, { expires: 7 });
-    Cookies.set("nightMode", nightMode.toString(), { expires: 7 });
-    Cookies.set("showSideBar", showSideBar.toString(), { expires: 7 });
-  }, [selectedMode, selectedPersona, selectedTTS, nightMode, showSideBar]);
+    if (nightMode) Cookies.set("nightMode", nightMode, { expires: 7 });
+    if (showSideBar) Cookies.set("showSideBar", showSideBar, { expires: 7 });
+    if (fontSize) Cookies.set("fontSize", fontSize, { expires: 7 });
+    if (highContrast) Cookies.set("highContrast", highContrast, { expires: 7 });
+  }, [selectedMode, selectedPersona, selectedTTS, nightMode, showSideBar, fontSize, highContrast]);
 
   const logout = async () => {
     await fetch("/api/logout", { method: "POST", credentials: "include" });
@@ -97,6 +110,8 @@ export const SessionProvider = ({
     Cookies.remove("selectedTTS");
     Cookies.remove("nightMode");
     Cookies.remove("showSideBar");
+    Cookies.remove("highContrast");
+    Cookies.remove("fontSize");
     router.push("/"); // Redirect to home page after logout
   };
 
@@ -123,6 +138,10 @@ export const SessionProvider = ({
           setIsLoggingOut,
           showHelp,
           setShowHelp,
+          fontSize,
+          setFontSize,
+          highContrast,
+          setHighContrast,
         }}
       >
         {children}

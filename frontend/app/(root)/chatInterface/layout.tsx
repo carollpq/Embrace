@@ -32,8 +32,8 @@ export default function RootLayout({
       <Sidebar />
       <div
         className={`${
-          !showSideBar ? "w-screen absolute" : "w-full relative "
-        } flex flex-col h-screen transform transition-transform duration-300 ease-in-out z-40`}
+          !showSideBar ? "w-screen absolute" : "w-full relative"
+        } flex flex-col h-screen transition-all duration-300 ease-in-out z-40`}
       >
         <ChatHeader />
         {children}
