@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const ChatInterface: React.FC = () => {
   const messageContainerRef = useRef<HTMLDivElement | null>(null); // Reference for the messages container
-  const { selectedPersona } = useSession();
+  const { selectedPersona, customTraits, selectedMood } = useSession();
 
   const {
     messages,
@@ -19,7 +19,11 @@ const ChatInterface: React.FC = () => {
     setMessages,
   } = useChat({
     api: "api/chatbot",
-    body: { selectedPersona },
+    body: {
+      selectedPersona,
+      ...(customTraits && { customTraits }),
+      selectedMood
+    },
     onResponse: async (response) => {
       try {
         const jsonResponse = await response.json(); // Parse the API response

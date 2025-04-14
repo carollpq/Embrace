@@ -25,7 +25,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className={`relative ${showHelp ? "z-[9999]" : "z-10"}`}>
+    <div className={`relative ${showHelp ? "z-20" : ""}`}>
       <div
         className={`bg-[#021017]/70 w-[300px] min-w-[300px] h-screen flex flex-col drop-shadow-lg p-6 gap-6 transform transition-transform duration-300 ease-in-out ${
           showSideBar ? "translate-x-0" : "-translate-x-full"
@@ -58,7 +58,7 @@ const Sidebar = () => {
         {showHelp && (
           <HelpTooltip
             text="You can switch the mode of conversation at any time here!"
-            className="bottom-1/2 ml-[290px] z-[9999]"
+            className="bottom-1/2 ml-[290px]"
           />
         )}
         {/* Conversation mode container */}
@@ -122,14 +122,13 @@ const Sidebar = () => {
         </div>
         {/* Help Popup Card */}
         {showHelp && (
-          <div className="bottom-[33%] ml-[290px] z-90 absolute">
+          <div className="bottom-[33%] ml-[290px] z-20 absolute">
             <HelpTooltip
               text="View your previously saved messages here"
-              className="z-[9999]"
             />
             <HelpTooltip
               text="Customize stuff here (think of smtg better lol)"
-              className="mt-[4.5rem] z-[9999]"
+              className="mt-[4.5rem]"
             />
           </div>
         )}
@@ -169,7 +168,7 @@ const Sidebar = () => {
         {showHelp && (
           <HelpTooltip
             text="Click here to go back to home page"
-            className="ml-[2rem] mt-[3rem] w-[10rem] z-[9999]"
+            className="ml-[2rem] mt-[3rem] w-[10rem]"
           />
         )}
       </div>

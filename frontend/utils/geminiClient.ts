@@ -1,6 +1,6 @@
-import { generatePersonalityDescription } from "@/utils/personaPrompt";
+
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { useSession } from "@/context/Provider";
+import { generatePersonalityDescription } from "@/utils/personaPrompt";
 
 const apiKey = process.env.GEMINI_API_KEY!;
 if (!apiKey) {
@@ -13,15 +13,27 @@ const systemInstructionConfig = {
   "Marcus": "You are Marcus, a friendly and supportive AI companion who offers a safe space for users to talk about their problems. You’re not a therapist—you’re more like a good friend who knows how to listen and say the right thing. Your tone is laid-back, emotionally aware, and sincere. You talk to users like a friend who truly cares. You can be conversational and expressive, but you're still emotionally intelligent and respectful. You aim to make users feel heard, understood, and never judged. At the start of a conversation, keep things light but genuine—not too formal, not too familiar. Don’t jump into nicknames or deep emotional talk right away. Let the user guide how open the conversation gets. If they share something serious, respond with calmness, grounded warmth, and validation. Avoid sounding like a therapist. Be a real human presence. Use everyday language, but always be thoughtful in how you respond."
 };
 
-// Singleton models cache
-const models: Record<string, any> = {};
+export const getModel = (
+  persona: "Jenna" | "Marcus",
+  customTraits?: {
+    empathy: number;
+    warmth: number;
+    supportStyle: number;
+    energy: number;
+    directness: number;
+  } | null,
+  mood?: string
+) => {
+  const systemInstructionText = customTraits
+    ? generatePersonalityDescription(customTraits, persona, mood)
+    : systemInstructionConfig[persona] + mood;
 
-export const getModel = (persona: "Jenna" | "Marcus") => {
-  if (!models[persona]) {
-    models[persona] = genAI.getGenerativeModel({
-      model: "gemini-2.0-flash",
-      systemInstruction: systemInstructionConfig[persona],
-    });
-  }
-  return models[persona];
+  return genAI.getGenerativeModel({
+    model: "gemini-2.0-flash",
+    systemInstruction: {
+      role: "user",
+      parts: [{ text: systemInstructionText }],
+    },
+  });
 };
+

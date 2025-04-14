@@ -36,13 +36,13 @@ export default function RootLayout({
       } ${highContrast ? "contrast-125" : ""}`}
     >
       {showHelp && (
-        <div className="absolute inset-0 bg-black/40 z-30 pointer-events-none" />
+        <div className="absolute inset-0 bg-black/40 z-10" />
       )}
       <Sidebar />
       <div
         className={`${
           !showSideBar ? "w-screen absolute" : "w-full relative"
-        } flex flex-col h-screen transition-all duration-300 ease-in-out z-40`}
+        } flex flex-col h-screen transition-all duration-300 ease-in-out z-10`}
       >
         <ChatHeader />
         {children}

@@ -85,12 +85,12 @@ const InputBox = ({
             onKeyDown={handleKeyDown}
             value={input}
             rows={1}
-            className={`${style["chat-input-textarea"]} ${showHelp ? "textbox-highlight-glow z-40" : ""}`}
+            className={`${style["chat-input-textarea"]} ${showHelp ? "textbox-highlight-glow z-20" : ""}`}
             placeholder="Send a message..."
             ref={inputBoxTextArea}
           />
           {/*Display send button if 'text' mode is selected*/}
-          <div className={`${style["chat-svg-container"]} ${showHelp ? "textbox-highlight-glow z-40" : ""}`} onClick={handleSubmit}>
+          <div className={`${style["chat-svg-container"]} ${showHelp ? "textbox-highlight-glow z-20" : ""}`} onClick={handleSubmit}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width={20}

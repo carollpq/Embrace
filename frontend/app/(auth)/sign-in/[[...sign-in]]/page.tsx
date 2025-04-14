@@ -124,7 +124,7 @@ export default function SigninPage() {
             <GeneralButton
               className="bg-white/70 hover:bg-white/90 hover:text-black/90"
               text="Continue with Google"
-              isLoading={loading}
+              //isLoading={loading}
               onClick={() => {
                 setLoading(true);
                 signIn("google", { callbackUrl: "/home-page" });

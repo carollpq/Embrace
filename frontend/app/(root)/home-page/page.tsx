@@ -13,8 +13,7 @@ export default function Home() {
   const [loadingMoodSelection, setLoadingMoodSelection] = useState(false); // Loads Mood Selection page
   const [loadingModeSelection, setLoadingModeSelection] = useState(false); // Loads Mode Selection page
   const [loadingPersonaSelection, setLoadingPersonaSelection] = useState(false); // Loads Persona Selection page
-  const [loadingPersonaCustomization, setLoadingCustomizationSelection] =
-    useState(false); // Loads Persona Selection page
+  const [loadingPersonaCustomization, setLoadingCustomizationSelection] = useState(false); // Loads Persona Selection page
 
   useEffect(() => {
     console.log("Session on Home Page:", session); // Log session to debug

@@ -2,6 +2,7 @@ import React from "react";
 import { Quicksand } from "next/font/google";
 import Image from "next/image";
 import HelpTooltip from "@/components/ui/HelpTooltip";
+import SliderSetting from "@/components/ui/Slider";
 import { useSession } from "@/context/Provider";
 import { useState, useEffect, useRef } from "react";
 
@@ -19,8 +20,12 @@ const ChatHeader = () => {
     showHelp,
     setShowHelp,
     fontSize,
+    customTraits,
+    setCustomTraits,
   } = useSession();
   const [showPopUp, setShowPopUp] = useState(false);
+  const [showCustomize, setShowCustomize] = useState(false);
+
   const popupRef = useRef<HTMLDivElement>(null);
 
   const toggleSideBar = () => {
@@ -51,7 +56,7 @@ const ChatHeader = () => {
   }, [showPopUp]);
 
   return (
-    <div className="relative flex flex-row justify-between top-0 left-0 text-xl py-3 px-9 bg-[#010f17]/40 drop-shadow-md">
+    <div className="relative z-[50] flex flex-row justify-between top-0 left-0 text-xl py-3 px-9 bg-[#010f17]/40 drop-shadow-md">
       {/* Chatbot Persona */}
       <div className="flex flex-row gap-5 flex-center">
         {!showSideBar && (
@@ -66,7 +71,9 @@ const ChatHeader = () => {
         )}
         <div className="relative">
           <div
-            className={`flex items-center gap-4 hover:cursor-pointer hover:bg-white/10 rounded-xl py-2 px-3 ${showHelp ? "textbox-highlight-glow" : ""}`}
+            className={`flex items-center gap-4 hover:cursor-pointer hover:bg-white/10 rounded-xl py-2 px-3 ${
+              showHelp ? "textbox-highlight-glow" : ""
+            }`}
             onClick={() => setShowPopUp(!showPopUp)}
           >
             <div
@@ -92,8 +99,8 @@ const ChatHeader = () => {
           {/* Popup Card */}
           {showPopUp && (
             <div
-              ref={popupRef}
-              className="absolute left-0 mt-4 w-[20rem] bg-black shadow-lg rounded-lg py-4 px-5 text-black z-[9999] pointer-events-auto"
+              //ref={popupRef}
+              className="absolute left-0 mt-4 w-[20rem] bg-black shadow-lg rounded-lg py-4 px-5 text-black z-[999]"
             >
               <div className="flex flex-row items-center justify-between">
                 <h3 className="text-lg font-semibold text-white">
@@ -142,26 +149,98 @@ const ChatHeader = () => {
                   </p>
                 </>
               )}
+              <button
+                onClick={() => setShowCustomize(!showCustomize)}
+                className="mt-4 text-sm underline text-white/70 hover:text-white"
+              >
+                Customize personality
+              </button>
+            </div>
+          )}
+          {/* Customization Popup Card */}
+          {showCustomize && (
+            <div className="absolute left-[21rem] mt-4 w-[22rem] bg-black/90 shadow-lg rounded-lg py-4 px-5 text-white z-[999]">
+              <h3 className="text-md font-semibold mb-3">
+                Fine-tune {selectedPersona}
+              </h3>
+
+              {[
+                "empathy",
+                "warmth",
+                "supportStyle",
+                "energy",
+                "directness",
+              ].map((trait) => (
+                <div key={trait} className="mb-4 text-xs">
+                  <SliderSetting
+                    label={trait.charAt(0).toUpperCase() + trait.slice(1)}
+                    value={customTraits?.[trait] ?? 0.5}
+                    onChange={(val) =>
+                      setCustomTraits((prev) => ({
+                        ...prev!,
+                        [trait]: val,
+                      }))
+                    }
+                    description={
+                      {
+                        empathy:
+                          "How deeply the persona connects with your emotions.",
+                        warmth: "How comforting and soothing they sound.",
+                        supportStyle:
+                          "Balance between emotional vs practical support.",
+                        energy: "How upbeat or calm the persona feels.",
+                        directness: "How direct vs gentle the tone is.",
+                      }[trait as keyof typeof customTraits]
+                    }
+                  />
+                </div>
+              ))}
+
+              <div className="flex justify-end mt-4">
+                <button
+                  onClick={() => setShowCustomize(false)}
+                  className="text-sm underline text-white/70 hover:text-white"
+                >
+                  Close
+                </button>
+              </div>
             </div>
           )}
         </div>
+
         {/* Help Popup Card */}
         {showHelp && (
           <HelpTooltip
             text="This is your current persona that you are talking to. You can switch the persona or voice mode here !"
-            className="ml-[25rem] mt-[7rem] z-[9999]"
+            className="ml-[25rem] mt-[7rem]"
           />
         )}
       </div>
       {/* Right side header items */}
       <div
-        className={`${fontSize === "sm" ? "text-sm" : fontSize === "lg" ? "text-lg" : fontSize === "xl" ? "text-xl" : "text-base"} flex flex-row justify-between items-center gap-8 ${quicksand.className}`}
+        className={`${
+          fontSize === "sm"
+            ? "text-sm"
+            : fontSize === "lg"
+            ? "text-lg"
+            : fontSize === "xl"
+            ? "text-xl"
+            : "text-base"
+        } flex flex-row justify-between items-center gap-8 ${
+          quicksand.className
+        }`}
       >
         <div
           className="flex flex-row justify-center items-center gap-2 hover:cursor-pointer"
           onClick={() => setShowHelp(!showHelp)}
         >
-          <span className={showHelp ? "text-white font-medium z-[9999]" : "text-white/60"}>Help</span>
+          <span
+            className={
+              showHelp ? "text-white font-medium z-20" : "text-white/60"
+            }
+          >
+            Help
+          </span>
           <Image
             src="/icons/circle-info-solid.svg"
             alt="Help Icon"

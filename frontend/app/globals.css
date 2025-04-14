@@ -40,7 +40,6 @@ body {
   box-shadow: 0 0 12px 4px rgba(0, 123, 255, 0.7);
   transition: all 0.3s ease;
   animation: textBoxPulseGlow 1.5s infinite;
-  z-index: 9999; /* bring to front */
   position: relative; /* ensure z-index works */
 }
 

@@ -13,8 +13,12 @@ const generationConfig = {
 // Hanle POST requests
 export async function POST(req: Request) {
   try {
-    const { messages, selectedPersona } = await req.json();
-    const model = getModel(selectedPersona);
+    const { messages, selectedPersona, customTraits, mood } = await req.json();
+    const model = getModel(
+      selectedPersona as "Jenna" | "Marcus",
+      customTraits ?? null,
+      mood ?? "",
+    );
 
     if (!Array.isArray(messages)) {
       return new Response(JSON.stringify({ error: "Invalid payload: 'messages' must be an array." }), {
