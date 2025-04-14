@@ -1,16 +1,15 @@
 "use client";
 
 import InputBox from "@/components/InputBox";
-import HelpTooltip from "@/components/ui/HelpTooltip";
 import ChatMessage from "@/components/ChatMessage";
 import { useChat } from "ai/react";
-import { useRef, useEffect, useLayoutEffect } from "react";
+import { useRef, useLayoutEffect } from "react";
 import { useSession } from "@/context/Provider";
 import { motion, AnimatePresence } from "framer-motion";
 
 const ChatInterface: React.FC = () => {
   const messageContainerRef = useRef<HTMLDivElement | null>(null); // Reference for the messages container
-  const { selectedPersona, showHelp } = useSession();
+  const { selectedPersona } = useSession();
 
   const {
     messages,

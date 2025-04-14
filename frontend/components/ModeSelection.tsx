@@ -4,21 +4,19 @@ import SelectionCard from "@/components/ui/SelectionCard";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { useSession } from "@/context/Provider";
-import { useRouter } from "next/navigation";
 
-const ModeSelection = () => {
-  const router = useRouter();
-
+const ModeSelection = ({
+  setLoadingModeSelection,
+  setLoadingPersonaSelection,
+}) => {
   const { setSelectedMode, nightMode, setSelectedTTS } = useSession();
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
   const [loadTTSOptions, setLoadTTSOptions] = useState(false);
 
   // Check whether this is needed tho, or am I just repeating what 'useState' is already doing?
-  useEffect(() => {
-    setLoading(false);
-    setLoadTTSOptions(false);
-  }, []);
+  // useEffect(() => {
+  //   setLoadTTSOptions(false);
+  // }, []);
 
   const handleCardClick = (mode: string) => {
     setSelectedMode(mode); // Set the selected mode in your session
@@ -27,16 +25,16 @@ const ModeSelection = () => {
 
   const checkIsSelected = () => {
     if (!selectedCard) {
-      setLoading(false);
       alert("Please select a mode of conversation to move onto the next page.");
     } else {
-      router.push("/home-page/persona-selection");
+      setLoadingPersonaSelection(true);
+      setLoadingModeSelection(false);
     }
   };
 
   return (
     <div
-      className={`flex flex-col h-screen relative items-center justify-center gap-4 ${
+      className={`flex flex-col h-screen w-screen relative items-center justify-center gap-4 ${
         nightMode ? "bg-home-screen-blue" : "bg-day-mode-screen-2"
       }`}
     >
@@ -87,15 +85,12 @@ const ModeSelection = () => {
             <GeneralButton
               className="bg-white/70 hover:bg-white/90 hover:text-black/90"
               text="Continue"
-              isLoading={loading}
               onClick={() => {
-                setLoading(true);
                 if (
                   selectedCard === "text-and-voice" ||
                   selectedCard === "voice-and-voice"
                 ) {
                   setLoadTTSOptions(true);
-                  setLoading(false);
                 } else {
                   checkIsSelected();
                 }
@@ -141,9 +136,7 @@ const ModeSelection = () => {
             <GeneralButton
               className="bg-white/70 hover:bg-white/90 hover:text-black/90"
               text="Continue"
-              isLoading={loading}
               onClick={() => {
-                setLoading(true);
                 checkIsSelected();
               }}
             />

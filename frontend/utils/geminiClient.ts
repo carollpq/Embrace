@@ -1,5 +1,6 @@
-
+import { generatePersonalityDescription } from "@/utils/personaPrompt";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { useSession } from "@/context/Provider";
 
 const apiKey = process.env.GEMINI_API_KEY!;
 if (!apiKey) {

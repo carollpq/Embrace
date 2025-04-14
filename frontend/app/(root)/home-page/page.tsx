@@ -1,20 +1,26 @@
 "use client";
 
-import Link from "next/link";
 import { useSession } from "@/context/Provider";
 import { useEffect, useState } from "react";
 import Toggle from "@/components/ui/toggle";
+import MoodSelection from "@/components/MoodSelection";
+import ModeSelection from "@/components/ModeSelection";
+import PersonaSelection from "@/components/PersonaSelection";
+import PersonaCustomization from "@/components/PersonaCustomization";
 
 export default function Home() {
   const { session, nightMode, isLoggingOut } = useSession();
-  const [loading, setLoading] = useState(false); // <-- Loading state
+  const [loadingMoodSelection, setLoadingMoodSelection] = useState(false); // Loads Mood Selection page
+  const [loadingModeSelection, setLoadingModeSelection] = useState(false); // Loads Mode Selection page
+  const [loadingPersonaSelection, setLoadingPersonaSelection] = useState(false); // Loads Persona Selection page
+  const [loadingPersonaCustomization, setLoadingCustomizationSelection] =
+    useState(false); // Loads Persona Selection page
 
   useEffect(() => {
     console.log("Session on Home Page:", session); // Log session to debug
   }, [session]);
 
   useEffect(() => {
-    setLoading(false);
     const warmUpGemini = async () => {
       try {
         const res = await fetch("/api/chatbot/init");
@@ -24,7 +30,7 @@ export default function Home() {
         console.error("Gemini warm-up error:", err);
       }
     };
-  
+
     warmUpGemini(); // Fire and forget
   }, []);
 
@@ -44,6 +50,23 @@ export default function Home() {
           {/* Spinning Loader */}
           <div className="w-12 h-12 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin delay-1000 mt-3"></div>
         </div>
+      ) : loadingMoodSelection ? (
+        <MoodSelection
+          setLoadingModeSelection={setLoadingModeSelection}
+          setLoadingMoodSelection={setLoadingMoodSelection}
+        />
+      ) : loadingModeSelection ? (
+        <ModeSelection
+          setLoadingModeSelection={setLoadingModeSelection}
+          setLoadingPersonaSelection={setLoadingPersonaSelection}
+        />
+      ) : loadingPersonaSelection ? (
+        <PersonaSelection
+          setLoadingPersonaSelection={setLoadingPersonaSelection}
+          setLoadingCustomizationSelection={setLoadingCustomizationSelection}
+        />
+      ) : loadingPersonaCustomization ? (
+        <PersonaCustomization />
       ) : (
         <>
           {session && (
@@ -55,11 +78,12 @@ export default function Home() {
             Ready to talk?
           </p>
           <div className="flex-center flex-row gap-10  w-screen animate-slideUp delay-1000">
-            <Link href="/home-page/mode-selection" onClick={() => setLoading(true)}>
-              <button className="flex-center button-transition hover:bg-[#1d1d1d] hover:text-white text-center text-2xl text-black/60 w-[200px] py-4 bg-white rounded-[30px] drop-shadow-default">
-                {loading ?  <div className="animate-spin h-5 w-5 border-4 border-black/60 border-t-transparent rounded-full"></div> : "Start" }
-              </button>
-            </Link>
+            <button
+              className="flex-center button-transition hover:bg-[#1d1d1d] hover:text-white text-center text-2xl text-black/60 w-[200px] py-4 bg-white rounded-[30px] drop-shadow-default"
+              onClick={() => setLoadingMoodSelection(true)}
+            >
+              Start
+            </button>
           </div>
           <Toggle />
         </>

@@ -4,6 +4,14 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie"; // Import js-cookie
 
+type Traits = {
+  empathy: number;
+  warmth: number;
+  supportStyle: number;
+  energy: number;
+  directness: number;
+};
+
 type SessionContextType = {
   session: { name: string; email: string } | null;
   logout: () => void;
@@ -22,11 +30,14 @@ type SessionContextType = {
   setIsLoggingOut: (mode: boolean) => void;
   showHelp: boolean;
   setShowHelp: (mode: boolean) => void;
-  // SET THIS
   fontSize: string | null;
   setFontSize: (size: string) => void;
   highContrast: boolean | null;
   setHighContrast: (mode: boolean) => void;
+  customTraits: Traits | null;
+  setCustomTraits: React.Dispatch<React.SetStateAction<Traits | null>>;
+  selectedMood: string | null;
+  setSelectedMood: (mood: string) => void;
 };
 
 const SessionContext = createContext<SessionContextType | null>(null);
@@ -37,6 +48,7 @@ export const SessionProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
+
   const [hasMounted, setHasMounted] = useState(false);
   const [session, setSession] = useState<{
     name: string;
@@ -63,8 +75,10 @@ export const SessionProvider = ({
   const [highContrast, setHighContrast] = useState<boolean>(
     Cookies.get("highContrast") || false
   );
+  const [customTraits, setCustomTraits] = useState<Traits | null>(null);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
+  const [selectedMood, setSelectedMood] = useState("neutral"); 
   const router = useRouter();
 
   const recheckSession = async () => {
@@ -100,7 +114,15 @@ export const SessionProvider = ({
     if (showSideBar) Cookies.set("showSideBar", showSideBar, { expires: 7 });
     if (fontSize) Cookies.set("fontSize", fontSize, { expires: 7 });
     if (highContrast) Cookies.set("highContrast", highContrast, { expires: 7 });
-  }, [selectedMode, selectedPersona, selectedTTS, nightMode, showSideBar, fontSize, highContrast]);
+  }, [
+    selectedMode,
+    selectedPersona,
+    selectedTTS,
+    nightMode,
+    showSideBar,
+    fontSize,
+    highContrast,
+  ]);
 
   const logout = async () => {
     await fetch("/api/logout", { method: "POST", credentials: "include" });
@@ -142,6 +164,10 @@ export const SessionProvider = ({
           setFontSize,
           highContrast,
           setHighContrast,
+          customTraits,
+          setCustomTraits,
+          selectedMood,
+          setSelectedMood,
         }}
       >
         {children}
