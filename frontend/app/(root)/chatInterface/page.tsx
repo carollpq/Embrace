@@ -22,23 +22,22 @@ const ChatInterface: React.FC = () => {
     body: {
       selectedPersona,
       ...(customTraits && { customTraits }),
-      selectedMood
+      selectedMood,
     },
     onResponse: async (response) => {
       try {
-        const jsonResponse = await response.json(); // Parse the API response
-
-        // Remove the typing placeholder
-        setMessages((prev) =>
-          prev.filter(
-            (msg) => msg.role !== "assistant" || msg.content !== "__typing__"
-          )
-        );
+        const jsonResponse = await response.json();
 
         if (jsonResponse?.content) {
-          // Delay assistant message by 500ms
           setTimeout(() => {
-            setMessages((prevMessages) => [...prevMessages, jsonResponse]);
+            setMessages((prevMessages) => {
+              // Remove the __typing__ message before adding the real one
+              const filtered = prevMessages.filter(
+                (msg) =>
+                  msg.role !== "assistant" || msg.content !== "__typing__"
+              );
+              return [...filtered, jsonResponse];
+            });
           }, 500);
         }
       } catch (error) {
@@ -49,7 +48,7 @@ const ChatInterface: React.FC = () => {
 
   //Add typing animation message after user sends input (overriding the original function)
   const handleSubmit = async (e: any) => {
-    await originalHandleSubmit(e);
+    originalHandleSubmit(e);
 
     // Immediately show typing animation placeholder
     setTimeout(() => {
@@ -92,12 +91,13 @@ const ChatInterface: React.FC = () => {
             {messages.map((message, index) => (
               <motion.div
                 key={message.id || index}
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+                className="px-4 py-2"
               >
-                <ChatMessage message={message} key={index} />
+                <ChatMessage message={message} />
               </motion.div>
             ))}
           </AnimatePresence>

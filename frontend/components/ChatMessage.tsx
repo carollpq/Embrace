@@ -2,7 +2,7 @@
 
 import style from "../styles/ChatMessage.module.css";
 import { Message } from "ai/react";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { playPersonaSpeech } from "@/utils/tts/polly";
 import { playBrowserTTS } from "@/utils/tts/browserTTS";
 import { useSession } from "@/context/Provider";
@@ -14,40 +14,11 @@ function removeEmojis(text: string): string {
   );
 }
 
-const TYPING_SPEED = 20; // ms per character
-// const WORD_SPEED = 100; // ms per word (if switching to word-by-word mode)
-
 const ChatMessage = ({ message }: { message: Message }) => {
   const isUser = message.role === "user";
-  const isTypingPlaceholder =
-    message.role === "assistant" && message.content === "__typing__";
+  const isTypingPlaceholder = message.content === "__typing__";
   const { selectedMode, selectedPersona, selectedTTS, fontSize } = useSession();
-  const [displayedText, setDisplayedText] = useState(
-    isUser ? message.content : ""
-  ); // starts empty for bot
-  const [isTyping, setIsTyping] = useState(!isUser);
   const hasPlayedTTS = useRef(false); // Track if TTS has already played for this message
-
-  // Typing effect for assistant
-  useEffect(() => {
-    if (!isUser && message.content && message.content !== "__typing__") {
-      let i = 0;
-      setDisplayedText(""); // clear before typing
-      setIsTyping(true);
-
-      // Character-by-character simulation
-      const interval = setInterval(() => {
-        setDisplayedText((prev) => prev + message.content.charAt(i));
-        i++;
-        if (i >= message.content.length) {
-          clearInterval(interval);
-          setIsTyping(false);
-        }
-      }, TYPING_SPEED);
-
-      return () => clearInterval(interval);
-    }
-  }, [message.content, isUser]);
 
   // Trigger TTS only once for chatbot messages
   useEffect(() => {
@@ -59,6 +30,7 @@ const ChatMessage = ({ message }: { message: Message }) => {
       !hasPlayedTTS.current // Only play if not already played
     ) {
       const cleanedText = removeEmojis(message.content);
+      console.log(cleanedText);
 
       if (selectedTTS === "polly") {
         playPersonaSpeech(cleanedText, selectedPersona).catch((error) =>
@@ -87,10 +59,8 @@ const ChatMessage = ({ message }: { message: Message }) => {
             <span className="w-2 h-2 bg-gray-500 rounded-full animate-typing-dot" style={{ animationDelay: '0.2s' }}/>
             <span className="w-2 h-2 bg-gray-500 rounded-full animate-typing-dot" style={{ animationDelay: '0.4s' }}/>
           </div>
-        ) : isUser ? (
-          message.content
         ) : (
-          `${displayedText}${isTyping ? "▋" : ""}`
+          message.content
         )}
       </div>
     </div>
