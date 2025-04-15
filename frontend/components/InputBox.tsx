@@ -10,10 +10,12 @@ import HelpTooltip from "@/components/ui/HelpTooltip";
 const InputBox = ({
   handleSubmit,
   handleInputChange,
+  handleDirectSubmit,
   input,
 }: {
   handleSubmit: () => void;
   handleInputChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  handleDirectSubmit: (transcript: string) => void;
   input: string;
 }) => {
   const inputBoxTextArea = useRef<HTMLTextAreaElement>(null);
@@ -31,35 +33,39 @@ const InputBox = ({
   /** Handle speech-to-text transcription */
   const handleSTT = () => {
     if (isListening) {
-      // Stop listening (Assuming there's a way to stop recognition)
       setIsListening(false);
       return;
     }
 
     setIsListening(true);
     startSpeechRecognition((transcript) => {
-      console.log("Transcript:", transcript);
-      // Update the input field with the transcript
+      console.log("📤 Handling transcript:", transcript);
       const syntheticEvent = {
         target: { value: transcript },
       } as React.ChangeEvent<HTMLTextAreaElement>;
+
       handleInputChange(syntheticEvent);
       setIsListening(false);
-      handleSubmit();
+      handleDirectSubmit(transcript); // Submits to backend
     });
   };
 
   return (
     <div className={`${style["chat-input-holder"]}`}>
+      {/* Speaking Mode */}
       {selectedMode === "voice-and-text" ||
       selectedMode === "voice-and-voice" ? (
         <div className="flex flex-col justify-center items-center gap-6">
           {/* Microphone Button for STT */}
-          <span className="text-xl">Click here and start speaking with {selectedPersona}!</span>
+          <span className="text-xl">
+            Click here and start speaking with {selectedPersona}!
+          </span>
           <button
             type="button"
             onClick={handleSTT}
-            className={`${style["chat-svg-container"]} ${isListening ? style["listening"] : ""}`}
+            className={`${style["chat-svg-container"]} ${
+              isListening ? style["listening"] : ""
+            }`}
             style={{ marginRight: "8px" }}
           >
             <svg
@@ -85,12 +91,19 @@ const InputBox = ({
             onKeyDown={handleKeyDown}
             value={input}
             rows={1}
-            className={`${style["chat-input-textarea"]} ${showHelp ? "textbox-highlight-glow z-20" : ""}`}
+            className={`${style["chat-input-textarea"]} ${
+              showHelp ? "textbox-highlight-glow z-20" : ""
+            }`}
             placeholder="Send a message..."
             ref={inputBoxTextArea}
           />
           {/*Display send button if 'text' mode is selected*/}
-          <div className={`${style["chat-svg-container"]} ${showHelp ? "textbox-highlight-glow z-20" : ""}`} onClick={handleSubmit}>
+          <div
+            className={`${style["chat-svg-container"]} ${
+              showHelp ? "textbox-highlight-glow z-20" : ""
+            }`}
+            onClick={handleSubmit}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width={20}
@@ -116,11 +129,11 @@ const InputBox = ({
 
       {/* Help Popup Card */}
       {showHelp && (
-          <HelpTooltip
-            text="Type your messages here, click the send button or press enter to send the message"
-            className="right-40 bottom-20"
-          />
-        )}
+        <HelpTooltip
+          text="Type your messages here, click the send button or press enter to send the message"
+          className="right-40 bottom-20"
+        />
+      )}
     </div>
   );
 };

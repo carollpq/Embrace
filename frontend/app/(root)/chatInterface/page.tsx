@@ -47,20 +47,68 @@ const ChatInterface: React.FC = () => {
   });
 
   //Add typing animation message after user sends input (overriding the original function)
-  const handleSubmit = async (e: any) => {
-    originalHandleSubmit(e);
+  const handleSubmit = async (e?: any) => {
+    if (e && e.preventDefault) e.preventDefault();
+    await originalHandleSubmit(e || { target: { value: input } });
+    console.log("Submitted!", e);
 
-    // Immediately show typing animation placeholder
+    // Add typing animation
     setTimeout(() => {
       setMessages((prevMessages) => [
         ...prevMessages,
         {
-          id: Date.now().toString(), // or crypto.randomUUID() for uniqueness
+          id: Date.now().toString(),
           role: "assistant",
           content: "__typing__",
         },
       ]);
     }, 1000);
+  };
+
+  const handleDirectSubmit = async (text: string) => {
+    const userMessage = {
+      id: Date.now().toString(),
+      role: "user" as const,
+      content: text,
+    };
+
+    const typingPlaceholder = {
+      id: "typing-placeholder",
+      role: "assistant" as const,
+      content: "__typing__",
+    };
+
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      userMessage,
+      typingPlaceholder,
+    ]);
+
+    // Call API
+    const response = await fetch("/api/chatbot", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        messages: [...messages, userMessage], // include latest user message
+        selectedPersona,
+        selectedMood,
+        ...(customTraits && { customTraits }),
+      }),
+    });
+
+    const data = await response.json();
+
+    const assistantMessage = {
+      id: Date.now().toString(), // Generate a unique ID
+      role: "assistant" as const,
+      content: data.content,
+    };
+
+    setMessages((prevMessages) =>
+      prevMessages
+        .filter((msg) => msg.id !== "typing-placeholder")
+        .concat(assistantMessage)
+    );
   };
 
   // Scroll on new messages
@@ -106,6 +154,7 @@ const ChatInterface: React.FC = () => {
           <InputBox
             handleSubmit={handleSubmit}
             handleInputChange={handleInputChange}
+            handleDirectSubmit={handleDirectSubmit}
             input={input}
           />
         </div>
