@@ -51,7 +51,7 @@ const InputBox = ({
   };
 
   return (
-    <div className={`${style["chat-input-holder"]}`}>
+    <div className={`${style["chat-input-holder"]} ${showHelp ? "pointer-events-none" : ""}`}>
       {/* Speaking Mode */}
       {selectedMode === "voice-and-text" ||
       selectedMode === "voice-and-voice" ? (

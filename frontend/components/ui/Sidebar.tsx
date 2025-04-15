@@ -25,7 +25,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className={`relative ${showHelp ? "z-20" : ""}`}>
+    <div className={`relative ${showHelp ? "z-20 pointer-events-none" : ""}`}>
       <div
         className={`bg-[#021017]/70 w-[300px] min-w-[300px] h-screen flex flex-col drop-shadow-lg p-6 gap-6 transform transition-transform duration-300 ease-in-out ${
           showSideBar ? "translate-x-0" : "-translate-x-full"

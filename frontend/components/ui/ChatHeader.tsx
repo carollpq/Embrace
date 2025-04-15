@@ -72,7 +72,7 @@ const ChatHeader = () => {
         <div className="relative">
           <div
             className={`flex items-center gap-4 hover:cursor-pointer hover:bg-white/10 rounded-xl py-2 px-3 ${
-              showHelp ? "textbox-highlight-glow" : ""
+              showHelp ? "textbox-highlight-glow pointer-events-none" : ""
             }`}
             onClick={() => setShowPopUp(!showPopUp)}
           >
