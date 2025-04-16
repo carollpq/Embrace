@@ -2,9 +2,9 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Cookies from "js-cookie"; // Import js-cookie
 
-type Traits = {
+// Trait Types
+export type Traits = {
   empathy: number;
   warmth: number;
   supportStyle: number;
@@ -21,19 +21,19 @@ export const defaultTraits = {
 };
 
 export const jennaDefaultTraits = {
-  empathy: 0.9, // Very emotionally attuned
-  warmth: 0.85, // Warm and comforting
-  supportStyle: 0.7, // More emotional than practical
-  energy: 0.5, // Calm but not dull
-  directness: 0.3, // Gentle and careful with words
+  empathy: 0.9,
+  warmth: 0.85,
+  supportStyle: 0.7,
+  energy: 0.5,
+  directness: 0.3,
 };
 
 export const marcusDefaultTraits = {
-  empathy: 0.6, // Understands emotion but not overly emotional
-  warmth: 0.65, // Friendly but not too soft
-  supportStyle: 0.5, // Balanced between emotional and practical
-  energy: 0.7, // A bit more upbeat and motivating
-  directness: 0.65, // More straightforward and clear
+  empathy: 0.6,
+  warmth: 0.65,
+  supportStyle: 0.5,
+  energy: 0.7,
+  directness: 0.65,
 };
 
 type SessionContextType = {
@@ -66,58 +66,43 @@ type SessionContextType = {
 
 const SessionContext = createContext<SessionContextType | null>(null);
 
-// JSX Component
-export const SessionProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
-
+export const SessionProvider = ({ children }: { children: React.ReactNode }) => {
   const [hasMounted, setHasMounted] = useState(false);
-  const [session, setSession] = useState<{
-    name: string;
-    email: string;
-  } | null>(null);
+  const [session, setSession] = useState<{ name: string; email: string } | null>(null);
+
   const [selectedMode, setSelectedMode] = useState<string | null>(
-    Cookies.get("selectedMode") || "text-and-text"
+    typeof window !== "undefined" ? localStorage.getItem("selectedMode") || "text-and-text" : "text-and-text"
   );
   const [selectedPersona, setSelectedPersona] = useState<string | null>(
-    Cookies.get("selectedPersona") || "Jenna"
+    typeof window !== "undefined" ? localStorage.getItem("selectedPersona") || "Jenna" : "Jenna"
   );
   const [selectedTTS, setSelectedTTS] = useState<string | null>(
-    Cookies.get("selectedTTS") || "polly"
+    typeof window !== "undefined" ? localStorage.getItem("selectedTTS") || "polly" : "polly"
   );
   const [nightMode, setNightMode] = useState<boolean>(
-    Cookies.get("nightMode") || false
+    typeof window !== "undefined" ? localStorage.getItem("nightMode") === "true" : false
   );
   const [showSideBar, setShowSideBar] = useState<boolean>(
-    Cookies.get("showSideBar") || false
+    typeof window !== "undefined" ? localStorage.getItem("showSideBar") === "true" : false
   );
   const [fontSize, setFontSize] = useState<string | null>(
-    Cookies.get("fontSize") || "text-base"
+    typeof window !== "undefined" ? localStorage.getItem("fontSize") || "text-base" : "text-base"
   );
   const [highContrast, setHighContrast] = useState<boolean>(
-    Cookies.get("highContrast") || false
+    typeof window !== "undefined" ? localStorage.getItem("highContrast") === "true" : false
   );
   const [customTraits, setCustomTraits] = useState<Traits | null>(null);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
-  const [selectedMood, setSelectedMood] = useState("neutral"); 
+  const [selectedMood, setSelectedMood] = useState("neutral");
   const router = useRouter();
 
   const recheckSession = async () => {
-    const res = await fetch("/api/session", {
-      method: "GET",
-      credentials: "include",
-    });
-
+    const res = await fetch("/api/session", { method: "GET", credentials: "include" });
     if (res.ok) {
       const data = await res.json();
-      if (data.user) {
-        setSession({ name: data.user.name, email: data.user.email });
-      } else {
-        setSession(null);
-      }
+      if (data.user) setSession({ name: data.user.name, email: data.user.email });
+      else setSession(null);
     } else {
       setSession(null);
     }
@@ -125,82 +110,64 @@ export const SessionProvider = ({
 
   useEffect(() => {
     setHasMounted(true);
-    recheckSession(); // Check session on initial render
+    recheckSession();
   }, []);
 
-  // Save settings to cookies whenever they change
+  // Sync settings to localStorage
   useEffect(() => {
-    if (selectedMode) Cookies.set("selectedMode", selectedMode, { expires: 7 });
-    if (selectedPersona)
-      Cookies.set("selectedPersona", selectedPersona, { expires: 7 });
-    if (selectedTTS) Cookies.set("selectedTTS", selectedTTS, { expires: 7 });
-    if (nightMode) Cookies.set("nightMode", nightMode, { expires: 7 });
-    if (showSideBar) Cookies.set("showSideBar", showSideBar, { expires: 7 });
-    if (fontSize) Cookies.set("fontSize", fontSize, { expires: 7 });
-    if (highContrast) Cookies.set("highContrast", highContrast, { expires: 7 });
-  }, [
-    selectedMode,
-    selectedPersona,
-    selectedTTS,
-    nightMode,
-    showSideBar,
-    fontSize,
-    highContrast,
-  ]);
+    localStorage.setItem("selectedMode", selectedMode ?? "text-and-text");
+    localStorage.setItem("selectedPersona", selectedPersona ?? "Jenna");
+    localStorage.setItem("selectedTTS", selectedTTS ?? "polly");
+    localStorage.setItem("nightMode", String(nightMode));
+    localStorage.setItem("showSideBar", String(showSideBar));
+    localStorage.setItem("fontSize", fontSize ?? "text-base");
+    localStorage.setItem("highContrast", String(highContrast));
+  }, [selectedMode, selectedPersona, selectedTTS, nightMode, showSideBar, fontSize, highContrast]);
 
   const logout = async () => {
     await fetch("/api/logout", { method: "POST", credentials: "include" });
     setSession(null);
-    Cookies.remove("selectedMode");
-    Cookies.remove("selectedPersona");
-    Cookies.remove("selectedTTS");
-    Cookies.remove("nightMode");
-    Cookies.remove("showSideBar");
-    Cookies.remove("highContrast");
-    Cookies.remove("fontSize");
-    router.push("/"); // Redirect to home page after logout
+    localStorage.clear();
+    router.push("/");
   };
 
-  if (!hasMounted) {
-    return null;
-  } else {
-    return (
-      <SessionContext.Provider
-        value={{
-          session,
-          logout,
-          recheckSession,
-          selectedMode,
-          setSelectedMode,
-          selectedPersona,
-          setSelectedPersona,
-          selectedTTS,
-          setSelectedTTS,
-          nightMode,
-          setNightMode,
-          showSideBar,
-          setShowSideBar,
-          isLoggingOut,
-          setIsLoggingOut,
-          showHelp,
-          setShowHelp,
-          fontSize,
-          setFontSize,
-          highContrast,
-          setHighContrast,
-          customTraits,
-          setCustomTraits,
-          selectedMood,
-          setSelectedMood,
-        }}
-      >
-        {children}
-      </SessionContext.Provider>
-    );
-  }
+  if (!hasMounted) return null;
+
+  return (
+    <SessionContext.Provider
+      value={{
+        session,
+        logout,
+        recheckSession,
+        selectedMode,
+        setSelectedMode,
+        selectedPersona,
+        setSelectedPersona,
+        selectedTTS,
+        setSelectedTTS,
+        nightMode,
+        setNightMode,
+        showSideBar,
+        setShowSideBar,
+        isLoggingOut,
+        setIsLoggingOut,
+        showHelp,
+        setShowHelp,
+        fontSize,
+        setFontSize,
+        highContrast,
+        setHighContrast,
+        customTraits,
+        setCustomTraits,
+        selectedMood,
+        setSelectedMood,
+      }}
+    >
+      {children}
+    </SessionContext.Provider>
+  );
 };
 
-// Named function
 export const useSession = () => {
   const context = useContext(SessionContext);
   if (!context) {

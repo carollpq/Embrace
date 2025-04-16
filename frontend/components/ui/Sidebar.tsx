@@ -48,6 +48,10 @@ const Sidebar = () => {
             placement="bottom"
           >
             <Link
+              onClick={() => {
+                SpeechRecognition.abort();
+                window.speechSynthesis.cancel();
+              }}
               href="/home-page"
               className={`${
                 showHelp ? "textbox-highlight-glow" : ""
@@ -70,11 +74,7 @@ const Sidebar = () => {
         >
           <div className="flex flex-col gap-3">
             <div
-              onClick={() => {
-                SpeechRecognition.abort();
-                window.speechSynthesis.cancel();
-                setSelectedMode("text-and-text");
-              }}
+              onClick={() => setSelectedMode("text-and-text")}
               className={`${
                 selectedMode === "text-and-text"
                   ? "bg-white/70 text-black"
@@ -86,11 +86,7 @@ const Sidebar = () => {
               <span>Text and text</span>
             </div>
             <div
-              onClick={() => {
-                SpeechRecognition.abort();
-                window.speechSynthesis.cancel();
-                setSelectedMode("text-and-voice");
-              }}
+              onClick={() => setSelectedMode("text-and-voice")}
               className={`${
                 selectedMode === "text-and-voice"
                   ? "bg-white/70 text-black"
@@ -102,11 +98,7 @@ const Sidebar = () => {
               <span>Text and voice</span>
             </div>
             <div
-              onClick={() => {
-                SpeechRecognition.abort();
-                window.speechSynthesis.cancel();
-                setSelectedMode("voice-and-text");
-              }}
+              onClick={() => setSelectedMode("voice-and-text")}
               className={`${
                 selectedMode === "voice-and-text"
                   ? "bg-white/70 text-black"
@@ -118,11 +110,7 @@ const Sidebar = () => {
               <span>Voice and text</span>
             </div>
             <div
-              onClick={() => {
-                SpeechRecognition.abort();
-                window.speechSynthesis.cancel();
-                setSelectedMode("voice-and-voice");
-              }}
+              onClick={() => setSelectedMode("voice-and-voice")}
               className={`${
                 selectedMode === "voice-and-voice"
                   ? "bg-white/70 text-black"

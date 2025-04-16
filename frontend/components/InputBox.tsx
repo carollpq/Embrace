@@ -78,18 +78,17 @@ const InputBox = ({
   // Stops speech upon unload
   useEffect(() => {
     const handleUnload = () => {
-      SpeechRecognition.abort(); // Stop listening (STT)
-      window.speechSynthesis.cancel();   // Stop speaking (Browser TTS)
+      SpeechRecognition.stopListening(); // Stop listening (STT)
+      window.speechSynthesis.cancel(); // Stop speaking (Browser TTS)
       // stop Polly if you're using it — need access to audio ref
     };
-  
+
     window.addEventListener("beforeunload", handleUnload);
     return () => {
       window.removeEventListener("beforeunload", handleUnload);
       handleUnload();
     };
   }, []);
-  
 
   return (
     <div
@@ -165,12 +164,14 @@ const InputBox = ({
       )}
 
       {/* 🆘 Help Tooltip */}
-      {showHelp && (
-        <HelpTooltip
-          text="Type your messages here, click the send button or press enter to send the message"
-          className="right-40 bottom-20"
-        />
-      )}
+      {(selectedMode === "text-and-text" ||
+        selectedMode === "text-and-voice") &&
+        showHelp && (
+          <HelpTooltip
+            text="Type your messages here, click the send button or press enter to send the message"
+            className="right-40 bottom-20"
+          />
+        )}
     </div>
   );
 };
