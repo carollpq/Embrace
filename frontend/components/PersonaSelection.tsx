@@ -8,6 +8,11 @@ import { useRouter } from "next/navigation";
 const PersonaSelection = ({
   setLoadingPersonaSelection,
   setLoadingCustomizationSelection,
+  setLoadingModeSelection,
+}: {
+  setLoadingPersonaSelection: (status: boolean) => void;
+  setLoadingCustomizationSelection: (status: boolean) => void;
+  setLoadingModeSelection: (status: boolean) => void;
 }) => {
   const router = useRouter();
 
@@ -83,14 +88,14 @@ const PersonaSelection = ({
           <div className="grid grid-cols-2 gap-16 animate-slideUp delay-1000">
             <SelectionCard
               title="Say Hi to Jenn!"
-              description="Message with the chatbot and it will message you back!"
+              description="Jenna is a warm and empathetic AI companion who helps users feel safe, heard, and gently supported."
               svg="/img/Jenna.png"
               onClick={() => handleCardClick("Jenna")}
               isSelected={selectedCard === "Jenna"}
             />
             <SelectionCard
               title="Say Hi to Marcus!"
-              description="Message with the chatbot and it speaks back to you!"
+              description="Marcus is a friendly, emotionally aware companion who listens like a caring friend—not a therapist."
               svg="/img/Marcus.png"
               onClick={() => handleCardClick("Marcus")}
               isSelected={selectedCard === "Marcus"}
@@ -109,7 +114,10 @@ const PersonaSelection = ({
             <GeneralButton
               className="py-[0.50rem] bg-transparent border-4 border-white/40 text-white/70 hover:text-black/70 hover:bg-white/50 hover:border-transparent"
               text="Back"
-              onClick={() => setLoadingPersonaSelection(false)}
+              onClick={() => {
+                setLoadingPersonaSelection(false);
+                setLoadingModeSelection(true);
+              }}
             />
           </div>
         </>

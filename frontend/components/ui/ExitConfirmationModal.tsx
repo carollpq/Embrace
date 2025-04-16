@@ -1,13 +1,9 @@
 "use client";
 import React from "react";
+import { useSession } from "@/context/Provider";
 
-const ExitConfirmationModal = ({
-  setShowConfirmExit,
-  confirmExitCallback,
-}: {
-  setShowConfirmExit: (show: boolean) => void;
-  confirmExitCallback: () => void;
-}) => {
+const ExitConfirmationModal = () => {
+  const { setShowConfirmExit, setConfirmedExit, confirmExitCallback, confirmedExit } = useSession();
   return (
     <div className="fixed inset-0 bg-black/60 z-[9999] flex items-center justify-center">
       <div className="bg-black text-white p-6 rounded-lg w-[320px] shadow-xl">
@@ -27,6 +23,7 @@ const ExitConfirmationModal = ({
             onClick={() => {
               setShowConfirmExit(false);
               confirmExitCallback();
+              setConfirmedExit(!confirmedExit);
             }}
           >
             Leave

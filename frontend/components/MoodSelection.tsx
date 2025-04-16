@@ -16,6 +16,9 @@ const moods = [
 const MoodSelection = ({
   setLoadingModeSelection,
   setLoadingMoodSelection,
+}: {
+  setLoadingModeSelection: (status: boolean) => void;
+  setLoadingMoodSelection: (status: boolean) => void;
 }) => {
   const { setSelectedMood, nightMode } = useSession();
   const [selectedCard, setSelectedCard] = useState<string | null>(null);

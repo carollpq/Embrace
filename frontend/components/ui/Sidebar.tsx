@@ -32,7 +32,7 @@ const Sidebar = () => {
   return (
     <div className={`relative ${showHelp ? "z-20 pointer-events-none" : ""}`}>
       <div
-        className={`bg-[#021017]/70 w-[300px] min-w-[300px] h-screen flex flex-col drop-shadow-lg p-6 gap-6 transform transition-transform duration-300 ease-in-out ${
+        className={`bg-[#021017]/70 w-[300px] min-w-[300px] h-screen flex flex-col drop-shadow-lg p-6 gap-10 transform transition-transform duration-300 ease-in-out ${
           showSideBar ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -47,9 +47,10 @@ const Sidebar = () => {
             onClick={toggleSideBar}
           />
           <TooltipWrapper
-            tooltipText="Click here to go back to home page"
+            tooltipText="Home page"
             showTooltip={showHelp}
-            placement="bottom"
+            placement="right"
+            className="w-16 mt-[-1.5rem] text-center"
           >
             <Link
               href="#"
@@ -71,16 +72,17 @@ const Sidebar = () => {
           </TooltipWrapper>
         </div>
 
-        {/* Modes */}
-        <div className="flex flex-col text-lg font-medium">
-          <span>Conversation Modes</span>
-        </div>
-
         {/* Conversation mode buttons */}
         <TooltipWrapper
           tooltipText="You can switch the mode of conversation at any time here!"
           showTooltip={showHelp}
+          placement="right"
+          className="mt-[2rem]"
         >
+          {/* Modes */}
+          <div className="flex flex-col text-lg font-medium">
+            <span>Conversation Modes</span>
+          </div>
           <div className="flex flex-col gap-3">
             <div
               onClick={() => setSelectedMode("text-and-text")}
@@ -133,16 +135,17 @@ const Sidebar = () => {
           </div>
         </TooltipWrapper>
 
-        {/* Other section */}
-        <div className="flex flex-col text-lg font-medium">
-          <span>Other</span>
-        </div>
-
         {/* Saved messages + Settings */}
         <div className="flex flex-col gap-3">
+          {/* Other section */}
+          <div className="flex flex-col text-lg font-medium">
+            <span>Other</span>
+          </div>
           <TooltipWrapper
             tooltipText="View your previously saved messages here"
             showTooltip={showHelp}
+            placement="right"
+            className="mt-[-2rem]"
           >
             <div
               className={`bg-[#021017]/80 rounded-lg drop-shadow-md text-left py-2 px-6 flex flex-row justify-between items-center hover:bg-white/70 hover:text-black hover:cursor-pointer ${
@@ -160,9 +163,9 @@ const Sidebar = () => {
           </TooltipWrapper>
 
           <TooltipWrapper
-            tooltipText="Customize stuff here (think of smtg better lol)"
+            tooltipText="Set Night/Day mode, adjust font size, and toggle between high contrast"
             showTooltip={showHelp}
-            placement="top"
+            placement="right"
           >
             <div
               className={`bg-[#021017]/80 rounded-lg drop-shadow-md text-left py-2 px-6 flex flex-row justify-between items-center hover:bg-white/70 hover:text-black hover:cursor-pointer ${

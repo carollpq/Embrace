@@ -7,22 +7,34 @@ export const playBrowserTTS = (text: string, persona: string | null) => {
   const setVoiceAndSpeak = () => {
     const voices = speechSynthesis.getVoices();
 
-
     let selectedVoice: SpeechSynthesisVoice | undefined = undefined;
+
+    const americanVoices = voices.filter(
+      (v) =>
+        v.lang === "en-US" &&
+        (v.name.includes("Google") ||
+          v.name.includes("Microsoft") ||
+          v.name.includes("Apple") ||
+          true)
+    );
 
     // Match by known voice names for reliability
     if (persona === "Jenna") {
       selectedVoice =
-        voices.find((v) => v.name.includes("Female")) ||
-        voices.find((v) => v.name.includes("Google UK English Female")) ||
-        voices.find((v) => v.name.includes("Microsoft Zira"))
-        voices.find((v) => v.name.toLowerCase().includes("female"));
+        americanVoices.find(
+          (v) =>
+            v.name.includes("Google") && v.name.toLowerCase().includes("female")
+        ) ||
+        americanVoices.find((v) => v.name.toLowerCase().includes("zira")) ||
+        americanVoices.find((v) => v.name.toLowerCase().includes("samantha"));
     } else if (persona === "Marcus") {
       selectedVoice =
-        voices.find((v) => v.name.includes("Male")) ||
-        voices.find((v) => v.name.includes("Google US English")) ||
-        voices.find((v) => v.name.includes("Microsoft David")) ||
-        voices.find((v) => v.name.toLowerCase().includes("male"));
+        americanVoices.find(
+          (v) =>
+            v.name.includes("Google") && v.name.toLowerCase().includes("male")
+        ) ||
+        americanVoices.find((v) => v.name.toLowerCase().includes("david")) ||
+        americanVoices.find((v) => v.name.toLowerCase().includes("microsoft"));
     }
 
     // Fallback

@@ -231,7 +231,7 @@ const ChatHeader = () => {
         {showHelp && (
           <HelpTooltip
             text="This is your current persona that you are talking to. You can switch the persona or voice mode here !"
-            className="ml-[25rem] mt-[7rem]"
+            className="ml-[25rem] mt-[4rem]"
           />
         )}
       </div>

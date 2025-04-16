@@ -1,22 +1,21 @@
 "use client";
 import GeneralButton from "@/components/ui/button";
 import SelectionCard from "@/components/ui/SelectionCard";
-import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useSession } from "@/context/Provider";
 
 const ModeSelection = ({
   setLoadingModeSelection,
+  setLoadingMoodSelection,
   setLoadingPersonaSelection,
+}: {
+  setLoadingModeSelection: (status: boolean) => void;
+  setLoadingPersonaSelection: (status: boolean) => void;
+  setLoadingMoodSelection: (status: boolean) => void;
 }) => {
   const { setSelectedMode, nightMode, setSelectedTTS } = useSession();
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
   const [loadTTSOptions, setLoadTTSOptions] = useState(false);
-
-  // Check whether this is needed tho, or am I just repeating what 'useState' is already doing?
-  // useEffect(() => {
-  //   setLoadTTSOptions(false);
-  // }, []);
 
   const handleCardClick = (mode: string) => {
     setSelectedMode(mode); // Set the selected mode in your session
@@ -76,12 +75,14 @@ const ModeSelection = ({
           </div>
           {/* Navigation buttons */}
           <div className="flex flex-row justify-between w-[540px] gap-8 animate-slideUp delay-1000">
-            <Link href="/home-page" className="w-full">
-              <GeneralButton
-                className="bg-transparent border-4 border-white/40 text-white/70 hover:text-black/70 hover:bg-white/50 hover:border-transparent py-[0.50rem]"
-                text="Back"
-              />
-            </Link>
+            <GeneralButton
+              className="bg-transparent border-4 border-white/40 text-white/70 hover:text-black/70 hover:bg-white/50 hover:border-transparent py-[0.50rem]"
+              text="Back"
+              onClick={() => {
+                setLoadingModeSelection(false);
+                setLoadingMoodSelection(true);
+              }}
+            />
             <GeneralButton
               className="bg-white/70 hover:bg-white/90 hover:text-black/90"
               text="Continue"

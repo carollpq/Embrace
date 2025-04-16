@@ -20,8 +20,6 @@ const Navbar = () => {
       {/* Right side navigation items */}
       <div className="font-semibold flex gap-8">
         <Link href="/">Help</Link>
-        <Link href="/">Contact Us</Link>
-        <Link href="/">About Us</Link>
         {/*Insert Profile icon here*/}
         <span
           className="hover:cursor-pointer"

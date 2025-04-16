@@ -8,6 +8,7 @@ interface TooltipWrapperProps {
   tooltipText: string;
   showTooltip: boolean;
   placement?: "right" | "left" | "top" | "bottom";
+  className?: string;
 }
 
 const TooltipWrapper = ({
@@ -15,6 +16,7 @@ const TooltipWrapper = ({
   tooltipText,
   showTooltip,
   placement = "right",
+  className = "",
 }: TooltipWrapperProps) => {
   const targetRef = useRef<HTMLDivElement>(null);
   const [tooltipPos, setTooltipPos] = useState<{ top: number; left: number }>({
@@ -33,19 +35,19 @@ const TooltipWrapper = ({
 
       switch (placement) {
         case "right":
-          left = rect.right + scrollLeft + 10;
+          left = rect.right + scrollLeft;
           top = rect.top + scrollTop;
           break;
         case "left":
-          left = rect.left + scrollLeft - 210; // assuming tooltip width ~200
+          left = rect.left + scrollLeft; // assuming tooltip width ~200
           top = rect.top + scrollTop;
           break;
         case "top":
-          top = rect.top + scrollTop - 50;
+          top = rect.top + scrollTop;
           left = rect.left + scrollLeft;
           break;
         case "bottom":
-          top = rect.bottom + scrollTop + 10;
+          top = rect.bottom + scrollTop;
           left = rect.left + scrollLeft;
           break;
       }
@@ -55,7 +57,7 @@ const TooltipWrapper = ({
   }, [showTooltip, placement]);
 
   return (
-    <div ref={targetRef} style={{ position: "relative", display: "inline-block" }}>
+    <div ref={targetRef} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
       {children}
       {showTooltip && (
         <div
@@ -63,10 +65,10 @@ const TooltipWrapper = ({
             position: "absolute",
             top: tooltipPos.top,
             left: tooltipPos.left,
-            zIndex: 100,
+            margin: "1rem"
           }}
         >
-          <HelpTooltip text={tooltipText} />
+          <HelpTooltip text={tooltipText} className={className}/>
         </div>
       )}
     </div>

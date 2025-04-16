@@ -9,15 +9,15 @@ import PersonaSelection from "@/components/PersonaSelection";
 import PersonaCustomization from "@/components/PersonaCustomization";
 
 export default function Home() {
-  const { session, nightMode, isLoggingOut } = useSession();
+  const { session, nightMode, isLoggingOut, confirmedExit, setConfirmedExit } = useSession();
   const [loadingMoodSelection, setLoadingMoodSelection] = useState(false); // Loads Mood Selection page
   const [loadingModeSelection, setLoadingModeSelection] = useState(false); // Loads Mode Selection page
   const [loadingPersonaSelection, setLoadingPersonaSelection] = useState(false); // Loads Persona Selection page
   const [loadingPersonaCustomization, setLoadingCustomizationSelection] = useState(false); // Loads Persona Selection page
 
   useEffect(() => {
-    console.log("Session on Home Page:", session); // Log session to debug
-  }, [session]);
+    if (confirmedExit) setConfirmedExit(false);
+  }, []);
 
   useEffect(() => {
     const warmUpGemini = async () => {
@@ -58,9 +58,11 @@ export default function Home() {
         <ModeSelection
           setLoadingModeSelection={setLoadingModeSelection}
           setLoadingPersonaSelection={setLoadingPersonaSelection}
+          setLoadingMoodSelection={setLoadingMoodSelection}
         />
       ) : loadingPersonaSelection ? (
         <PersonaSelection
+          setLoadingModeSelection={setLoadingModeSelection}
           setLoadingPersonaSelection={setLoadingPersonaSelection}
           setLoadingCustomizationSelection={setLoadingCustomizationSelection}
         />
