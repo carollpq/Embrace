@@ -6,10 +6,13 @@ import { useChat } from "ai/react";
 import { useRef, useLayoutEffect, useEffect } from "react";
 import { useSession } from "@/context/Provider";
 import { motion, AnimatePresence } from "framer-motion";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 const ChatInterface: React.FC = () => {
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
   const { selectedPersona, customTraits, selectedMood, session } = useSession();
+  const router = useRouter();
   const moodToPrompt: Record<string, string> = {
     Anxious: `Hey there, ${
       session ? `I'm ${session.name}.` : ""
@@ -64,6 +67,16 @@ const ChatInterface: React.FC = () => {
       }
     },
   });
+  
+  // Re-directs user to login if session expires
+  useEffect(() => {
+    if (session === null) {
+      toast.error("Your session has expired. Redirecting to login...");
+      setTimeout(() => {
+        router.push("/");
+      }, 2000); // wait 2 seconds so user can read the message
+    }
+  }, [session]);
 
   // Warns user before refresh
   useEffect(() => {

@@ -7,13 +7,27 @@ import MoodSelection from "@/components/MoodSelection";
 import ModeSelection from "@/components/ModeSelection";
 import PersonaSelection from "@/components/PersonaSelection";
 import PersonaCustomization from "@/components/PersonaCustomization";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function Home() {
-  const { session, nightMode, isLoggingOut, confirmedExit, setConfirmedExit } = useSession();
+  const { session, nightMode, isLoggingOut, confirmedExit, setConfirmedExit } =
+    useSession();
   const [loadingMoodSelection, setLoadingMoodSelection] = useState(false); // Loads Mood Selection page
   const [loadingModeSelection, setLoadingModeSelection] = useState(false); // Loads Mode Selection page
   const [loadingPersonaSelection, setLoadingPersonaSelection] = useState(false); // Loads Persona Selection page
-  const [loadingPersonaCustomization, setLoadingCustomizationSelection] = useState(false); // Loads Persona Selection page
+  const [loadingPersonaCustomization, setLoadingCustomizationSelection] =
+    useState(false); // Loads Persona Selection page
+  const router = useRouter();
+
+  useEffect(() => {
+    if (session === null) {
+      toast.error("Your session has expired. Redirecting to login...");
+      setTimeout(() => {
+        router.push("/");
+      }, 2000); // wait 2 seconds so user can read the message
+    }
+  }, [session]);
 
   useEffect(() => {
     if (confirmedExit) setConfirmedExit(false);

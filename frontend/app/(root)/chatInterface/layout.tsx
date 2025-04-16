@@ -6,6 +6,7 @@ import ChatHeader from "@/components/ui/ChatHeader";
 import Sidebar from "@/components/ui/Sidebar";
 import { useSession } from "@/context/Provider";
 import ExitConfirmationModal from "@/components/ui/ExitConfirmationModal";
+import { Toaster } from "react-hot-toast";
 
 const quicksand = Quicksand({ weight: ["400"], subsets: ["latin"] });
 
@@ -66,6 +67,7 @@ export default function RootLayout({
           {showConfirmExit && <ExitConfirmationModal />}
         </>
       )}
+      <Toaster position="top-center" reverseOrder={false} />
     </main>
   );
 }
