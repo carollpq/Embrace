@@ -62,46 +62,80 @@ type SessionContextType = {
   setCustomTraits: React.Dispatch<React.SetStateAction<Traits | null>>;
   selectedMood: string | null;
   setSelectedMood: (mood: string) => void;
+  showConfirmExit: boolean;
+  setShowConfirmExit: (show: boolean) => void;
+  confirmExitCallback: () => void;
+  setConfirmExitCallback: (cb: () => void) => void;
 };
 
 const SessionContext = createContext<SessionContextType | null>(null);
 
-export const SessionProvider = ({ children }: { children: React.ReactNode }) => {
+export const SessionProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const [hasMounted, setHasMounted] = useState(false);
-  const [session, setSession] = useState<{ name: string; email: string } | null>(null);
+  const [session, setSession] = useState<{
+    name: string;
+    email: string;
+  } | null>(null);
 
   const [selectedMode, setSelectedMode] = useState<string | null>(
-    typeof window !== "undefined" ? localStorage.getItem("selectedMode") || "text-and-text" : "text-and-text"
+    typeof window !== "undefined"
+      ? localStorage.getItem("selectedMode") || "text-and-text"
+      : "text-and-text"
   );
   const [selectedPersona, setSelectedPersona] = useState<string | null>(
-    typeof window !== "undefined" ? localStorage.getItem("selectedPersona") || "Jenna" : "Jenna"
+    typeof window !== "undefined"
+      ? localStorage.getItem("selectedPersona") || "Jenna"
+      : "Jenna"
   );
   const [selectedTTS, setSelectedTTS] = useState<string | null>(
-    typeof window !== "undefined" ? localStorage.getItem("selectedTTS") || "polly" : "polly"
+    typeof window !== "undefined"
+      ? localStorage.getItem("selectedTTS") || "polly"
+      : "polly"
   );
   const [nightMode, setNightMode] = useState<boolean>(
-    typeof window !== "undefined" ? localStorage.getItem("nightMode") === "true" : false
+    typeof window !== "undefined"
+      ? localStorage.getItem("nightMode") === "true"
+      : false
   );
   const [showSideBar, setShowSideBar] = useState<boolean>(
-    typeof window !== "undefined" ? localStorage.getItem("showSideBar") === "true" : false
+    typeof window !== "undefined"
+      ? localStorage.getItem("showSideBar") === "true"
+      : false
   );
   const [fontSize, setFontSize] = useState<string | null>(
-    typeof window !== "undefined" ? localStorage.getItem("fontSize") || "text-base" : "text-base"
+    typeof window !== "undefined"
+      ? localStorage.getItem("fontSize") || "text-base"
+      : "text-base"
   );
   const [highContrast, setHighContrast] = useState<boolean>(
-    typeof window !== "undefined" ? localStorage.getItem("highContrast") === "true" : false
+    typeof window !== "undefined"
+      ? localStorage.getItem("highContrast") === "true"
+      : false
   );
   const [customTraits, setCustomTraits] = useState<Traits | null>(null);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [selectedMood, setSelectedMood] = useState("neutral");
+  const [showConfirmExit, setShowConfirmExit] = useState(false);
+  const [confirmExitCallback, setConfirmExitCallback] = useState(
+    () => () => {}
+  );
+
   const router = useRouter();
 
   const recheckSession = async () => {
-    const res = await fetch("/api/session", { method: "GET", credentials: "include" });
+    const res = await fetch("/api/session", {
+      method: "GET",
+      credentials: "include",
+    });
     if (res.ok) {
       const data = await res.json();
-      if (data.user) setSession({ name: data.user.name, email: data.user.email });
+      if (data.user)
+        setSession({ name: data.user.name, email: data.user.email });
       else setSession(null);
     } else {
       setSession(null);
@@ -122,7 +156,15 @@ export const SessionProvider = ({ children }: { children: React.ReactNode }) => 
     localStorage.setItem("showSideBar", String(showSideBar));
     localStorage.setItem("fontSize", fontSize ?? "text-base");
     localStorage.setItem("highContrast", String(highContrast));
-  }, [selectedMode, selectedPersona, selectedTTS, nightMode, showSideBar, fontSize, highContrast]);
+  }, [
+    selectedMode,
+    selectedPersona,
+    selectedTTS,
+    nightMode,
+    showSideBar,
+    fontSize,
+    highContrast,
+  ]);
 
   const logout = async () => {
     await fetch("/api/logout", { method: "POST", credentials: "include" });
@@ -161,6 +203,10 @@ export const SessionProvider = ({ children }: { children: React.ReactNode }) => 
         setCustomTraits,
         selectedMood,
         setSelectedMood,
+        showConfirmExit,
+        setShowConfirmExit,
+        confirmExitCallback,
+        setConfirmExitCallback,
       }}
     >
       {children}

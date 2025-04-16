@@ -32,7 +32,7 @@ const InputBox = ({
 
   const hasSubmittedRef = useRef(false);
 
-  // ⌨️ Handle Enter key for text mode
+  // Handle Enter key for text mode
   const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
@@ -61,7 +61,7 @@ const InputBox = ({
     }
   };
 
-  // 📦 Automatically submit when STT ends
+  // Automatically submit when STT ends
   useEffect(() => {
     if (!listening && transcript.trim() && !hasSubmittedRef.current) {
       hasSubmittedRef.current = true;
@@ -96,7 +96,7 @@ const InputBox = ({
         showHelp ? "pointer-events-none" : ""
       }`}
     >
-      {/* 🎤 Voice mode */}
+      {/* Voice mode */}
       {selectedMode === "voice-and-text" ||
       selectedMode === "voice-and-voice" ? (
         <div className="flex flex-col justify-center items-center gap-6">
@@ -127,7 +127,7 @@ const InputBox = ({
         </div>
       ) : (
         <>
-          {/* 💬 Text box */}
+          {/* Text box */}
           <textarea
             autoFocus
             onChange={handleInputChange}
@@ -141,7 +141,7 @@ const InputBox = ({
             ref={inputBoxTextArea}
           />
 
-          {/* 📤 Send button */}
+          {/* Send button */}
           <div
             className={`${style["chat-svg-container"]} ${
               showHelp ? "textbox-highlight-glow z-20" : ""
@@ -163,7 +163,7 @@ const InputBox = ({
         </>
       )}
 
-      {/* 🆘 Help Tooltip */}
+      {/* Help Tooltip */}
       {(selectedMode === "text-and-text" ||
         selectedMode === "text-and-voice") &&
         showHelp && (

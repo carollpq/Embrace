@@ -65,6 +65,19 @@ const ChatInterface: React.FC = () => {
     },
   });
 
+  // Warns user before refresh
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [messages]);
+
   // 🧠 Mood-based introduction (only triggers once at beginning)
   useEffect(() => {
     const sendIntroFromMood = async () => {
@@ -75,11 +88,14 @@ const ChatInterface: React.FC = () => {
           content: moodToPrompt[selectedMood],
         };
 
-        setMessages([introMessage, {
-          id: "typing-placeholder",
-          role: "assistant" as const,
-          content: "__typing__",
-        }]);
+        setMessages([
+          introMessage,
+          {
+            id: "typing-placeholder",
+            role: "assistant" as const,
+            content: "__typing__",
+          },
+        ]);
 
         const response = await fetch("/api/chatbot", {
           method: "POST",
@@ -109,7 +125,7 @@ const ChatInterface: React.FC = () => {
 
   const handleSubmit = async (e?: any) => {
     if (e?.preventDefault) e.preventDefault();
-    await originalHandleSubmit(e || { target: { value: input } });
+    originalHandleSubmit(e || { target: { value: input } });
 
     setTimeout(() => {
       setMessages((prevMessages) => [

@@ -7,6 +7,7 @@ import { useSession } from "@/context/Provider";
 import Settings from "./Settings";
 import TooltipWrapper from "@/components/ui/TooltipWrapper";
 import SpeechRecognition from "react-speech-recognition";
+import { useRouter } from "next/navigation";
 
 const pacifico = Pacifico({ weight: ["400"], subsets: ["latin"] });
 
@@ -17,9 +18,12 @@ const Sidebar = () => {
     showSideBar,
     setShowSideBar,
     showHelp,
+    setConfirmExitCallback,
+    setShowConfirmExit,
   } = useSession();
 
   const [showSettings, setShowSettings] = useState(false);
+  const router = useRouter();
 
   const toggleSideBar = () => {
     setShowSideBar(!showSideBar);
@@ -48,11 +52,16 @@ const Sidebar = () => {
             placement="bottom"
           >
             <Link
-              onClick={() => {
-                SpeechRecognition.abort();
-                window.speechSynthesis.cancel();
+              href="#"
+              onClick={(e) => {
+                e.preventDefault(); // prevent default navigation
+                setConfirmExitCallback(() => () => {
+                  SpeechRecognition.stopListening();
+                  window.speechSynthesis.cancel();
+                  router.push("/home-page");
+                });
+                setShowConfirmExit(true);
               }}
-              href="/home-page"
               className={`${
                 showHelp ? "textbox-highlight-glow" : ""
               } px-3 py-1 rounded-lg ml-[-1rem]`}

@@ -5,6 +5,7 @@ import { Quicksand } from "next/font/google";
 import ChatHeader from "@/components/ui/ChatHeader";
 import Sidebar from "@/components/ui/Sidebar";
 import { useSession } from "@/context/Provider";
+import ExitConfirmationModal from "@/components/ui/ExitConfirmationModal";
 
 const quicksand = Quicksand({ weight: ["400"], subsets: ["latin"] });
 
@@ -18,8 +19,16 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { nightMode, showSideBar, showHelp, fontSize, highContrast } =
-    useSession();
+  const {
+    nightMode,
+    showSideBar,
+    showHelp,
+    fontSize,
+    highContrast,
+    showConfirmExit,
+    setShowConfirmExit,
+    confirmExitCallback,
+  } = useSession();
 
   return (
     <main
@@ -35,9 +44,7 @@ export default function RootLayout({
           : "text-base"
       } ${highContrast ? "contrast-125" : ""}`}
     >
-      {showHelp && (
-        <div className="absolute inset-0 bg-black/40 z-10" />
-      )}
+      {showHelp && <div className="absolute inset-0 bg-black/40 z-10" />}
       <Sidebar />
       <div
         className={`${
@@ -47,6 +54,12 @@ export default function RootLayout({
         <ChatHeader />
         {children}
       </div>
+      {showConfirmExit && (
+        <ExitConfirmationModal
+          setShowConfirmExit={setShowConfirmExit}
+          confirmExitCallback={confirmExitCallback}
+        />
+      )}
     </main>
   );
 }
