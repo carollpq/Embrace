@@ -8,7 +8,7 @@ import { useSession } from "@/context/Provider";
 import { motion, AnimatePresence } from "framer-motion";
 
 const ChatInterface: React.FC = () => {
-  const messageContainerRef = useRef<HTMLDivElement | null>(null); // Reference for the messages container
+  const messageContainerRef = useRef<HTMLDivElement | null>(null);
   const { selectedPersona, customTraits, selectedMood, session } = useSession();
   const moodToPrompt: Record<string, string> = {
     Anxious: `Hey there, ${
@@ -44,93 +44,130 @@ const ChatInterface: React.FC = () => {
       ...(customTraits && { customTraits }),
       selectedMood,
     },
-    // onResponse: async (response) => {
-    //   try {
-    //     const jsonResponse = await response.json();
+    onResponse: async (response) => {
+      try {
+        const jsonResponse = await response.json();
 
-    //     if (jsonResponse?.content) {
-    //       setMessages((prevMessages) => {
-    //         const filtered = prevMessages.filter(
-    //           (msg) => msg.role !== "assistant" || msg.content !== "__typing__"
-    //         );
-    //         return [...filtered, jsonResponse];
-    //       });
-    //     }
-    //   } catch (error) {
-    //     console.error("Error parsing the response:", error);
-    //   }
-    // },
+        if (jsonResponse?.content) {
+          setTimeout(() => {
+            setMessages((prevMessages) => {
+              const filtered = prevMessages.filter(
+                (msg) =>
+                  msg.role !== "assistant" || msg.content !== "__typing__"
+              );
+              return [...filtered, jsonResponse];
+            });
+          }, 500);
+        }
+      } catch (error) {
+        console.error("Error parsing the response:", error);
+      }
+    },
   });
 
-  //Add typing animation message after user sends input (overriding the original function)
+  // 🧠 Mood-based introduction (only triggers once at beginning)
+  useEffect(() => {
+    const sendIntroFromMood = async () => {
+      if (messages.length === 0 && selectedMood && moodToPrompt[selectedMood]) {
+        const introMessage = {
+          id: Date.now().toString(),
+          role: "user" as const,
+          content: moodToPrompt[selectedMood],
+        };
+
+        setMessages([introMessage, {
+          id: "typing-placeholder",
+          role: "assistant" as const,
+          content: "__typing__",
+        }]);
+
+        const response = await fetch("/api/chatbot", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            messages: [introMessage],
+            selectedPersona,
+            selectedMood,
+            ...(customTraits && { customTraits }),
+          }),
+        });
+
+        const data = await response.json();
+
+        const assistantMessage = {
+          id: Date.now().toString(),
+          role: "assistant" as const,
+          content: data.content,
+        };
+
+        setMessages([introMessage, assistantMessage]);
+      }
+    };
+
+    sendIntroFromMood();
+  }, [messages.length, selectedMood, selectedPersona, customTraits]);
+
   const handleSubmit = async (e?: any) => {
     if (e?.preventDefault) e.preventDefault();
-
-    const typingId = `typing-${Date.now()}`;
-
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      {
-        id: typingId,
-        role: "assistant",
-        content: "__typing__",
-      },
-    ]);
-
     await originalHandleSubmit(e || { target: { value: input } });
+
+    setTimeout(() => {
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        {
+          id: Date.now().toString(),
+          role: "assistant",
+          content: "__typing__",
+        },
+      ]);
+    }, 1000);
   };
 
   const handleDirectSubmit = async (text: string) => {
-    const typingId = `typing-${Date.now()}`;
-
     const userMessage = {
-      id: `user-${Date.now()}`,
+      id: Date.now().toString(),
       role: "user" as const,
       content: text,
     };
 
     const typingPlaceholder = {
-      id: typingId,
+      id: "typing-placeholder",
       role: "assistant" as const,
       content: "__typing__",
     };
 
-    setMessages((prevMessages) => {
-      const updatedMessages = [...prevMessages, userMessage, typingPlaceholder];
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      userMessage,
+      typingPlaceholder,
+    ]);
 
-      fetch("/api/chatbot", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: updatedMessages.filter(
-            (m) => m.role !== "assistant" || m.content !== "__typing__"
-          ),
-          selectedPersona,
-          selectedMood,
-          ...(customTraits && { customTraits }),
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          const assistantMessage = {
-            id: `assistant-${Date.now()}`,
-            role: "assistant" as const,
-            content: data.content,
-          };
-
-          setMessages((latest) =>
-            latest.filter((msg) => msg.id !== typingId).concat(assistantMessage)
-          );
-        })
-        .catch((err) =>
-          console.error("Error fetching assistant response:", err)
-        );
-
-      return updatedMessages;
+    const response = await fetch("/api/chatbot", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        messages: [...messages, userMessage],
+        selectedPersona,
+        selectedMood,
+        ...(customTraits && { customTraits }),
+      }),
     });
+
+    const data = await response.json();
+
+    const assistantMessage = {
+      id: Date.now().toString(),
+      role: "assistant" as const,
+      content: data.content,
+    };
+
+    setMessages((prevMessages) =>
+      prevMessages
+        .filter((msg) => msg.id !== "typing-placeholder")
+        .concat(assistantMessage)
+    );
   };
 
-  // Scroll on new messages
   useLayoutEffect(() => {
     if (messageContainerRef.current) {
       messageContainerRef.current.scrollTo({
@@ -140,76 +177,18 @@ const ChatInterface: React.FC = () => {
     }
   }, [messages]);
 
-  useEffect(() => {
-    const initiateChatFromMood = async () => {
-      if (messages.length === 0 && selectedMood && moodToPrompt[selectedMood]) {
-        const moodMessage = {
-          id: Date.now().toString(),
-          role: "user" as const,
-          content: moodToPrompt[selectedMood],
-        };
-
-        setMessages([moodMessage]);
-
-        // Add typing placeholder
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: "typing-placeholder",
-            role: "assistant",
-            content: "__typing__",
-          },
-        ]);
-
-        try {
-          const res = await fetch("/api/chatbot", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              messages: [moodMessage],
-              selectedPersona,
-              selectedMood,
-              ...(customTraits && { customTraits }),
-            }),
-          });
-
-          const data = await res.json();
-
-          const assistantMessage = {
-            id: Date.now().toString(),
-            role: "assistant" as const,
-            content: data.content,
-          };
-
-          // Replace typing with actual assistant reply
-          setMessages((prev) =>
-            prev
-              .filter((m) => m.id !== "typing-placeholder")
-              .concat(assistantMessage)
-          );
-        } catch (err) {
-          console.error("Failed to fetch Gemini greeting:", err);
-        }
-      }
-    };
-
-    initiateChatFromMood();
-  }, [messages.length, selectedMood, selectedPersona, customTraits]);
-
   return (
     <div className="relative">
-      <div className={`flex flex-col h-[85vh] justify-between mt-4`}>
+      <div className="flex flex-col h-[85vh] justify-between mt-4">
         <div
           ref={messageContainerRef}
-          className={`flex-1 basis-auto overflow-y-auto h-[100px] hide-scrollbar`}
+          className="flex-1 basis-auto overflow-y-auto h-[100px] hide-scrollbar"
         >
-          {/* Empty chat message */}
           {messages.length === 0 && (
             <div className="flex items-center justify-center h-full text-4xl text-white animate-slideUp delay-1000">
               Hi, I'm here for you 🤗
             </div>
           )}
-          {/* Messages */}
           <AnimatePresence initial={false}>
             {messages.map((message, index) => (
               <motion.div

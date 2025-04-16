@@ -2,11 +2,12 @@
 
 import style from "../styles/InputBox.module.css";
 import { useState, useEffect, useRef, KeyboardEvent } from "react";
-import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
 import { useSession } from "@/context/Provider";
 import HelpTooltip from "@/components/ui/HelpTooltip";
 
-/** Lives in the lower section of \<ChatInterface />, below \<Chat />. Responsible for handling the input from users and then submitting messages to the backend. */
 const InputBox = ({
   handleSubmit,
   handleInputChange,
@@ -21,10 +22,17 @@ const InputBox = ({
   const inputBoxTextArea = useRef<HTMLTextAreaElement>(null);
   const [isListening, setIsListening] = useState(false);
   const { selectedMode, selectedPersona, showHelp } = useSession();
-  const { transcript, listening, resetTranscript, browserSupportsSpeechRecognition } = useSpeechRecognition();
 
+  const {
+    transcript,
+    listening,
+    resetTranscript,
+    browserSupportsSpeechRecognition,
+  } = useSpeechRecognition();
 
-  /** Handle the user pressing the Enter key to submit a message. */
+  const hasSubmittedRef = useRef(false);
+
+  // ⌨️ Handle Enter key for text mode
   const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
@@ -32,29 +40,55 @@ const InputBox = ({
     }
   };
 
+  // 🎤 Toggle STT
   const handleSTT = () => {
+    if (!browserSupportsSpeechRecognition) {
+      alert("Speech recognition is not supported in this browser.");
+      return;
+    }
+
     if (listening) {
       SpeechRecognition.stopListening();
       setIsListening(false);
     } else {
+      hasSubmittedRef.current = false; // reset before starting
       resetTranscript();
       SpeechRecognition.startListening({
         continuous: true,
-        language: 'en-US',
+        language: "en-US",
       });
       setIsListening(true);
     }
   };
 
+  // 📦 Automatically submit when STT ends
   useEffect(() => {
-    if (!listening && transcript.trim()) {
+    if (!listening && transcript.trim() && !hasSubmittedRef.current) {
+      hasSubmittedRef.current = true;
+
       handleInputChange({
         target: { value: transcript },
       } as React.ChangeEvent<HTMLTextAreaElement>);
-  
+
       handleDirectSubmit(transcript);
+      setIsListening(false);
     }
   }, [listening, transcript]);
+
+  // Stops speech upon unload
+  useEffect(() => {
+    const handleUnload = () => {
+      SpeechRecognition.abort(); // Stop listening (STT)
+      window.speechSynthesis.cancel();   // Stop speaking (Browser TTS)
+      // stop Polly if you're using it — need access to audio ref
+    };
+  
+    window.addEventListener("beforeunload", handleUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleUnload);
+      handleUnload();
+    };
+  }, []);
   
 
   return (
@@ -63,11 +97,10 @@ const InputBox = ({
         showHelp ? "pointer-events-none" : ""
       }`}
     >
-      {/* Speaking Mode */}
+      {/* 🎤 Voice mode */}
       {selectedMode === "voice-and-text" ||
       selectedMode === "voice-and-voice" ? (
         <div className="flex flex-col justify-center items-center gap-6">
-          {/* Microphone Button for STT */}
           <span className="text-xl">
             Click here and start speaking with {selectedPersona}!
           </span>
@@ -87,7 +120,7 @@ const InputBox = ({
               className={isListening ? style["mic-animate"] : ""}
             >
               <path
-                fill={isListening ? "red" : "currentColor"} // Change color when listening
+                fill={isListening ? "red" : "currentColor"}
                 d="M17.3 11c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.49 6-3.31 6-6.72m-8.2-6.1c0-.66.54-1.2 1.2-1.2s1.2.54 1.2 1.2l-.01 6.2c0 .66-.53 1.2-1.19 1.2s-1.2-.54-1.2-1.2M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3a3 3 0 0 0-3 3v6a3 3 0 0 0 3 3"
               />
             </svg>
@@ -95,9 +128,9 @@ const InputBox = ({
         </div>
       ) : (
         <>
-          {/* Text Box */}
+          {/* 💬 Text box */}
           <textarea
-            autoFocus={true}
+            autoFocus
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
             value={input}
@@ -108,7 +141,8 @@ const InputBox = ({
             placeholder="Send a message..."
             ref={inputBoxTextArea}
           />
-          {/*Display send button if 'text' mode is selected*/}
+
+          {/* 📤 Send button */}
           <div
             className={`${style["chat-svg-container"]} ${
               showHelp ? "textbox-highlight-glow z-20" : ""
@@ -130,15 +164,7 @@ const InputBox = ({
         </>
       )}
 
-      {/* Error Modal */}
-      {/* {message && (
-        <div className={style["message-modal"]}>
-          {message}
-          <div className={style["arrow"]}></div>
-        </div>
-      )} */}
-
-      {/* Help Popup Card */}
+      {/* 🆘 Help Tooltip */}
       {showHelp && (
         <HelpTooltip
           text="Type your messages here, click the send button or press enter to send the message"
