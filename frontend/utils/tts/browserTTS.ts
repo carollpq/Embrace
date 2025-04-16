@@ -7,6 +7,7 @@ export const playBrowserTTS = (text: string, persona: string | null) => {
   const setVoiceAndSpeak = () => {
     const voices = speechSynthesis.getVoices();
 
+
     let selectedVoice: SpeechSynthesisVoice | undefined = undefined;
 
     // Match by known voice names for reliability
@@ -14,7 +15,7 @@ export const playBrowserTTS = (text: string, persona: string | null) => {
       selectedVoice =
         voices.find((v) => v.name.includes("Female")) ||
         voices.find((v) => v.name.includes("Google UK English Female")) ||
-        voices.find((v) => v.name.includes("Microsoft Zira")) ||
+        voices.find((v) => v.name.includes("Microsoft Zira"))
         voices.find((v) => v.name.toLowerCase().includes("female"));
     } else if (persona === "Marcus") {
       selectedVoice =

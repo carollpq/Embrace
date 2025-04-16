@@ -113,14 +113,14 @@ export default function SigninPage() {
           </p>
 
           {/* Divider section */}
-          <div className="flex-center flex-row gap-8 max-w-[500px] w-full animate-slideUp">
+          {/* <div className="flex-center flex-row gap-8 max-w-[500px] w-full animate-slideUp">
             <hr className="border-white border-t-2 flex-grow rounded" />
             <p className="text-white">or</p>
             <hr className="border-white border-t-2 flex-grow rounded" />
-          </div>
+          </div> */}
 
           {/* OAuth section */}
-          <div className="flex-center flex-col max-w-[350px] w-full gap-4 animate-slideUp">
+          {/* <div className="flex-center flex-col max-w-[350px] w-full gap-4 animate-slideUp">
             <GeneralButton
               className="bg-white/70 hover:bg-white/90 hover:text-black/90"
               text="Continue with Google"
@@ -134,7 +134,7 @@ export default function SigninPage() {
               className="bg-white/70 hover:bg-white/90 hover:text-black/90"
               text="Continue with Apple"
             />
-          </div>
+          </div> */}
         </>
       )}
     </div>

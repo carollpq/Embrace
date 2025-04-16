@@ -3,7 +3,11 @@ import { Quicksand } from "next/font/google";
 import Image from "next/image";
 import HelpTooltip from "@/components/ui/HelpTooltip";
 import SliderSetting from "@/components/ui/Slider";
-import { useSession } from "@/context/Provider";
+import {
+  useSession,
+  jennaDefaultTraits,
+  marcusDefaultTraits,
+} from "@/context/Provider";
 import { useState, useEffect, useRef } from "react";
 
 const quicksand = Quicksand({ subsets: ["latin"] });
@@ -158,54 +162,69 @@ const ChatHeader = () => {
             </div>
           )}
           {/* Customization Popup Card */}
-          {showCustomize && (
-            <div className="absolute left-[21rem] mt-4 w-[22rem] bg-black/90 shadow-lg rounded-lg py-4 px-5 text-white z-[999]">
-              <h3 className="text-md font-semibold mb-3">
-                Fine-tune {selectedPersona}
-              </h3>
+          {showCustomize &&
+            (() => {
+              const traitsToUse =
+                customTraits ??
+                (selectedPersona === "Jenna"
+                  ? jennaDefaultTraits
+                  : marcusDefaultTraits);
 
-              {[
-                "empathy",
-                "warmth",
-                "supportStyle",
-                "energy",
-                "directness",
-              ].map((trait) => (
-                <div key={trait} className="mb-4 text-xs">
-                  <SliderSetting
-                    label={trait.charAt(0).toUpperCase() + trait.slice(1)}
-                    value={customTraits?.[trait] ?? 0.5}
-                    onChange={(val) =>
-                      setCustomTraits((prev) => ({
-                        ...prev!,
-                        [trait]: val,
-                      }))
-                    }
-                    description={
-                      {
-                        empathy:
-                          "How deeply the persona connects with your emotions.",
-                        warmth: "How comforting and soothing they sound.",
-                        supportStyle:
-                          "Balance between emotional vs practical support.",
-                        energy: "How upbeat or calm the persona feels.",
-                        directness: "How direct vs gentle the tone is.",
-                      }[trait as keyof typeof customTraits]
-                    }
-                  />
+              return (
+                <div className="absolute left-[21rem] mt-4 w-[22rem] bg-black/90 shadow-lg rounded-lg py-4 px-5 text-white z-[999]">
+                  <h3 className="text-md font-semibold mb-3">
+                    Fine-tune {selectedPersona}
+                  </h3>
+                  {[
+                    "empathy",
+                    "warmth",
+                    "supportStyle",
+                    "energy",
+                    "directness",
+                  ].map((trait) => (
+                    <div key={trait} className="mb-4 text-xs">
+                      <SliderSetting
+                        label={trait.charAt(0).toUpperCase() + trait.slice(1)}
+                        value={traitsToUse[trait]}
+                        onChange={(val) =>
+                          setCustomTraits((prev) => {
+                            const baseTraits =
+                              prev ??
+                              (selectedPersona === "Jenna"
+                                ? jennaDefaultTraits
+                                : marcusDefaultTraits);
+
+                            return {
+                              ...baseTraits,
+                              [trait]: val,
+                            };
+                          })
+                        }
+                        description={
+                          {
+                            empathy:
+                              "How deeply the persona connects with your emotions.",
+                            warmth: "How comforting and soothing they sound.",
+                            supportStyle:
+                              "Balance between emotional vs practical support.",
+                            energy: "How upbeat or calm the persona feels.",
+                            directness: "How direct vs gentle the tone is.",
+                          }[trait]
+                        }
+                      />
+                    </div>
+                  ))}
+                  <div className="flex justify-end mt-4">
+                    <button
+                      onClick={() => setShowCustomize(false)}
+                      className="text-sm underline text-white/70 hover:text-white"
+                    >
+                      Close
+                    </button>
+                  </div>
                 </div>
-              ))}
-
-              <div className="flex justify-end mt-4">
-                <button
-                  onClick={() => setShowCustomize(false)}
-                  className="text-sm underline text-white/70 hover:text-white"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          )}
+              );
+            })()}
         </div>
 
         {/* Help Popup Card */}

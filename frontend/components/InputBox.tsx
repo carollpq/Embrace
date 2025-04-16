@@ -1,8 +1,8 @@
 "use client";
 
 import style from "../styles/InputBox.module.css";
-import { useState, useRef, KeyboardEvent } from "react";
-import { startSpeechRecognition } from "@/utils/stt";
+import { useState, useEffect, useRef, KeyboardEvent } from "react";
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import { useSession } from "@/context/Provider";
 import HelpTooltip from "@/components/ui/HelpTooltip";
 
@@ -21,6 +21,8 @@ const InputBox = ({
   const inputBoxTextArea = useRef<HTMLTextAreaElement>(null);
   const [isListening, setIsListening] = useState(false);
   const { selectedMode, selectedPersona, showHelp } = useSession();
+  const { transcript, listening, resetTranscript, browserSupportsSpeechRecognition } = useSpeechRecognition();
+
 
   /** Handle the user pressing the Enter key to submit a message. */
   const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -30,28 +32,37 @@ const InputBox = ({
     }
   };
 
-  /** Handle speech-to-text transcription */
   const handleSTT = () => {
-    if (isListening) {
+    if (listening) {
+      SpeechRecognition.stopListening();
       setIsListening(false);
-      return;
+    } else {
+      resetTranscript();
+      SpeechRecognition.startListening({
+        continuous: true,
+        language: 'en-US',
+      });
+      setIsListening(true);
     }
-
-    setIsListening(true);
-    startSpeechRecognition((transcript) => {
-      console.log("📤 Handling transcript:", transcript);
-      const syntheticEvent = {
-        target: { value: transcript },
-      } as React.ChangeEvent<HTMLTextAreaElement>;
-
-      handleInputChange(syntheticEvent);
-      setIsListening(false);
-      handleDirectSubmit(transcript); // Submits to backend
-    });
   };
 
+  useEffect(() => {
+    if (!listening && transcript.trim()) {
+      handleInputChange({
+        target: { value: transcript },
+      } as React.ChangeEvent<HTMLTextAreaElement>);
+  
+      handleDirectSubmit(transcript);
+    }
+  }, [listening, transcript]);
+  
+
   return (
-    <div className={`${style["chat-input-holder"]} ${showHelp ? "pointer-events-none" : ""}`}>
+    <div
+      className={`${style["chat-input-holder"]} ${
+        showHelp ? "pointer-events-none" : ""
+      }`}
+    >
       {/* Speaking Mode */}
       {selectedMode === "voice-and-text" ||
       selectedMode === "voice-and-voice" ? (

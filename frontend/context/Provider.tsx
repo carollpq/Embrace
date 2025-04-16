@@ -12,6 +12,30 @@ type Traits = {
   directness: number;
 };
 
+export const defaultTraits = {
+  empathy: 0.6,
+  warmth: 0.6,
+  supportStyle: 0.5,
+  energy: 0.4,
+  directness: 0.4,
+};
+
+export const jennaDefaultTraits = {
+  empathy: 0.9, // Very emotionally attuned
+  warmth: 0.85, // Warm and comforting
+  supportStyle: 0.7, // More emotional than practical
+  energy: 0.5, // Calm but not dull
+  directness: 0.3, // Gentle and careful with words
+};
+
+export const marcusDefaultTraits = {
+  empathy: 0.6, // Understands emotion but not overly emotional
+  warmth: 0.65, // Friendly but not too soft
+  supportStyle: 0.5, // Balanced between emotional and practical
+  energy: 0.7, // A bit more upbeat and motivating
+  directness: 0.65, // More straightforward and clear
+};
+
 type SessionContextType = {
   session: { name: string; email: string } | null;
   logout: () => void;
