@@ -75,9 +75,9 @@ const SavedMessages = () => {
   }
 
   return (
-    <div className="flex flex-col gap-6 w-full h-screen p-10">
-      <h2 className="text-3xl font-medium text-white/70 ">Saved Messages</h2>
-      <div className="max-w-[80%] overflow-y-auto space-y-4 animate-slideUp delay-1000">
+    <div className="flex flex-col gap-6 w-full h-screen p-10 pl-16">
+      <h2 className="text-3xl font-medium text-white ">Saved Messages</h2>
+      <div className="max-w-[60%] overflow-y-auto space-y-4 animate-slideUp delay-1000">
         {messages.map((msg) => (
           <div
             key={msg._id}
@@ -87,7 +87,7 @@ const SavedMessages = () => {
             {msg.note && (
               <p className="text-sm italic text-gray-600">Note: {msg.note}</p>
             )}
-            <span className="absolute top-5 right-5 text-xs text-gray-500">
+            <span className="absolute top-5 right-5 text-xs text-black/80">
               {new Date(msg.savedAt).toLocaleString()}
             </span>
 
