@@ -7,11 +7,12 @@ import MoodSelection from "@/components/MoodSelection";
 import ModeSelection from "@/components/ModeSelection";
 import PersonaSelection from "@/components/PersonaSelection";
 import PersonaCustomization from "@/components/PersonaCustomization";
+import Disclaimer from "@/components/Disclaimer";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 export default function Home() {
-  const { session, nightMode, isLoggingOut, confirmedExit, setConfirmedExit } =
+  const { session, nightMode, isLoggingOut, confirmedExit, setConfirmedExit, showDisclaimer } =
     useSession();
   const [loadingMoodSelection, setLoadingMoodSelection] = useState(false); // Loads Mood Selection page
   const [loadingModeSelection, setLoadingModeSelection] = useState(false); // Loads Mode Selection page
@@ -63,7 +64,7 @@ export default function Home() {
           {/* Spinning Loader */}
           <div className="w-12 h-12 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin delay-1000 mt-3"></div>
         </div>
-      ) : loadingMoodSelection ? (
+      ) : showDisclaimer ? (<Disclaimer />) : loadingMoodSelection ? (
         <MoodSelection
           setLoadingModeSelection={setLoadingModeSelection}
           setLoadingMoodSelection={setLoadingMoodSelection}

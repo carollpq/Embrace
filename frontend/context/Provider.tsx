@@ -68,6 +68,8 @@ type SessionContextType = {
   setConfirmExitCallback: (cb: () => void) => void;
   confirmedExit: boolean;
   setConfirmedExit: (confirm: boolean) => void;
+  showDisclaimer: boolean;
+  setShowDisclaimer: (status: boolean) => void;
 };
 
 const SessionContext = createContext<SessionContextType | null>(null);
@@ -127,6 +129,7 @@ export const SessionProvider = ({
     () => () => {}
   );
   const [confirmedExit, setConfirmedExit] = useState(false);
+  const [showDisclaimer, setShowDisclaimer] = useState(false);
 
   const router = useRouter();
 
@@ -212,6 +215,8 @@ export const SessionProvider = ({
         setConfirmExitCallback,
         confirmedExit,
         setConfirmedExit,
+        showDisclaimer,
+        setShowDisclaimer,
       }}
     >
       {children}

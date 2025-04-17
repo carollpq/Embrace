@@ -4,12 +4,22 @@ import React from "react";
 interface SelectionCardProps {
   title: string;
   description: string;
-  svg: string;
+  svg?: string;
   onClick?: () => void;
   isSelected?: boolean;
+  titleStyle?: string;
+  descStyle?: string;
 }
 
-const SelectionCard: React.FC<SelectionCardProps> = ({ title, description, svg, onClick, isSelected }) => {
+const SelectionCard: React.FC<SelectionCardProps> = ({
+  title,
+  description,
+  svg = "",
+  onClick,
+  isSelected,
+  titleStyle = "",
+  descStyle = "",
+}) => {
   return (
     <div
       onClick={onClick}
@@ -19,16 +29,20 @@ const SelectionCard: React.FC<SelectionCardProps> = ({ title, description, svg, 
           : "bg-white/60 hover:bg-white/80 hover:text-black/80 hover:cursor-pointer" // Default style
       }`}
     >
-      <span className="text-left absolute top-7 left-8">{title}</span>
+      <h2 className={`${titleStyle ? titleStyle: "text-left absolute top-7 left-8"}`}>{title}</h2>
       <div className="flex flex-row px-8 flex-wrap">
-        <span className="font-semibold text-sm absolute left-8 top-16 pr-8">{description}</span>
-        <Image
-          className="absolute bottom-0 right-5"
-          src={svg}
-          alt=""
-          width={125}
-          height={125}
-        />
+        <span className={`${descStyle ? descStyle : "font-semibold text-sm absolute left-8 top-16 pr-8"}`}>
+          {description}
+        </span>
+        {svg && (
+          <Image
+            className="absolute bottom-0 right-5"
+            src={svg}
+            alt=""
+            width={125}
+            height={125}
+          />
+        )}
       </div>
     </div>
   );
