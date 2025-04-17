@@ -4,7 +4,7 @@ import { SignJWT } from "jose";  // Import SignJWT from jose
 import User from "@/utils/models/User";
 import { connect } from "@/utils/config/dbConfig";
 
-export async function POST(req) {
+export async function POST(req: Request) {
   await connect();
 
   try {

@@ -20,6 +20,8 @@ const Sidebar = () => {
     showHelp,
     setConfirmExitCallback,
     setShowConfirmExit,
+    showSavedMessages,
+    setShowSavedMessages,
   } = useSession();
 
   const [showSettings, setShowSettings] = useState(false);
@@ -148,9 +150,10 @@ const Sidebar = () => {
             className="mt-[-2rem]"
           >
             <div
-              className={`bg-[#021017]/80 rounded-lg drop-shadow-md text-left py-2 px-6 flex flex-row justify-between items-center hover:bg-white/70 hover:text-black hover:cursor-pointer ${
+              className={`${showSavedMessages ? "bg-white/70" : ""} bg-[#021017]/80 rounded-lg drop-shadow-md text-left py-2 px-6 flex flex-row justify-between items-center hover:bg-white/70 hover:text-black hover:cursor-pointer ${
                 showHelp ? "textbox-highlight-glow" : ""
               }`}
+              onClick={() => setShowSavedMessages(!showSavedMessages)}
             >
               <span>Saved messages</span>
               <Image

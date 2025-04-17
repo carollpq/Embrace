@@ -7,6 +7,7 @@ import Sidebar from "@/components/ui/Sidebar";
 import { useSession } from "@/context/Provider";
 import ExitConfirmationModal from "@/components/ui/ExitConfirmationModal";
 import { Toaster } from "react-hot-toast";
+import SavedMessages from "@/components/SavedMessages";
 
 const quicksand = Quicksand({ weight: ["400"], subsets: ["latin"] });
 
@@ -28,6 +29,7 @@ export default function RootLayout({
     highContrast,
     showConfirmExit,
     confirmedExit,
+    showSavedMessages,
   } = useSession();
 
   return (
@@ -61,8 +63,14 @@ export default function RootLayout({
               !showSideBar ? "w-screen absolute" : "w-full relative"
             } flex flex-col h-screen transition-all duration-300 ease-in-out z-10`}
           >
-            <ChatHeader />
-            {children}
+            {showSavedMessages ? (
+              <SavedMessages />
+            ) : (
+              <>
+                <ChatHeader />
+                {children}
+              </>
+            )}
           </div>
           {showConfirmExit && <ExitConfirmationModal />}
         </>

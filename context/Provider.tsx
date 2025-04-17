@@ -72,6 +72,8 @@ type SessionContextType = {
   setShowDisclaimer: (status: boolean) => void;
   showAbout: boolean;
   setShowAbout: (status: boolean) => void;
+  showSavedMessages: boolean;
+  setShowSavedMessages: (status:boolean) => void;
 };
 
 const SessionContext = createContext<SessionContextType | null>(null);
@@ -133,6 +135,7 @@ export const SessionProvider = ({
   const [confirmedExit, setConfirmedExit] = useState(false);
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
+  const [showSavedMessages, setShowSavedMessages] = useState(false);
   const router = useRouter();
 
   const recheckSession = async () => {
@@ -221,6 +224,8 @@ export const SessionProvider = ({
         setShowDisclaimer,
         showAbout,
         setShowAbout,
+        showSavedMessages,
+        setShowSavedMessages,
       }}
     >
       {children}
