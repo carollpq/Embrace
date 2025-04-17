@@ -101,7 +101,7 @@ export default function SigninPage() {
 
           {/* Re-directs user to Sign Up page section */}
           <p className="text-sm animate-slideUp">
-            Don't have an account?
+            Don&apos;t have an account?
             <Link
               className="font-semibold"
               href="/sign-up"

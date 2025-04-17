@@ -8,7 +8,7 @@ const ExitConfirmationModal = () => {
     <div className="fixed inset-0 bg-black/60 z-[9999] flex items-center justify-center">
       <div className="bg-black text-white p-6 rounded-lg w-[320px] shadow-xl">
         <p className="mb-4 text-md font-medium">
-          Are you sure you want to leave this chat? You won't be able to return
+          Are you sure you want to leave this chat? You won&apos;t be able to return
           to this conversation.
         </p>
         <div className="flex justify-center gap-3 mt-6 text-black">

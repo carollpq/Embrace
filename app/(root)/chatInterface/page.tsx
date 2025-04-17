@@ -209,7 +209,7 @@ const ChatInterface: React.FC = () => {
         >
           {messages.length === 0 && (
             <div className="flex items-center justify-center h-full text-4xl text-white animate-slideUp delay-1000">
-              Hi, I'm here for you 🤗
+              Hi, I&apos;m here for you 🤗
             </div>
           )}
           <AnimatePresence initial={false}>

@@ -46,7 +46,7 @@ const MoodSelection = ({
       <div className="flex flex-col items-center justify-center gap-4 text-white animate-slideUp delay-1000">
         <h2 className="text-3xl font-semibold">How are you feeling today?</h2>
         <p className="text-white/70 text-lg max-w-md text-center">
-          Select the mood that best describes how you're feeling. This helps
+          Select the mood that best describes how you&apos;re feeling. This helps
           your AI companion respond in a more thoughtful and supportive way.
         </p>
         <div className="grid grid-cols-2 gap-6 mt-6">

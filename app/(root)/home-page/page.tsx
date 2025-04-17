@@ -8,7 +8,6 @@ import ModeSelection from "@/components/ModeSelection";
 import PersonaSelection from "@/components/PersonaSelection";
 import PersonaCustomization from "@/components/PersonaCustomization";
 import Disclaimer from "@/components/Disclaimer";
-import { useRouter } from "next/navigation";
 import About from "@/components/About";
 
 export default function Home() {
