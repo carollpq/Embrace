@@ -1,4 +1,5 @@
 "use client";
+import { ChangeEvent } from 'react';
 
 interface TextInputProps {
   label: string;
