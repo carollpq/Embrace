@@ -9,7 +9,6 @@ import PersonaSelection from "@/components/PersonaSelection";
 import PersonaCustomization from "@/components/PersonaCustomization";
 import Disclaimer from "@/components/Disclaimer";
 import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
 import About from "@/components/About";
 
 export default function Home() {
@@ -27,16 +26,6 @@ export default function Home() {
   const [loadingPersonaSelection, setLoadingPersonaSelection] = useState(false); // Loads Persona Selection page
   const [loadingPersonaCustomization, setLoadingCustomizationSelection] =
     useState(false); // Loads Persona Selection page
-  const router = useRouter();
-
-  useEffect(() => {
-    if (session === null) {
-      toast.error("Your session has expired. Redirecting to login...");
-      setTimeout(() => {
-        router.push("/");
-      }, 2000); // wait 2 seconds so user can read the message
-    }
-  }, [session]);
 
   useEffect(() => {
     if (confirmedExit) setConfirmedExit(false);

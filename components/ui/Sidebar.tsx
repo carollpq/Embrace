@@ -87,7 +87,10 @@ const Sidebar = () => {
           </div>
           <div className="flex flex-col gap-3">
             <div
-              onClick={() => setSelectedMode("text-and-text")}
+              onClick={() => {
+                setSelectedMode("text-and-text");
+                setShowSavedMessages(false);
+              }}
               className={`${
                 selectedMode === "text-and-text"
                   ? "bg-white/70 text-black"
@@ -99,7 +102,10 @@ const Sidebar = () => {
               <span>Text and text</span>
             </div>
             <div
-              onClick={() => setSelectedMode("text-and-voice")}
+              onClick={() => {
+                setSelectedMode("text-and-voice");
+                setShowSavedMessages(false);
+              }}
               className={`${
                 selectedMode === "text-and-voice"
                   ? "bg-white/70 text-black"
@@ -111,7 +117,10 @@ const Sidebar = () => {
               <span>Text and voice</span>
             </div>
             <div
-              onClick={() => setSelectedMode("voice-and-text")}
+              onClick={() => {
+                setSelectedMode("voice-and-text");
+                setShowSavedMessages(false);
+              }}
               className={`${
                 selectedMode === "voice-and-text"
                   ? "bg-white/70 text-black"
@@ -123,7 +132,10 @@ const Sidebar = () => {
               <span>Voice and text</span>
             </div>
             <div
-              onClick={() => setSelectedMode("voice-and-voice")}
+              onClick={() => {
+                setSelectedMode("voice-and-voice");
+                setShowSavedMessages(false);
+              }}
               className={`${
                 selectedMode === "voice-and-voice"
                   ? "bg-white/70 text-black"
@@ -150,7 +162,9 @@ const Sidebar = () => {
             className="mt-[-2rem]"
           >
             <div
-              className={`${showSavedMessages ? "bg-white/70" : ""} bg-[#021017]/80 rounded-lg drop-shadow-md text-left py-2 px-6 flex flex-row justify-between items-center hover:bg-white/70 hover:text-black hover:cursor-pointer ${
+              className={`${
+                showSavedMessages ? "bg-white/70 text-black" : ""
+              } bg-[#021017]/80 rounded-lg drop-shadow-md text-left py-2 px-6 flex flex-row justify-between items-center hover:bg-white/70 hover:text-black hover:cursor-pointer ${
                 showHelp ? "textbox-highlight-glow" : ""
               }`}
               onClick={() => setShowSavedMessages(!showSavedMessages)}

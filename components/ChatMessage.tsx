@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { playPersonaSpeech } from "@/utils/tts/polly";
 import { playBrowserTTS } from "@/utils/tts/browserTTS";
 import { useSession } from "@/context/Provider";
+import Image from "next/image";
 
 function removeEmojis(text: string): string {
   return text
@@ -49,27 +50,66 @@ const ChatMessage = ({ message }: { message: Message }) => {
     }
   }, [message.content, isUser, selectedMode, selectedTTS, selectedPersona]);
 
-  const handleSave = async () => {
-    try {
-      const res = await fetch("/api/save-message", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: session?.email,
-          content: message.content,
-        }),
-      });
-
-      if (res.ok) {
-        setIsSaved(true);
+  // Check the already saved messages 
+  useEffect(() => {
+    const checkIfMessageIsSaved = async () => {
+      if (!isUser && message.content && session?.email) {
+        try {
+          const res = await fetch(`/api/get-saved-messages?userId=${session.email}`);
+          const data = await res.json();
+          const savedMessages = data.savedMessages || [];
+  
+          const found = savedMessages.some((msg: { content: string }) =>
+            msg.content === message.content
+          );
+  
+          setIsSaved(found);
+        } catch (error) {
+          console.error("Error checking saved messages:", error);
+        }
       }
-    } catch (err) {
-      console.error("Error saving message:", err);
+    };
+  
+    checkIfMessageIsSaved();
+  }, [session?.email, message.content, isUser]);
+  
+
+  const handleToggleSave = async () => {
+    const payload = {
+      userId: session?.email,
+      content: message.content,
+    };
+
+    if (!isSaved) {
+      // Save the message
+      try {
+        const res = await fetch("/api/save-message", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        if (res.ok) setIsSaved(true);
+      } catch (err) {
+        console.error("Error saving message:", err);
+      }
+    } else {
+      // Delete the message
+      try {
+        const res = await fetch("/api/delete-saved-message", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        if (res.ok) setIsSaved(false);
+      } catch (err) {
+        console.error("Error deleting message:", err);
+      }
     }
   };
 
   return (
     <div className="flex flex-col justify-center pt-3">
+      {/* Chat bubble */}
       <div
         className={`${
           isUser ? style["chat-message-user"] : style["chat-message-chatbot"]
@@ -101,31 +141,20 @@ const ChatMessage = ({ message }: { message: Message }) => {
             />
           </div>
         ) : (
-          <>
-            {message.content}
-            {!isUser && (
-              <button
-                onClick={handleSave}
-                disabled={isSaved}
-                className="absolute right-[-2rem] top-2 opacity-60 hover:opacity-100 transition"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill={isSaved ? "red" : "none"}
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke={isSaved ? "red" : "black"}
-                  className="w-5 h-5"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M17.25 3.75H6.75A2.25 2.25 0 004.5 6v15.188a.563.563 0 00.893.451L12 17.25l6.607 4.39a.563.563 0 00.893-.451V6a2.25 2.25 0 00-2.25-2.25z"
-                  />
-                </svg>
-              </button>
-            )}
-          </>
+          message.content
+        )}
+        {/* Save icon for assistant messages only */}
+        {!isUser && !isTypingPlaceholder && (
+          <Image
+            className="hover:cursor-pointer justify-start"
+            src={
+              isSaved ? "/icons/saved-icon.svg" : "/icons/to-be-saved-icon.svg"
+            }
+            alt="Saved icon"
+            width={24}
+            height={24}
+            onClick={handleToggleSave}
+          />
         )}
       </div>
     </div>

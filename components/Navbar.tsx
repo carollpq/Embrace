@@ -21,8 +21,8 @@ const Navbar = () => {
       <span
           className={`hover:cursor-pointer hover:text-white ${showAbout ? "text-white" : ""}`}
           onClick={() => {
-            setShowAbout(!showAbout);
-            setShowDisclaimer(!showDisclaimer);
+            setShowAbout(true);
+            setShowDisclaimer(false);
           }}
         >
           About
@@ -30,8 +30,8 @@ const Navbar = () => {
         <span
           className={`hover:cursor-pointer hover:text-white ${showDisclaimer ? "text-white" : ""}`}
           onClick={() => {
-            setShowDisclaimer(!showDisclaimer);
-            setShowAbout(!showAbout);
+            setShowDisclaimer(true);
+            setShowAbout(false);
           }}
         >
           Disclaimer
