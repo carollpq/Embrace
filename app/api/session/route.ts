@@ -1,11 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose"; // Import jwtVerify from 'jose'
 
 // JWT secret key (ensure this is properly set in your environment variables)
 const secretKey = new TextEncoder().encode(process.env.JWT_SECRET);
 
 // Helper function to extract a specific cookie from the request headers
-const getCookie = (req: NextResponse, cookieName: string) => {
+const getCookie = (req: NextRequest, cookieName: string) => {
   const cookies = req.headers.get("cookie");
   if (!cookies) return null;
 
@@ -15,7 +15,7 @@ const getCookie = (req: NextResponse, cookieName: string) => {
   return cookie ? decodeURIComponent(cookie[1]) : null;
 };
 
-export async function GET(req: NextResponse) {
+export async function GET(req: NextRequest) {
   // Extract token from cookies
   const token = getCookie(req, "token");
 
