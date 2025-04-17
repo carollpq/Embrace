@@ -3,11 +3,12 @@
 import InputBox from "@/components/InputBox";
 import ChatMessage from "@/components/ChatMessage";
 import { useChat } from "ai/react";
-import { useRef, useLayoutEffect, useEffect } from "react";
+import { useRef, useLayoutEffect, useEffect, FormEvent } from "react";
 import { useSession } from "@/context/Provider";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+
 
 const ChatInterface: React.FC = () => {
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
@@ -130,9 +131,9 @@ const ChatInterface: React.FC = () => {
   }, [messages.length, selectedMood, selectedPersona, customTraits]);
 
   // Submit via text box
-  const handleSubmit = async (e?: any) => {
+  const handleSubmit = async (e?: FormEvent<HTMLFormElement>) => {
     if (e?.preventDefault) e.preventDefault();
-    originalHandleSubmit(e || { target: { value: input } });
+    originalHandleSubmit(e || ({ target: { value: input } } as unknown as FormEvent<HTMLFormElement>));
 
     setTimeout(() => {
       setMessages((prevMessages) => [
