@@ -20,7 +20,7 @@ const Settings = () => {
       <div className="flex justify-between items-center">
         <span>Font Size</span>
         <select
-          value={fontSize}
+          value={fontSize ?? "base"}
           onChange={(e) => setFontSize(e.target.value)}
           className="bg-transparent border rounded px-2 py-1 hover:cursor-pointer"
         >
@@ -36,7 +36,7 @@ const Settings = () => {
         <span>High Contrast</span>
         <input
           type="checkbox"
-          checked={highContrast}
+          checked={highContrast ?? false}
           onChange={() => setHighContrast(!highContrast)}
           className="w-5 h-5 hover:cursor-pointer"
         />

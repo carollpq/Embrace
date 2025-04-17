@@ -114,7 +114,7 @@ export const SessionProvider = ({
       ? localStorage.getItem("showSideBar") === "true"
       : false
   );
-  const [fontSize, setFontSize] = useState<string | null>(
+  const [fontSize, setFontSize] = useState<string>(
     typeof window !== "undefined"
       ? localStorage.getItem("fontSize") || "text-base"
       : "text-base"

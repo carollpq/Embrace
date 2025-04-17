@@ -7,6 +7,7 @@ import {
   useSession,
   jennaDefaultTraits,
   marcusDefaultTraits,
+  Traits,
 } from "@/context/Provider";
 import { useState, useEffect, useRef } from "react";
 
@@ -197,7 +198,7 @@ const ChatHeader = () => {
                     <div key={trait} className="mb-4 text-xs">
                       <SliderSetting
                         label={trait.charAt(0).toUpperCase() + trait.slice(1)}
-                        value={traitsToUse[trait]}
+                        value={traitsToUse[trait as keyof typeof traitsToUse]}
                         onChange={(val) =>
                           setCustomTraits((prev) => {
                             const baseTraits =
@@ -208,7 +209,7 @@ const ChatHeader = () => {
 
                             return {
                               ...baseTraits,
-                              [trait]: val,
+                              [trait as keyof Traits]: val
                             };
                           })
                         }
