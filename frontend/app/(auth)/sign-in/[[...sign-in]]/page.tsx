@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/context/Provider";
-import { signIn } from "next-auth/react";
 
 export default function SigninPage() {
   const [email, setEmail] = useState("");
@@ -111,30 +110,6 @@ export default function SigninPage() {
               Sign up
             </Link>
           </p>
-
-          {/* Divider section */}
-          {/* <div className="flex-center flex-row gap-8 max-w-[500px] w-full animate-slideUp">
-            <hr className="border-white border-t-2 flex-grow rounded" />
-            <p className="text-white">or</p>
-            <hr className="border-white border-t-2 flex-grow rounded" />
-          </div> */}
-
-          {/* OAuth section */}
-          {/* <div className="flex-center flex-col max-w-[350px] w-full gap-4 animate-slideUp">
-            <GeneralButton
-              className="bg-white/70 hover:bg-white/90 hover:text-black/90"
-              text="Continue with Google"
-              //isLoading={loading}
-              onClick={() => {
-                setLoading(true);
-                signIn("google", { callbackUrl: "/home-page" });
-              }}
-            />
-            <GeneralButton
-              className="bg-white/70 hover:bg-white/90 hover:text-black/90"
-              text="Continue with Apple"
-            />
-          </div> */}
         </>
       )}
     </div>
