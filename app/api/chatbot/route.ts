@@ -1,7 +1,7 @@
 
 import { getModel } from "@/utils/geminiClient";
 
-export const runtime = "node";
+export const runtime = "nodejs";
 
 const generationConfig = {
   temperature: 1,
