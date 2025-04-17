@@ -70,6 +70,8 @@ type SessionContextType = {
   setConfirmedExit: (confirm: boolean) => void;
   showDisclaimer: boolean;
   setShowDisclaimer: (status: boolean) => void;
+  showAbout: boolean;
+  setShowAbout: (status: boolean) => void;
 };
 
 const SessionContext = createContext<SessionContextType | null>(null);
@@ -130,7 +132,7 @@ export const SessionProvider = ({
   );
   const [confirmedExit, setConfirmedExit] = useState(false);
   const [showDisclaimer, setShowDisclaimer] = useState(false);
-
+  const [showAbout, setShowAbout] = useState(false);
   const router = useRouter();
 
   const recheckSession = async () => {
@@ -217,6 +219,8 @@ export const SessionProvider = ({
         setConfirmedExit,
         showDisclaimer,
         setShowDisclaimer,
+        showAbout,
+        setShowAbout,
       }}
     >
       {children}

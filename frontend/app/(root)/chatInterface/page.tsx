@@ -42,11 +42,6 @@ const ChatInterface: React.FC = () => {
     setMessages,
   } = useChat({
     api: "api/chatbot",
-    body: {
-      selectedPersona,
-      ...(customTraits && { customTraits }),
-      selectedMood,
-    },
     onResponse: async (response) => {
       try {
         const jsonResponse = await response.json();
@@ -67,7 +62,7 @@ const ChatInterface: React.FC = () => {
       }
     },
   });
-  
+
   // Re-directs user to login if session expires
   useEffect(() => {
     if (session === null) {
@@ -83,9 +78,7 @@ const ChatInterface: React.FC = () => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       e.preventDefault();
     };
-
     window.addEventListener("beforeunload", handleBeforeUnload);
-
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
@@ -122,20 +115,21 @@ const ChatInterface: React.FC = () => {
         });
 
         const data = await response.json();
-
-        const assistantMessage = {
-          id: Date.now().toString(),
-          role: "assistant" as const,
-          content: data.content,
-        };
-
-        setMessages([introMessage, assistantMessage]);
+        setMessages([
+          introMessage,
+          {
+            id: Date.now().toString(),
+            role: "assistant" as const,
+            content: data.content,
+          },
+        ]);
       }
     };
 
     sendIntroFromMood();
   }, [messages.length, selectedMood, selectedPersona, customTraits]);
 
+  // Submit via text box
   const handleSubmit = async (e?: any) => {
     if (e?.preventDefault) e.preventDefault();
     originalHandleSubmit(e || { target: { value: input } });
@@ -151,7 +145,7 @@ const ChatInterface: React.FC = () => {
       ]);
     }, 1000);
   };
-
+  // Submit via voice transcript
   const handleDirectSubmit = async (text: string) => {
     const userMessage = {
       id: Date.now().toString(),
@@ -222,7 +216,7 @@ const ChatInterface: React.FC = () => {
             {messages.map((message, index) => (
               <motion.div
                 key={message.id || index}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.4, ease: "easeOut" }}

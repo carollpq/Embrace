@@ -36,6 +36,13 @@ const ChatHeader = () => {
     setShowSideBar(!showSideBar);
   };
 
+  //Debugging : whether customTraits update correctly
+  useEffect(() => {
+    if (customTraits) {
+      console.log("Current custom traits:", customTraits);
+    }
+  }, [customTraits]);
+
   // Detect outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -112,11 +119,16 @@ const ChatHeader = () => {
                 </h3>
                 <p
                   className="underline text-white/70 text-xs hover:cursor-pointer"
-                  onClick={() =>
-                    setSelectedPersona(
-                      selectedPersona === "Jenna" ? "Marcus" : "Jenna"
-                    )
-                  }
+                  onClick={() => {
+                    const newPersona =
+                      selectedPersona === "Jenna" ? "Marcus" : "Jenna";
+                    setSelectedPersona(newPersona);
+                    setCustomTraits(
+                      newPersona === "Jenna"
+                        ? jennaDefaultTraits
+                        : marcusDefaultTraits
+                    );
+                  }}
                 >
                   Switch persona
                 </p>

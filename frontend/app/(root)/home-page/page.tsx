@@ -10,10 +10,18 @@ import PersonaCustomization from "@/components/PersonaCustomization";
 import Disclaimer from "@/components/Disclaimer";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import About from "@/components/About";
 
 export default function Home() {
-  const { session, nightMode, isLoggingOut, confirmedExit, setConfirmedExit, showDisclaimer } =
-    useSession();
+  const {
+    session,
+    nightMode,
+    isLoggingOut,
+    confirmedExit,
+    setConfirmedExit,
+    showDisclaimer,
+    showAbout,
+  } = useSession();
   const [loadingMoodSelection, setLoadingMoodSelection] = useState(false); // Loads Mood Selection page
   const [loadingModeSelection, setLoadingModeSelection] = useState(false); // Loads Mode Selection page
   const [loadingPersonaSelection, setLoadingPersonaSelection] = useState(false); // Loads Persona Selection page
@@ -34,20 +42,6 @@ export default function Home() {
     if (confirmedExit) setConfirmedExit(false);
   }, []);
 
-  useEffect(() => {
-    const warmUpGemini = async () => {
-      try {
-        const res = await fetch("/api/chatbot/init");
-        const data = await res.json();
-        console.log("Gemini warm-up status:", data.message || data.error);
-      } catch (err) {
-        console.error("Gemini warm-up error:", err);
-      }
-    };
-
-    warmUpGemini(); // Fire and forget
-  }, []);
-
   return (
     <div
       className={`flex flex-col justify-center gap-16 items-center h-screen bg-center ${
@@ -64,7 +58,9 @@ export default function Home() {
           {/* Spinning Loader */}
           <div className="w-12 h-12 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin delay-1000 mt-3"></div>
         </div>
-      ) : showDisclaimer ? (<Disclaimer />) : loadingMoodSelection ? (
+      ) : showDisclaimer ? (
+        <Disclaimer />
+      ) : showAbout ? (<About />) : loadingMoodSelection ? (
         <MoodSelection
           setLoadingModeSelection={setLoadingModeSelection}
           setLoadingMoodSelection={setLoadingMoodSelection}
