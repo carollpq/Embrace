@@ -5,7 +5,7 @@ import { jwtVerify } from "jose"; // Import jwtVerify from 'jose'
 const secretKey = new TextEncoder().encode(process.env.JWT_SECRET);
 
 // Helper function to extract a specific cookie from the request headers
-const getCookie = (req, cookieName) => {
+const getCookie = (req: NextResponse, cookieName: string) => {
   const cookies = req.headers.get("cookie");
   if (!cookies) return null;
 
@@ -15,7 +15,7 @@ const getCookie = (req, cookieName) => {
   return cookie ? decodeURIComponent(cookie[1]) : null;
 };
 
-export async function GET(req) {
+export async function GET(req: NextResponse) {
   // Extract token from cookies
   const token = getCookie(req, "token");
 
