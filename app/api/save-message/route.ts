@@ -1,7 +1,7 @@
 import { SavedMessageModel } from "@/utils/models/SavedMessage";
 import { connect } from "@/utils/config/dbConfig";
 
-export default async function POST(req: Request) {
+export async function POST(req: Request) {
   await connect();
 
   const { userId, content, note } = await req.json();
