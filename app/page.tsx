@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 const pacifico = Pacifico({ weight: ["400"], subsets: ["latin"] });
 const quicksand = Quicksand({ weight: ["500"], subsets: ["latin"] });
 
+// This is the default page
 export default function StartPage() {
   const { session, nightMode, setIsLoggingOut, } = useSession();
   const [isLoading, setIsLoading] = useState(false);
