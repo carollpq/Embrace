@@ -1,4 +1,4 @@
-// utils/polly.ts
+/* eslint-disable react/no-unescaped-entities */
 import { PollyClient, SynthesizeSpeechCommand } from "@aws-sdk/client-polly";
 
 const pollyClient = new PollyClient({

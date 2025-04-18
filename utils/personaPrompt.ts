@@ -1,3 +1,6 @@
+type Mood = "Anxious" | "Sad" | "Angry" | "Happy" | "Stressed" | "Neutral";
+
+
 export function generatePersonalityDescription(
   traits: {
     empathy: number;
@@ -7,7 +10,7 @@ export function generatePersonalityDescription(
     directness: number;
   },
   selectedPersona: string,
-  mood: string = "Neutral"
+  mood: Mood = "Neutral"
 ) {
   const { empathy, warmth, supportStyle, energy, directness } = traits;
 
