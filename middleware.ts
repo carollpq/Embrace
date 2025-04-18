@@ -43,3 +43,6 @@ export default async function middleware(req: NextRequest) {
 
   return NextResponse.next(); // ✅ Public route, proceed
 }
+export const config = {
+  matcher: ["/((?!_next|favicon.ico|api|sign-in|sign-up).*)"],
+};
