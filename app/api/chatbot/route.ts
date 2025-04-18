@@ -4,10 +4,10 @@ import { getModel } from "@/utils/geminiClient";
 export const runtime = "edge";
 
 const generationConfig = {
-  temperature: 1,
+  temperature: 0.5,
   topP: 0.95,
-  topK: 40,
-  maxOutputTokens: 1192,
+  topK: 20,
+  maxOutputTokens: 600,
 };
 
 // Hanle POST requests

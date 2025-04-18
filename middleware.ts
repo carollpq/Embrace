@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtVerify } from "jose";
 
-export async function middleware(req: NextRequest) {
+export default async function middleware(req: NextRequest) {
   const token = req.cookies.get("token")?.value;
   const currentPath = req.nextUrl.pathname;
 
@@ -30,3 +30,7 @@ export async function middleware(req: NextRequest) {
   // Allow requests to proceed if no redirection is needed
   return NextResponse.next();
 }
+
+export const config = {
+  matcher: ["/", "/home-page", "/chat-interface"],
+};
