@@ -7,7 +7,7 @@ export default async function middleware(req: NextRequest) {
   const currentPath = req.nextUrl.pathname;
 
   try {
-    const secret = process.env.JWT_SECRET;
+    const secret = process.env.JWT_SECRET!;
     if (!secret) throw new Error("JWT_SECRET is not defined");
 
     if (token && typeof token === "string") {
@@ -37,5 +37,5 @@ export default async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/home-page", "/chatInterface"],
+  matcher: ["/", "/home-page", "/sign-in", "/sign-up"],
 };
