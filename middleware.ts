@@ -7,30 +7,35 @@ export default async function middleware(req: NextRequest) {
   const currentPath = req.nextUrl.pathname;
 
   try {
-    if (token && typeof token === "string") {
-      // Verify token using the jose library (no Node.js crypto dependency)
-      await jwtVerify(token, new TextEncoder().encode(process.env.JWT_SECRET));
+    const secret = process.env.JWT_SECRET;
+    if (!secret) throw new Error("JWT_SECRET is not defined");
 
-      // Redirect authenticated users to `/home-page` if they are not already there
+    if (token && typeof token === "string") {
+      await jwtVerify(token, new TextEncoder().encode(secret));
+
+      // Redirect authenticated users from "/" to "/home-page"
       if (currentPath === "/") {
         const url = req.nextUrl.clone();
         url.pathname = "/home-page";
         return NextResponse.redirect(url);
       }
 
-      // Allow the request to proceed for authenticated users
-      return NextResponse.next();
-    } else {
-      console.error("Token is not a valid string:", token);
+      return NextResponse.next(); // Authenticated, proceed
     }
   } catch (error) {
-    console.error("JWT verification failed or token not found:", error);
+    console.error("JWT verification failed:", error);
   }
 
-  // Allow requests to proceed if no redirection is needed
-  return NextResponse.next();
+  // Redirect unauthenticated users to sign-in if accessing protected page
+  if (currentPath !== "/" && currentPath !== "/sign-in" && currentPath !== "/sign-up") {
+    const url = req.nextUrl.clone();
+    url.pathname = "/sign-in";
+    return NextResponse.redirect(url);
+  }
+
+  return NextResponse.next(); // Public routes
 }
 
 export const config = {
-  matcher: ["/", "/home-page", "/chat-interface"],
+  matcher: ["/", "/home-page", "/chatInterface"],
 };
