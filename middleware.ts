@@ -37,5 +37,5 @@ export default async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/home-page", "/chatInterface"],
+  matcher: ["/", "/home-page", "/chatInterface"],
 };
