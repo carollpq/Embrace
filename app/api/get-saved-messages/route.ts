@@ -1,7 +1,7 @@
 import { SavedMessageModel } from "@/utils/models/SavedMessage";
 import { connect } from "@/utils/config/dbConfig";
 
-export async function GET(req: Request) {
+export default async function GET(req: Request) {
   await connect();
 
   const userId = new URL(req.url).searchParams.get("userId");

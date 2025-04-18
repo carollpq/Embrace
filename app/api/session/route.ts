@@ -15,7 +15,7 @@ const getCookie = (req: NextRequest, cookieName: string) => {
   return cookie ? decodeURIComponent(cookie[1]) : null;
 };
 
-export async function GET(req: NextRequest) {
+export default async function GET(req: NextRequest) {
   // Extract token from cookies
   const token = getCookie(req, "token");
 

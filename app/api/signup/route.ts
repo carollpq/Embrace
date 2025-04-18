@@ -4,7 +4,7 @@ import User from "@/utils/models/User";
 import bcryptjs from "bcryptjs";
 import { SignJWT } from "jose";  // Import SignJWT from jose
 
-export async function POST(req: NextRequest) {
+export default async function POST(req: NextRequest) {
   await connect();
 
   try{

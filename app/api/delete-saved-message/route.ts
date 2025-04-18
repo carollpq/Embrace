@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import { connect } from "@/utils/config/dbConfig"; // Adjust path as needed
 import { SavedMessageModel } from "@/utils/models/SavedMessage";
 
-export async function DELETE(req: NextRequest) {
+export default async function DELETE(req: NextRequest) {
   try {
     await connect();
     const { messageId, userId } = await req.json();

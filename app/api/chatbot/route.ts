@@ -11,7 +11,7 @@ const generationConfig = {
 };
 
 // Hanle POST requests
-export async function POST(req: Request) {
+export default async function POST(req: Request) {
   try {
     const { messages, selectedPersona, customTraits, mood } = await req.json();
     const model = getModel(
