@@ -6,36 +6,40 @@ export default async function middleware(req: NextRequest) {
   const token = req.cookies.get("token")?.value;
   const currentPath = req.nextUrl.pathname;
 
-  try {
-    const secret = process.env.JWT_SECRET!;
-    if (!secret) throw new Error("JWT_SECRET is not defined");
+  // Define public routes clearly
+  const publicPaths = ["/", "/sign-in", "/sign-up"];
 
-    if (token && typeof token === "string") {
+  try {
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      console.error("❌ JWT_SECRET not defined");
+      return NextResponse.next(); // Avoid 500
+    }
+
+    if (token) {
+      // Attempt to verify token
       await jwtVerify(token, new TextEncoder().encode(secret));
 
-      // Redirect authenticated users from "/" to "/home-page"
+      // If at root, redirect to /home-page
       if (currentPath === "/") {
         const url = req.nextUrl.clone();
         url.pathname = "/home-page";
         return NextResponse.redirect(url);
       }
 
-      return NextResponse.next(); // Authenticated, proceed
+      return NextResponse.next(); // ✅ Authenticated, proceed
     }
-  } catch (error) {
-    console.error("JWT verification failed:", error);
+  } catch (err) {
+    console.error("❌ Token verification failed:", err);
+    // Let it fall through to redirect if needed
   }
 
-  // Redirect unauthenticated users to sign-in if accessing protected page
-  if (currentPath !== "/" && currentPath !== "/sign-in" && currentPath !== "/sign-up") {
+  // If user is unauthenticated and trying to access a protected route
+  if (!publicPaths.includes(currentPath)) {
     const url = req.nextUrl.clone();
     url.pathname = "/sign-in";
     return NextResponse.redirect(url);
   }
 
-  return NextResponse.next(); // Public routes
+  return NextResponse.next(); // ✅ Public route, proceed
 }
-
-export const config = {
-  matcher: ["/", "/home-page", "/sign-in", "/sign-up"],
-};
