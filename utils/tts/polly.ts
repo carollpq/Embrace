@@ -75,12 +75,14 @@ const personaVoices = {
 };
 
 export async function playPersonaSpeech(text: string, persona: string | null) {
-  const voiceId = personaVoices[persona];
-  if (!voiceId) {
+  if (!persona || !(persona in personaVoices)) {
     console.error(`Voice ID not found for persona: ${persona}`);
     return;
   }
-  await playSpeech(text, voiceId); // Ensure this is awaited
+
+  const voiceId = personaVoices[persona as keyof typeof personaVoices];
+  await playSpeech(text, voiceId);
 }
+
 
 export default pollyClient;
