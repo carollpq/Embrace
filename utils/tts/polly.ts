@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
-import { PollyClient, SynthesizeSpeechCommand } from "@aws-sdk/client-polly";
+import { PollyClient, SynthesizeSpeechCommand, Engine, OutputFormat, VoiceId } from "@aws-sdk/client-polly";
 
 const pollyClient = new PollyClient({
   region: process.env.AWS_REGION || "us-east-1",
@@ -19,10 +19,10 @@ async function convertAudioStreamToUint8Array(stream: any): Promise<Uint8Array> 
 
 export async function getSpeech(text: string, voiceId = "Danielle") {
   const params = {
-    OutputFormat: "mp3",
+    OutputFormat: "mp3" as OutputFormat,
     Text: text,
-    VoiceId: voiceId,
-    Engine: "generative", // Use 'standard' for non-Neural voices if needed
+    VoiceId: voiceId as VoiceId,
+    Engine: "generative" as Engine, // Use 'standard' for non-Neural voices if needed
   };
 
   try {
