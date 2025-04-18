@@ -1,3 +1,4 @@
+type Mood = "Anxious" | "Sad" | "Angry" | "Happy" | "Stressed" | "Neutral";
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { generatePersonalityDescription } from "@/utils/personaPrompt";
@@ -22,7 +23,7 @@ export const getModel = (
     energy: number;
     directness: number;
   } | null,
-  mood?: string
+  mood?: Mood
 ) => {
   const systemInstructionText = customTraits
     ? generatePersonalityDescription(customTraits, persona, mood)
