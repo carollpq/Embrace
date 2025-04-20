@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { Message as ChatMessageType } from "ai/react";
 
 // Trait Types
 export type Traits = {
@@ -73,7 +74,11 @@ type SessionContextType = {
   showAbout: boolean;
   setShowAbout: (status: boolean) => void;
   showSavedMessages: boolean;
-  setShowSavedMessages: (status:boolean) => void;
+  setShowSavedMessages: (status: boolean) => void;
+  messages: ChatMessageType[];
+  setMessages: React.Dispatch<React.SetStateAction<ChatMessageType[]>>;
+  chatInput: string;
+  setChatInput: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const SessionContext = createContext<SessionContextType | null>(null);
@@ -136,6 +141,8 @@ export const SessionProvider = ({
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
   const [showSavedMessages, setShowSavedMessages] = useState(false);
+  const [messages, setMessages] = useState<ChatMessageType[]>([]);
+  const [chatInput, setChatInput] = useState<string>("");
   const router = useRouter();
 
   const recheckSession = async () => {
@@ -226,6 +233,10 @@ export const SessionProvider = ({
         setShowAbout,
         showSavedMessages,
         setShowSavedMessages,
+        messages,
+        setMessages,
+        chatInput,
+        setChatInput,
       }}
     >
       {children}

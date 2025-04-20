@@ -2,90 +2,56 @@
 
 import InputBox from "@/components/InputBox";
 import ChatMessage from "@/components/ChatMessage";
-import { useChat } from "ai/react";
 import { useRef, useLayoutEffect, useEffect, FormEvent } from "react";
 import { useSession } from "@/context/Provider";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
-
 const ChatInterface: React.FC = () => {
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
-  const { selectedPersona, customTraits, selectedMood, session } = useSession();
-  const router = useRouter();
-  const moodToPrompt: Record<string, string> = {
-    Anxious: `Hey there, ${
-      session ? `I'm ${session.name}.` : ""
-    } I'm feeling anxious.`,
-    Sad: `Hey there, ${
-      session ? `I'm ${session.name}.` : ""
-    } I'm feeling really sad today.`,
-    Angry: `Hey there, ${
-      session ? `I'm ${session.name}.` : ""
-    } I'm angry about something that happened.`,
-    Happy: `Hey there, ${
-      session ? `I'm ${session.name}.` : ""
-    } I'm in a happy mood today!`,
-    Neutral: `Hey there, ${
-      session ? `I'm ${session.name}.` : ""
-    } I'm feeling okay, nothing in particular.`,
-    Stressed: `Hey there, ${
-      session ? `I'm ${session.name}.` : ""
-    } I'm stressed and overwhelmed.`,
-  };
-
   const {
     messages,
-    input,
-    handleInputChange,
-    handleSubmit: originalHandleSubmit,
     setMessages,
-  } = useChat({
-    api: "api/chatbot",
-    onResponse: async (response) => {
-      try {
-        const jsonResponse = await response.json();
+    chatInput,
+    setChatInput,
+    selectedPersona,
+    customTraits,
+    selectedMood,
+    session,
+  } = useSession();
 
-        if (jsonResponse?.content) {
-          setTimeout(() => {
-            setMessages((prevMessages) => {
-              const filtered = prevMessages.filter(
-                (msg) =>
-                  msg.role !== "assistant" || msg.content !== "__typing__"
-              );
-              return [...filtered, jsonResponse];
-            });
-          }, 500);
-        }
-      } catch (error) {
-        console.error("Error parsing the response:", error);
-      }
-    },
-  });
+  const router = useRouter();
 
-  // Re-directs user to login if session expires
+  const moodToPrompt: Record<string, string> = {
+    Anxious: `Hey there, ${session ? `I'm ${session.name}.` : ""} I'm feeling anxious.`,
+    Sad: `Hey there, ${session ? `I'm ${session.name}.` : ""} I'm feeling really sad today.`,
+    Angry: `Hey there, ${session ? `I'm ${session.name}.` : ""} I'm angry about something that happened.`,
+    Happy: `Hey there, ${session ? `I'm ${session.name}.` : ""} I'm in a happy mood today!`,
+    Neutral: `Hey there, ${session ? `I'm ${session.name}.` : ""} I'm feeling okay, nothing in particular.`,
+    Stressed: `Hey there, ${session ? `I'm ${session.name}.` : ""} I'm stressed and overwhelmed.`,
+  };
+
+  // Redirect if session expired
   useEffect(() => {
     if (session === null) {
       toast.error("Your session has expired. Redirecting to login...");
       setTimeout(() => {
         router.push("/");
-      }, 2000); // wait 2 seconds so user can read the message
+      }, 2000);
     }
   }, [session]);
 
-  // Warns user before refresh
+  // Prevent page refresh while chatting
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       e.preventDefault();
     };
     window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [messages]);
 
-  // 🧠 Mood-based introduction (only triggers once at beginning)
+  // Mood-based intro
   useEffect(() => {
     const sendIntroFromMood = async () => {
       if (messages.length === 0 && selectedMood && moodToPrompt[selectedMood]) {
@@ -104,7 +70,7 @@ const ChatInterface: React.FC = () => {
           },
         ]);
 
-        const response = await fetch("/api/chatbot", {
+        const res = await fetch("/api/chatbot", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -115,12 +81,13 @@ const ChatInterface: React.FC = () => {
           }),
         });
 
-        const data = await response.json();
+        const data = await res.json();
+
         setMessages([
           introMessage,
           {
             id: Date.now().toString(),
-            role: "assistant" as const,
+            role: "assistant",
             content: data.content,
           },
         ]);
@@ -130,23 +97,50 @@ const ChatInterface: React.FC = () => {
     sendIntroFromMood();
   }, [messages.length, selectedMood, selectedPersona, customTraits]);
 
-  // Submit via text box
+  // ✍️ Handle text submit
   const handleSubmit = async (e?: FormEvent<HTMLFormElement>) => {
     if (e?.preventDefault) e.preventDefault();
-    originalHandleSubmit(e || ({ target: { value: input } } as unknown as FormEvent<HTMLFormElement>));
 
-    setTimeout(() => {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        {
-          id: Date.now().toString(),
-          role: "assistant",
-          content: "__typing__",
-        },
-      ]);
-    }, 1000);
+    if (!chatInput.trim()) return;
+
+    const userMessage = {
+      id: Date.now().toString(),
+      role: "user" as const,
+      content: chatInput,
+    };
+
+    const typingPlaceholder = {
+      id: "typing-placeholder",
+      role: "assistant" as const,
+      content: "__typing__",
+    };
+
+    setMessages((prev) => [...prev, userMessage, typingPlaceholder]);
+    setChatInput("");
+
+    const res = await fetch("/api/chatbot", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        messages: [...messages, userMessage],
+        selectedPersona,
+        selectedMood,
+        ...(customTraits && { customTraits }),
+      }),
+    });
+
+    const data = await res.json();
+
+    setMessages((prev) =>
+      prev.filter((msg) => msg.id !== "typing-placeholder").concat({
+        id: Date.now().toString(),
+        role: "assistant" as const,
+        content: data.content,
+      })
+    );
   };
-  // Submit via voice transcript
+
+  // 🎤 Handle voice input
   const handleDirectSubmit = async (text: string) => {
     const userMessage = {
       id: Date.now().toString(),
@@ -160,13 +154,9 @@ const ChatInterface: React.FC = () => {
       content: "__typing__",
     };
 
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      userMessage,
-      typingPlaceholder,
-    ]);
+    setMessages((prev) => [...prev, userMessage, typingPlaceholder]);
 
-    const response = await fetch("/api/chatbot", {
+    const res = await fetch("/api/chatbot", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -177,21 +167,18 @@ const ChatInterface: React.FC = () => {
       }),
     });
 
-    const data = await response.json();
+    const data = await res.json();
 
-    const assistantMessage = {
-      id: Date.now().toString(),
-      role: "assistant" as const,
-      content: data.content,
-    };
-
-    setMessages((prevMessages) =>
-      prevMessages
-        .filter((msg) => msg.id !== "typing-placeholder")
-        .concat(assistantMessage)
+    setMessages((prev) =>
+      prev.filter((msg) => msg.id !== "typing-placeholder").concat({
+        id: Date.now().toString(),
+        role: "assistant" as const,
+        content: data.content,
+      })
     );
   };
 
+  // Auto scroll on new messages
   useLayoutEffect(() => {
     if (messageContainerRef.current) {
       messageContainerRef.current.scrollTo({
@@ -206,7 +193,7 @@ const ChatInterface: React.FC = () => {
       <div className="flex flex-col h-[85vh] justify-between mt-4">
         <div
           ref={messageContainerRef}
-          className="flex-1 basis-auto overflow-y-auto h-[100px] hide-scrollbar"
+          className="flex-1 overflow-y-auto h-[100px] hide-scrollbar"
         >
           {messages.length === 0 && (
             <div className="flex items-center justify-center h-full text-4xl text-white animate-slideUp delay-1000">
@@ -231,9 +218,9 @@ const ChatInterface: React.FC = () => {
         <div className="mb-[40px]">
           <InputBox
             handleSubmit={handleSubmit}
-            handleInputChange={handleInputChange}
+            handleInputChange={(e) => setChatInput(e.target.value)}
             handleDirectSubmit={handleDirectSubmit}
-            input={input}
+            input={chatInput}
           />
         </div>
       </div>
