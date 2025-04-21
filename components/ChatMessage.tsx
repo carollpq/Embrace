@@ -18,7 +18,15 @@ function removeEmojis(text: string): string {
     .trim();
 }
 
-const ChatMessage = ({ message }: { message: Message }) => {
+const ChatMessage = ({
+  message,
+  isBookmarked,
+  toggleBookmark,
+}: {
+  message: Message;
+  isBookmarked: boolean;
+  toggleBookmark: () => void;
+}) => {
   const isUser = message.role === "user";
   const isTypingPlaceholder = message.content === "__typing__";
   const {
@@ -32,7 +40,7 @@ const ChatMessage = ({ message }: { message: Message }) => {
 
   const hasPlayedTTS = useRef(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
+  const [isSavingMessage, setIsSavingMessage] = useState(false);
 
   const isLastAssistantMessage = () => {
     const assistantMessages = messages?.filter(
@@ -88,46 +96,14 @@ const ChatMessage = ({ message }: { message: Message }) => {
     messages,
   ]);
 
-  // Check if message is saved
-  useEffect(() => {
-    const checkIfSaved = async () => {
-      if (!isUser && message.content && session?.email) {
-        try {
-          const res = await fetch(
-            `/api/get-saved-messages?userId=${session.email}`
-          );
-          const data = await res.json();
-          const savedMessages = data.savedMessages || [];
-          const found = savedMessages.some(
-            (msg: { content: string }) => msg.content === message.content
-          );
-          setIsSaved(found);
-        } catch (err) {
-          console.error("Failed to fetch saved messages", err);
-        }
-      }
-    };
-    checkIfSaved();
-  }, [session?.email, message.content, isUser]);
-
   const handleToggleSave = async () => {
-    const payload = {
-      userId: session?.email,
-      content: message.content,
-    };
-
+    setIsSavingMessage(true);
     try {
-      const res = await fetch(
-        isSaved ? "/api/delete-saved-message" : "/api/save-message",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        }
-      );
-      if (res.ok) setIsSaved(!isSaved);
+      await toggleBookmark();
     } catch (err) {
-      console.error("Error toggling message save:", err);
+      console.error("Error toggling bookmark:", err);
+    } finally {
+      setIsSavingMessage(false);
     }
   };
 
@@ -167,41 +143,53 @@ const ChatMessage = ({ message }: { message: Message }) => {
           message.content
         )}
 
-        {/* 🎙️ Voice wave */}
-        {!isUser && isSpeaking && (
-          <div className="absolute bottom-2 left-2 flex gap-1 animate-pulse-slow">
-            <div className="w-1 h-3 bg-blue-400 rounded-full animate-wave1" />
-            <div className="w-1 h-5 bg-blue-500 rounded-full animate-wave2" />
-            <div className="w-1 h-2 bg-blue-300 rounded-full animate-wave3" />
-          </div>
+        {/* Save Icon */}
+        {!isUser && !isTypingPlaceholder && (
+          <button title="Save message" disabled={isSavingMessage}>
+            {isSavingMessage ? (
+              <div className="w-5 h-5 absolute top-2 right-3 border-4 border-black/20 border-t-black/50 rounded-full animate-spin delay-1000"></div>
+            ) : (
+              <Image
+                className="hover:cursor-pointer absolute top-2 right-3"
+                src={
+                  isBookmarked
+                    ? "/icons/saved-icon.svg"
+                    : "/icons/to-be-saved-icon.svg"
+                }
+                alt="Save icon"
+                width={18}
+                height={18}
+                onClick={handleToggleSave}
+              />
+            )}
+          </button>
         )}
 
-        {/* ⭐ Save Icon */}
-        {!isUser && !isTypingPlaceholder && (
-          <Image
-            className="hover:cursor-pointer absolute top-2 right-3"
-            src={
-              isSaved ? "/icons/saved-icon.svg" : "/icons/to-be-saved-icon.svg"
-            }
-            alt="Save icon"
-            width={18}
-            height={18}
-            onClick={handleToggleSave}
-          />
-        )}
-
-        {/* 🔁 Replay + 🔇 Mute */}
-        {!isUser && !isTypingPlaceholder && (
-          <div className="absolute top-2 left-3 flex gap-3">
-            <button
-              title="Replay"
-              onClick={speak}
-              className="text-blue-500 hover:text-blue-700 text-sm underline"
-            >
-              🔁
-            </button>
-          </div>
-        )}
+        {/*  Replay  */}
+        {!isUser &&
+          !isTypingPlaceholder &&
+          (selectedMode === "text-and-voice" ||
+            selectedMode === "voice-and-voice") && (
+            <div className="absolute top-2 left-3 flex gap-3">
+              <button
+                title="Play audio"
+                onClick={speak}
+                className="text-blue-500 hover:text-blue-700 text-sm underline"
+              >
+                <Image
+                  className="hover:cursor-pointer"
+                  src={
+                    isSpeaking
+                      ? "/icons/is-speaking.svg"
+                      : "/icons/not-speak.svg"
+                  }
+                  alt="Speaker icon"
+                  width={18}
+                  height={18}
+                />
+              </button>
+            </div>
+          )}
       </div>
     </div>
   );

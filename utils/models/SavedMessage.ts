@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface SavedMessage extends Document {
+  messageId: string;
   userId: string;
   content: string;
   savedAt: Date;
@@ -8,6 +9,7 @@ export interface SavedMessage extends Document {
 }
 
 const SavedMessageSchema = new Schema<SavedMessage>({
+  messageId: { type: String, required: true },
   userId: { type: String, required: true },
   content: { type: String, required: true },
   savedAt: { type: Date, default: Date.now },

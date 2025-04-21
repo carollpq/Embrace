@@ -9,6 +9,7 @@ import PersonaSelection from "@/components/PersonaSelection";
 import PersonaCustomization from "@/components/PersonaCustomization";
 import Disclaimer from "@/components/Disclaimer";
 import About from "@/components/About";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const {
@@ -25,10 +26,19 @@ export default function Home() {
   const [loadingPersonaSelection, setLoadingPersonaSelection] = useState(false); // Loads Persona Selection page
   const [loadingPersonaCustomization, setLoadingCustomizationSelection] =
     useState(false); // Loads Persona Selection page
+  const router = useRouter();
 
   useEffect(() => {
     if (confirmedExit) setConfirmedExit(false);
   }, []);
+
+  // Redirect to '/' if session doesn't
+  useEffect(() => {
+    if (session === null) {
+      router.replace("/"); 
+    }
+  }, [session]);
+
 
   return (
     <div

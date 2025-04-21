@@ -2,10 +2,9 @@
 
 import InputBox from "@/components/InputBox";
 import ChatMessage from "@/components/ChatMessage";
-import { useRef, useLayoutEffect, useEffect, FormEvent } from "react";
+import { useRef, useLayoutEffect, useEffect, FormEvent, useState } from "react";
 import { useSession } from "@/context/Provider";
 import { motion, AnimatePresence } from "framer-motion";
-import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
 const ChatInterface: React.FC = () => {
@@ -20,28 +19,52 @@ const ChatInterface: React.FC = () => {
     selectedMood,
     session,
   } = useSession();
+  const [bookmarkedMessages, setBookmarkedMessages] = useState<string[]>([]);
+  const [hasLoadedBookmarks, setHasLoadedBookmarks] = useState(false);
 
   const router = useRouter();
 
   const moodToPrompt: Record<string, string> = {
-    Anxious: `Hey there, ${session ? `I'm ${session.name}.` : ""} I'm feeling anxious.`,
-    Sad: `Hey there, ${session ? `I'm ${session.name}.` : ""} I'm feeling really sad today.`,
-    Angry: `Hey there, ${session ? `I'm ${session.name}.` : ""} I'm angry about something that happened.`,
-    Happy: `Hey there, ${session ? `I'm ${session.name}.` : ""} I'm in a happy mood today!`,
-    Neutral: `Hey there, ${session ? `I'm ${session.name}.` : ""} I'm feeling okay, nothing in particular.`,
-    Stressed: `Hey there, ${session ? `I'm ${session.name}.` : ""} I'm stressed and overwhelmed.`,
+    Anxious: `Hey there, ${
+      session ? `I'm ${session.name}.` : ""
+    } I'm feeling anxious.`,
+    Sad: `Hey there, ${
+      session ? `I'm ${session.name}.` : ""
+    } I'm feeling really sad today.`,
+    Angry: `Hey there, ${
+      session ? `I'm ${session.name}.` : ""
+    } I'm angry about something that happened.`,
+    Happy: `Hey there, ${
+      session ? `I'm ${session.name}.` : ""
+    } I'm in a happy mood today!`,
+    Neutral: `Hey there, ${
+      session ? `I'm ${session.name}.` : ""
+    } I'm feeling okay, nothing in particular.`,
+    Stressed: `Hey there, ${
+      session ? `I'm ${session.name}.` : ""
+    } I'm stressed and overwhelmed.`,
   };
 
-  // Redirect if session expired
   useEffect(() => {
-    if (session === null) {
-      toast.error("Your session has expired. Redirecting to login...");
-      setTimeout(() => {
-        router.push("/");
-      }, 2000);
+    const saved = localStorage.getItem("bookmarkedMessages");
+    if (saved) {
+      setBookmarkedMessages(JSON.parse(saved));
+      console.log("Loaded bookmarks from localStorage:", JSON.parse(saved));
     }
-  }, [session]);
+    setHasLoadedBookmarks(true); // ✅ Mark as loaded
+  }, []);
+  
+  useEffect(() => {
+    if (hasLoadedBookmarks) {
+      localStorage.setItem(
+        "bookmarkedMessages",
+        JSON.stringify(bookmarkedMessages)
+      );
+      console.log("Updated localStorage with bookmarks:", bookmarkedMessages);
+    }
+  }, [bookmarkedMessages, hasLoadedBookmarks]);
 
+  
   // Prevent page refresh while chatting
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -97,6 +120,57 @@ const ChatInterface: React.FC = () => {
     sendIntroFromMood();
   }, [messages.length, selectedMood, selectedPersona, customTraits]);
 
+  // Toggles the bookmarked state of the assistant messages
+  const toggleBookmark = async (message: { id: string; content: string }) => {
+    try {
+      const isBookmarked = bookmarkedMessages.includes(message.id);
+  
+      if (!isBookmarked) {
+        setBookmarkedMessages((prev) => [...prev, message.id]);
+  
+        const res = await fetch("/api/save-message", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: session?.email,
+            content: message.content,
+            messageId: message.id,
+          }),
+        });
+  
+        if (!res.ok) {
+          console.error("Failed to save bookmarked message");
+          setBookmarkedMessages((prev) => prev.filter((id) => id !== message.id));
+        }
+      } else {
+        setBookmarkedMessages((prev) =>
+          prev.filter((id) => id !== message.id)
+        );
+  
+        const res = await fetch("/api/delete-saved-message", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            messageId: message.id,
+            userId: session?.email,
+          }),
+        });
+  
+        if (!res.ok) {
+          console.error("Failed to delete bookmarked message");
+          setBookmarkedMessages((prev) => [...prev, message.id]);
+        }
+      }
+    } catch (error) {
+      console.error("Error toggling bookmark:", error);
+    }
+  };
+  
+  
+
+  const isBookmarked = (messageId: string) =>
+    bookmarkedMessages.includes(messageId);
+
   // ✍️ Handle text submit
   const handleSubmit = async (e?: FormEvent<HTMLFormElement>) => {
     if (e?.preventDefault) e.preventDefault();
@@ -132,15 +206,17 @@ const ChatInterface: React.FC = () => {
     const data = await res.json();
 
     setMessages((prev) =>
-      prev.filter((msg) => msg.id !== "typing-placeholder").concat({
-        id: Date.now().toString(),
-        role: "assistant" as const,
-        content: data.content,
-      })
+      prev
+        .filter((msg) => msg.id !== "typing-placeholder")
+        .concat({
+          id: Date.now().toString(),
+          role: "assistant" as const,
+          content: data.content,
+        })
     );
   };
 
-  // 🎤 Handle voice input
+  // Handle voice input
   const handleDirectSubmit = async (text: string) => {
     const userMessage = {
       id: Date.now().toString(),
@@ -170,11 +246,13 @@ const ChatInterface: React.FC = () => {
     const data = await res.json();
 
     setMessages((prev) =>
-      prev.filter((msg) => msg.id !== "typing-placeholder").concat({
-        id: Date.now().toString(),
-        role: "assistant" as const,
-        content: data.content,
-      })
+      prev
+        .filter((msg) => msg.id !== "typing-placeholder")
+        .concat({
+          id: Date.now().toString(),
+          role: "assistant" as const,
+          content: data.content,
+        })
     );
   };
 
@@ -210,7 +288,11 @@ const ChatInterface: React.FC = () => {
                 transition={{ duration: 0.4, ease: "easeOut" }}
                 className="px-4 py-2"
               >
-                <ChatMessage message={message} />
+                <ChatMessage
+                  message={message}
+                  isBookmarked={isBookmarked(message.id)}
+                  toggleBookmark={() => toggleBookmark(message)}
+                />
               </motion.div>
             ))}
           </AnimatePresence>

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "../../globals.css";
 import { Quicksand } from "next/font/google";
 import Navbar from "@/components/Navbar";
-import { Toaster } from "react-hot-toast";
+// import { Toaster } from "react-hot-toast";
 
 const quicksand = Quicksand({ weight: ["400"], subsets: ["latin"] });
 
@@ -20,7 +20,7 @@ export default function RootLayout({
     <main className={quicksand.className}>
       <Navbar />
       {children}
-      <Toaster position="top-center" reverseOrder={false} />
+      {/* <Toaster position="top-center" reverseOrder={false} /> */}
     </main>
   );
 }

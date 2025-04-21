@@ -33,7 +33,7 @@ const PersonaCustomization = () => {
 
   return (
     <div
-      className={`flex flex-col h-screen w-screen relative items-center justify-center gap-4 ${
+      className={`flex flex-col h-screen w-screen relative items-center justify-center gap-3 ${
         nightMode ? "bg-home-screen-blue" : "bg-day-mode-screen-2"
       }`}
     >
@@ -48,7 +48,7 @@ const PersonaCustomization = () => {
         </div>
       ) : (
         <>
-          <div className="max-w-4xl mx-auto text-white px-20 py-7 bg-black/40 rounded-2xl shadow-xl space-y-6 animate-slideUp">
+          <div className="max-w-3xl mx-auto text-white px-20 py-6 bg-black/40 rounded-2xl shadow-xl space-y-5 animate-slideUp">
             <h2 className="text-2xl font-semibold mb-4">
               Customize Your AI Companion
             </h2>
