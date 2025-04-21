@@ -21,58 +21,94 @@ function removeEmojis(text: string): string {
 const ChatMessage = ({ message }: { message: Message }) => {
   const isUser = message.role === "user";
   const isTypingPlaceholder = message.content === "__typing__";
-  const { selectedMode, selectedPersona, selectedTTS, fontSize, session } =
-    useSession();
-  const hasPlayedTTS = useRef(false); // Track if TTS has already played for this message
+  const {
+    selectedMode,
+    selectedPersona,
+    selectedTTS,
+    fontSize,
+    session,
+    messages,
+  } = useSession();
+
+  const hasPlayedTTS = useRef(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
 
-  // Trigger TTS only once for chatbot messages
+  const isLastAssistantMessage = () => {
+    const assistantMessages = messages?.filter(
+      (msg) => msg.role === "assistant" && msg.content !== "__typing__"
+    );
+    return (
+      assistantMessages?.length > 0 &&
+      assistantMessages[assistantMessages.length - 1].content ===
+        message.content
+    );
+  };
+
+  const speak = async () => {
+    if (!message.content) return;
+    const cleanedText = removeEmojis(message.content);
+    setIsSpeaking(true);
+
+    const onSpeechEnd = () => setIsSpeaking(false);
+
+    try {
+      if (selectedTTS === "polly") {
+        await playPersonaSpeech(cleanedText, selectedPersona); //set on speech end here??
+      } else {
+        playBrowserTTS(cleanedText, selectedPersona, onSpeechEnd);
+        return;
+      }
+    } catch (error) {
+      console.error("TTS error:", error);
+    } finally {
+      onSpeechEnd();
+    }
+  };
+
+  // 🔊 Play TTS for latest assistant message
   useEffect(() => {
     if (
       !isUser &&
       message.content &&
-      message.content !== "__typing__" &&
-      (selectedMode == "text-and-voice" || selectedMode == "voice-and-voice") &&
-      !hasPlayedTTS.current // Only play if not already played
+      !hasPlayedTTS.current &&
+      (selectedMode === "text-and-voice" ||
+        selectedMode === "voice-and-voice") &&
+      isLastAssistantMessage()
     ) {
-      const cleanedText = removeEmojis(message.content);
-      console.log(cleanedText);
-
-      if (selectedTTS === "polly") {
-        playPersonaSpeech(cleanedText, selectedPersona).catch((error) =>
-          console.error("Error playing Polly TTS:", error)
-        );
-      } else {
-        playBrowserTTS(cleanedText, selectedPersona);
-      }
-
-      hasPlayedTTS.current = true; // Mark that TTS has been played for this message
+      speak();
+      hasPlayedTTS.current = true;
     }
-  }, [message.content, isUser, selectedMode, selectedTTS, selectedPersona]);
+  }, [
+    message.content,
+    isUser,
+    selectedMode,
+    selectedTTS,
+    selectedPersona,
+    messages,
+  ]);
 
-  // Check the already saved messages 
+  // Check if message is saved
   useEffect(() => {
-    const checkIfMessageIsSaved = async () => {
+    const checkIfSaved = async () => {
       if (!isUser && message.content && session?.email) {
         try {
-          const res = await fetch(`/api/get-saved-messages?userId=${session.email}`);
+          const res = await fetch(
+            `/api/get-saved-messages?userId=${session.email}`
+          );
           const data = await res.json();
           const savedMessages = data.savedMessages || [];
-  
-          const found = savedMessages.some((msg: { content: string }) =>
-            msg.content === message.content
+          const found = savedMessages.some(
+            (msg: { content: string }) => msg.content === message.content
           );
-  
           setIsSaved(found);
-        } catch (error) {
-          console.error("Error checking saved messages:", error);
+        } catch (err) {
+          console.error("Failed to fetch saved messages", err);
         }
       }
     };
-  
-    checkIfMessageIsSaved();
+    checkIfSaved();
   }, [session?.email, message.content, isUser]);
-  
 
   const handleToggleSave = async () => {
     const payload = {
@@ -80,42 +116,29 @@ const ChatMessage = ({ message }: { message: Message }) => {
       content: message.content,
     };
 
-    if (!isSaved) {
-      // Save the message
-      try {
-        const res = await fetch("/api/save-message", {
+    try {
+      const res = await fetch(
+        isSaved ? "/api/delete-saved-message" : "/api/save-message",
+        {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
-        });
-        if (res.ok) setIsSaved(true);
-      } catch (err) {
-        console.error("Error saving message:", err);
-      }
-    } else {
-      // Delete the message
-      try {
-        const res = await fetch("/api/delete-saved-message", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-        if (res.ok) setIsSaved(false);
-      } catch (err) {
-        console.error("Error deleting message:", err);
-      }
+        }
+      );
+      if (res.ok) setIsSaved(!isSaved);
+    } catch (err) {
+      console.error("Error toggling message save:", err);
     }
   };
 
   return (
     <div className="flex flex-col justify-center pt-3">
-      {/* Chat bubble */}
       <div
-        className={`${
+        className={`relative ${
           isUser ? style["chat-message-user"] : style["chat-message-chatbot"]
         } ${
           isUser ? "bg-black/80" : "bg-[#e1f4ff]/80"
-        } rounded-lg px-5 text-lg font-normal whitespace-pre-line shadow-lg ${
+        } rounded-lg p-6 text-lg font-normal whitespace-pre-line shadow-lg ${
           fontSize === "sm"
             ? "text-sm-msg"
             : fontSize === "lg"
@@ -143,18 +166,41 @@ const ChatMessage = ({ message }: { message: Message }) => {
         ) : (
           message.content
         )}
-        {/* Save icon for assistant messages only */}
+
+        {/* 🎙️ Voice wave */}
+        {!isUser && isSpeaking && (
+          <div className="absolute bottom-2 left-2 flex gap-1 animate-pulse-slow">
+            <div className="w-1 h-3 bg-blue-400 rounded-full animate-wave1" />
+            <div className="w-1 h-5 bg-blue-500 rounded-full animate-wave2" />
+            <div className="w-1 h-2 bg-blue-300 rounded-full animate-wave3" />
+          </div>
+        )}
+
+        {/* ⭐ Save Icon */}
         {!isUser && !isTypingPlaceholder && (
           <Image
-            className="hover:cursor-pointer justify-start"
+            className="hover:cursor-pointer absolute top-2 right-3"
             src={
               isSaved ? "/icons/saved-icon.svg" : "/icons/to-be-saved-icon.svg"
             }
-            alt="Saved icon"
-            width={24}
-            height={24}
+            alt="Save icon"
+            width={18}
+            height={18}
             onClick={handleToggleSave}
           />
+        )}
+
+        {/* 🔁 Replay + 🔇 Mute */}
+        {!isUser && !isTypingPlaceholder && (
+          <div className="absolute top-2 left-3 flex gap-3">
+            <button
+              title="Replay"
+              onClick={speak}
+              className="text-blue-500 hover:text-blue-700 text-sm underline"
+            >
+              🔁
+            </button>
+          </div>
         )}
       </div>
     </div>

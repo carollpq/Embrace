@@ -1,12 +1,19 @@
-export const playBrowserTTS = (text: string, persona: string | null) => {
+export const playBrowserTTS = (
+  text: string,
+  persona: string | null,
+  onEnd?: () => void
+) => {
   // Cancel any current speech before starting a new one
   speechSynthesis.cancel();
 
   const utterance = new SpeechSynthesisUtterance(text);
 
+  if (onEnd) {
+    utterance.onend = onEnd;
+  }
+
   const setVoiceAndSpeak = () => {
     const voices = speechSynthesis.getVoices();
-
     let selectedVoice: SpeechSynthesisVoice | undefined = undefined;
 
     const americanVoices = voices.filter(
