@@ -34,7 +34,6 @@ const ChatMessage = ({
     selectedPersona,
     selectedTTS,
     fontSize,
-    //session,
     messages,
     hasUserTriggeredResponse,
     setHasUserTriggeredResponse,

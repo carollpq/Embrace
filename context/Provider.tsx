@@ -149,23 +149,36 @@ export const SessionProvider = ({
   const router = useRouter();
 
   const recheckSession = async () => {
-    const res = await fetch("/api/session", {
-      method: "GET",
-      credentials: "include",
-    });
-    if (res.ok) {
-      const data = await res.json();
-      if (data.user)
-        setSession({ name: data.user.name, email: data.user.email });
-      else setSession(null);
-    } else {
+    try {
+      const res = await fetch("/api/session", {
+        method: "GET",
+        credentials: "include",
+      });
+  
+      if (res.ok) {
+        const data = await res.json();
+        if (data.user)
+          setSession({ name: data.user.name, email: data.user.email });
+        else setSession(null);
+      } else {
+        setSession(null);
+      }
+    } catch (error) {
+      console.error("Error checking session:", error);
       setSession(null);
     }
   };
+  
 
   useEffect(() => {
     setHasMounted(true);
-    recheckSession();
+    recheckSession(); // initial check
+  
+    const interval = setInterval(() => {
+      recheckSession(); // polling
+    }, 30000);
+  
+    return () => clearInterval(interval);
   }, []);
 
   // Sync settings to localStorage

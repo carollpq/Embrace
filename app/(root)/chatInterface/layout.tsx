@@ -7,6 +7,7 @@ import Sidebar from "@/components/ui/Sidebar";
 import { useSession } from "@/context/Provider";
 import ExitConfirmationModal from "@/components/ui/ExitConfirmationModal";
 import SavedMessages from "@/components/SavedMessages";
+import SessionExpiredModal from "@/components/ui/SessionExpiredModal";
 
 const quicksand = Quicksand({ weight: ["400"], subsets: ["latin"] });
 
@@ -29,6 +30,7 @@ export default function RootLayout({
     showConfirmExit,
     confirmedExit,
     showSavedMessages,
+    session,
   } = useSession();
 
   return (
@@ -74,6 +76,7 @@ export default function RootLayout({
           {showConfirmExit && <ExitConfirmationModal />}
         </>
       )}
+      {!session && <SessionExpiredModal />}
     </main>
   );
 }
