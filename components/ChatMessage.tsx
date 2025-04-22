@@ -43,7 +43,6 @@ const ChatMessage = ({
   const lastSpokenMessage = useRef<string | null>(null); // Track the last spoken message content
 
   const hasPlayedTTS = useRef(false);
-  const [isSpeaking, setIsSpeaking] = useState(false);
   const [isSavingMessage, setIsSavingMessage] = useState(false);
 
   const isLastAssistantMessage = () => {
@@ -60,22 +59,17 @@ const ChatMessage = ({
   const speak = async () => {
     if (!message.content) return;
     const cleanedText = removeEmojis(message.content);
-    setIsSpeaking(true);
-
-    const onSpeechEnd = () => setIsSpeaking(false);
 
     try {
       if (selectedTTS === "polly") {
         await playPersonaSpeech(cleanedText, selectedPersona); //set on speech end here??
       } else {
-        playBrowserTTS(cleanedText, selectedPersona, onSpeechEnd);
+        playBrowserTTS(cleanedText, selectedPersona);
         return;
       }
     } catch (error) {
       console.error("TTS error:", error);
-    } finally {
-      onSpeechEnd();
-    }
+    } 
   };
 
   // Play TTS for latest assistant message
@@ -188,11 +182,7 @@ const ChatMessage = ({
               >
                 <Image
                   className="hover:cursor-pointer"
-                  src={
-                    isSpeaking
-                      ? "/icons/is-speaking.svg"
-                      : "/icons/not-speak.svg"
-                  }
+                  src="/icons/not-speak.svg"
                   alt="Speaker icon"
                   width={18}
                   height={18}

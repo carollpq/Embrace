@@ -8,9 +8,6 @@ const raleway = Raleway({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Embrace",
   description: "Therapeutic Chatbot",
-  icons: {
-    icon: "/favicon.ico",
-  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

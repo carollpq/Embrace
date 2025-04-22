@@ -50,9 +50,22 @@ const ChatInterface: React.FC = () => {
       setBookmarkedMessages(JSON.parse(saved));
       console.log("Loaded bookmarks from localStorage:", JSON.parse(saved));
     }
-    setHasLoadedBookmarks(true); 
+    setHasLoadedBookmarks(true);
   }, []);
-  
+
+  // Clear bookmarked messages from localStorage when navigating away
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      // Optional: Prevent refresh if you want
+      e.preventDefault();
+      localStorage.removeItem("bookmarkedMessages");
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, []);
+
   useEffect(() => {
     if (hasLoadedBookmarks) {
       localStorage.setItem(
@@ -66,13 +79,12 @@ const ChatInterface: React.FC = () => {
   // Stop speech on mount/unmount
   useEffect(() => {
     stopSpeech();
-  
+
     return () => {
       stopSpeech();
     };
   }, []);
 
-  
   // Prevent page refresh while chatting
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -132,10 +144,10 @@ const ChatInterface: React.FC = () => {
   const toggleBookmark = async (message: { id: string; content: string }) => {
     try {
       const isBookmarked = bookmarkedMessages.includes(message.id);
-  
+
       if (!isBookmarked) {
         setBookmarkedMessages((prev) => [...prev, message.id]);
-  
+
         const res = await fetch("/api/save-message", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -145,16 +157,16 @@ const ChatInterface: React.FC = () => {
             messageId: message.id,
           }),
         });
-  
+
         if (!res.ok) {
           console.error("Failed to save bookmarked message");
-          setBookmarkedMessages((prev) => prev.filter((id) => id !== message.id));
+          setBookmarkedMessages((prev) =>
+            prev.filter((id) => id !== message.id)
+          );
         }
       } else {
-        setBookmarkedMessages((prev) =>
-          prev.filter((id) => id !== message.id)
-        );
-  
+        setBookmarkedMessages((prev) => prev.filter((id) => id !== message.id));
+
         const res = await fetch("/api/delete-saved-message", {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
@@ -173,8 +185,6 @@ const ChatInterface: React.FC = () => {
       console.error("Error toggling bookmark:", error);
     }
   };
-  
-  
 
   const isBookmarked = (messageId: string) =>
     bookmarkedMessages.includes(messageId);
