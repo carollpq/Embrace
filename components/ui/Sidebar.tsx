@@ -8,6 +8,7 @@ import Settings from "./Settings";
 import TooltipWrapper from "@/components/ui/TooltipWrapper";
 import SpeechRecognition from "react-speech-recognition";
 import { useRouter } from "next/navigation";
+import { stopSpeech } from "@/utils/tts/polly";
 
 const pacifico = Pacifico({ weight: ["400"], subsets: ["latin"] });
 
@@ -58,6 +59,7 @@ const Sidebar = () => {
             <Link
               href="#"
               onClick={(e) => {
+                stopSpeech();
                 e.preventDefault(); // prevent default navigation
                 setConfirmExitCallback(() => () => {
                   SpeechRecognition.stopListening();

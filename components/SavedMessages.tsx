@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSession } from "@/context/Provider";
 import Image from "next/image";
+import { stopSpeech } from "@/utils/tts/polly";
 
 type SavedMessage = {
   _id: string;
@@ -15,6 +16,8 @@ const SavedMessages = () => {
   const [loading, setLoading] = useState(true);
   const [deletingMessageId, setDeletingMessageId] = useState<string | null>(null); // Track the message being deleted
 
+  useEffect(stopSpeech, []);
+  
   useEffect(() => {
     const fetchSavedMessages = async () => {
       if (!session?.email) return;

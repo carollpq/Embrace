@@ -43,6 +43,14 @@ export async function getSpeech(text: string, voiceId = "Danielle") {
 
 let currentAudio: HTMLAudioElement | null = null;
 
+export function stopSpeech() {
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.currentTime = 0; // Reset playback position to the beginning
+    currentAudio = null; // Clear currentAudio reference
+  }
+}
+
 export async function playSpeech(text: string, voiceId = "Danielle") {
   const audioStream = await getSpeech(text, voiceId);
 
@@ -50,11 +58,7 @@ export async function playSpeech(text: string, voiceId = "Danielle") {
   const audioUrl = URL.createObjectURL(audioBlob);
 
   // Stop and cleanup any currently playing audio
-  if (currentAudio) {
-    currentAudio.pause();
-    currentAudio.currentTime = 0;
-    currentAudio = null;
-  }
+  stopSpeech();
 
   currentAudio = new Audio(audioUrl);
 

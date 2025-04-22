@@ -5,6 +5,7 @@ import ChatMessage from "@/components/ChatMessage";
 import { useRef, useLayoutEffect, useEffect, FormEvent, useState } from "react";
 import { useSession } from "@/context/Provider";
 import { motion, AnimatePresence } from "framer-motion";
+import { stopSpeech } from "@/utils/tts/polly";
 
 const ChatInterface: React.FC = () => {
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
@@ -17,6 +18,7 @@ const ChatInterface: React.FC = () => {
     customTraits,
     selectedMood,
     session,
+    setHasUserTriggeredResponse,
   } = useSession();
   const [bookmarkedMessages, setBookmarkedMessages] = useState<string[]>([]);
   const [hasLoadedBookmarks, setHasLoadedBookmarks] = useState(false);
@@ -60,6 +62,15 @@ const ChatInterface: React.FC = () => {
       console.log("Updated localStorage with bookmarks:", bookmarkedMessages);
     }
   }, [bookmarkedMessages, hasLoadedBookmarks]);
+
+  // Stop speech on mount/unmount
+  useEffect(() => {
+    stopSpeech();
+  
+    return () => {
+      stopSpeech();
+    };
+  }, []);
 
   
   // Prevent page refresh while chatting
@@ -171,7 +182,7 @@ const ChatInterface: React.FC = () => {
   // ✍️ Handle text submit
   const handleSubmit = async (e?: FormEvent<HTMLFormElement>) => {
     if (e?.preventDefault) e.preventDefault();
-
+    stopSpeech();
     if (!chatInput.trim()) return;
 
     const userMessage = {
@@ -215,6 +226,7 @@ const ChatInterface: React.FC = () => {
 
   // Handle voice input
   const handleDirectSubmit = async (text: string) => {
+    stopSpeech();
     const userMessage = {
       id: Date.now().toString(),
       role: "user" as const,
@@ -300,6 +312,7 @@ const ChatInterface: React.FC = () => {
             handleInputChange={(e) => setChatInput(e.target.value)}
             handleDirectSubmit={handleDirectSubmit}
             input={chatInput}
+            setHasUserTriggeredResponse={setHasUserTriggeredResponse}
           />
         </div>
       </div>

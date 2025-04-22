@@ -36,7 +36,11 @@ const ChatMessage = ({
     fontSize,
     //session,
     messages,
+    hasUserTriggeredResponse,
+    setHasUserTriggeredResponse,
   } = useSession();
+
+  const lastSpokenMessage = useRef<string | null>(null); // Track the last spoken message content
 
   const hasPlayedTTS = useRef(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -74,18 +78,18 @@ const ChatMessage = ({
     }
   };
 
-  // 🔊 Play TTS for latest assistant message
+  // Play TTS for latest assistant message
   useEffect(() => {
     if (
       !isUser &&
       message.content &&
-      !hasPlayedTTS.current &&
-      (selectedMode === "text-and-voice" ||
-        selectedMode === "voice-and-voice") &&
+      message.content !== lastSpokenMessage.current && // Only speak if different from last spoken message
+      (selectedMode === "text-and-voice" || selectedMode === "voice-and-voice") &&
       isLastAssistantMessage()
     ) {
-      speak();
-      hasPlayedTTS.current = true;
+      speak(); // Trigger TTS
+      lastSpokenMessage.current = message.content; // Update the last spoken message content
+      setHasUserTriggeredResponse(false); // Reset the flag
     }
   }, [
     message.content,
@@ -94,7 +98,13 @@ const ChatMessage = ({
     selectedTTS,
     selectedPersona,
     messages,
+    hasUserTriggeredResponse,
   ]);
+
+  // ✅ Optional cleanup effect — resets flag when message content changes
+  useEffect(() => {
+    hasPlayedTTS.current = false;
+  }, [message.content]);
 
   const handleToggleSave = async () => {
     setIsSavingMessage(true);

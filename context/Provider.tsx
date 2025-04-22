@@ -79,6 +79,8 @@ type SessionContextType = {
   setMessages: React.Dispatch<React.SetStateAction<ChatMessageType[]>>;
   chatInput: string;
   setChatInput: React.Dispatch<React.SetStateAction<string>>;
+  hasUserTriggeredResponse: boolean;
+  setHasUserTriggeredResponse: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const SessionContext = createContext<SessionContextType | null>(null);
@@ -143,6 +145,7 @@ export const SessionProvider = ({
   const [showSavedMessages, setShowSavedMessages] = useState(false);
   const [messages, setMessages] = useState<ChatMessageType[]>([]);
   const [chatInput, setChatInput] = useState<string>("");
+  const [hasUserTriggeredResponse, setHasUserTriggeredResponse] = useState(false);
   const router = useRouter();
 
   const recheckSession = async () => {
@@ -237,6 +240,8 @@ export const SessionProvider = ({
         setMessages,
         chatInput,
         setChatInput,
+        hasUserTriggeredResponse,
+        setHasUserTriggeredResponse,
       }}
     >
       {children}

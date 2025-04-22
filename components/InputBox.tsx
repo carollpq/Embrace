@@ -13,11 +13,13 @@ const InputBox = ({
   handleInputChange,
   handleDirectSubmit,
   input,
+  setHasUserTriggeredResponse,
 }: {
   handleSubmit: () => void;
   handleInputChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   handleDirectSubmit: (transcript: string) => void;
   input: string;
+  setHasUserTriggeredResponse: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const inputBoxTextArea = useRef<HTMLTextAreaElement>(null);
   const [isListening, setIsListening] = useState(false);
@@ -36,6 +38,7 @@ const InputBox = ({
   const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
+      setHasUserTriggeredResponse(true);
       handleSubmit();
     }
   };
@@ -65,7 +68,7 @@ const InputBox = ({
   useEffect(() => {
     if (!listening && transcript.trim() && !hasSubmittedRef.current) {
       hasSubmittedRef.current = true;
-
+      setHasUserTriggeredResponse(true);
       handleInputChange({
         target: { value: transcript },
       } as React.ChangeEvent<HTMLTextAreaElement>);
