@@ -114,7 +114,7 @@ export const SessionProvider = ({
   const [nightMode, setNightMode] = useState<boolean>(
     typeof window !== "undefined"
       ? localStorage.getItem("nightMode") === "true"
-      : false
+      : true
   );
   const [showSideBar, setShowSideBar] = useState<boolean>(
     typeof window !== "undefined"

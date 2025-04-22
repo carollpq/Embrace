@@ -35,14 +35,13 @@ export default function Home() {
   // Redirect to '/' if session doesn't
   useEffect(() => {
     if (session === null) {
-      router.replace("/"); 
+      router.replace("/");
     }
   }, [session]);
 
-
   return (
     <div
-      className={`flex flex-col justify-center gap-16 items-center h-screen bg-center ${
+      className={`flex flex-col justify-center items-center px-4 md:px-8 gap-10 md:gap-16 h-screen bg-center ${
         nightMode
           ? "bg-home-screen-blue"
           : "bg-home-screen-pink bg-black/20 bg-blend-overlay"
@@ -58,7 +57,9 @@ export default function Home() {
         </div>
       ) : showDisclaimer ? (
         <Disclaimer />
-      ) : showAbout ? (<About />) : loadingMoodSelection ? (
+      ) : showAbout ? (
+        <About />
+      ) : loadingMoodSelection ? (
         <MoodSelection
           setLoadingModeSelection={setLoadingModeSelection}
           setLoadingMoodSelection={setLoadingMoodSelection}
@@ -80,21 +81,22 @@ export default function Home() {
       ) : (
         <>
           {session && (
-            <h2 className="text-5xl font-medium animate-slideUp delay-1000">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium animate-slideUp delay-1000">
               Welcome, {session.name}
             </h2>
           )}
-          <p className="text-3xl font-medium animate-slideUp delay-1000 text-white/70">
+          <p className="sm:text-3xl text-2xl font-medium animate-slideUp delay-1000 text-white/70">
             Ready to talk?
           </p>
-          <div className="flex-center flex-row gap-10  w-screen animate-slideUp delay-1000">
+          <div className="flex flex-col md:flex-row gap-6 md:gap-10 w-full justify-center items-center animate-slideUp delay-1000">
             <button
-              className="flex-center button-transition hover:bg-[#1d1d1d] hover:text-white text-center text-2xl text-black/60 w-[200px] py-4 bg-white rounded-[30px] drop-shadow-default"
+              className="text-xl md:text-2xl w-[150px] md:w-[200px] py-3 md:py-4 rounded-[20px] md:rounded-[30px] bg-white text-black/60 hover:bg-[#1d1d1d] hover:text-white button-transition drop-shadow-default"
               onClick={() => setLoadingMoodSelection(true)}
             >
               Start
             </button>
           </div>
+
           <Toggle />
         </>
       )}
