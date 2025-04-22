@@ -34,7 +34,7 @@ const ChatMessage = ({
     selectedPersona,
     selectedTTS,
     fontSize,
-    session,
+    //session,
     messages,
   } = useSession();
 

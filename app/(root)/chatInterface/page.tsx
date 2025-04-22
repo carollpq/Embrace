@@ -5,7 +5,6 @@ import ChatMessage from "@/components/ChatMessage";
 import { useRef, useLayoutEffect, useEffect, FormEvent, useState } from "react";
 import { useSession } from "@/context/Provider";
 import { motion, AnimatePresence } from "framer-motion";
-import { useRouter } from "next/navigation";
 
 const ChatInterface: React.FC = () => {
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
@@ -21,8 +20,6 @@ const ChatInterface: React.FC = () => {
   } = useSession();
   const [bookmarkedMessages, setBookmarkedMessages] = useState<string[]>([]);
   const [hasLoadedBookmarks, setHasLoadedBookmarks] = useState(false);
-
-  const router = useRouter();
 
   const moodToPrompt: Record<string, string> = {
     Anxious: `Hey there, ${
@@ -51,7 +48,7 @@ const ChatInterface: React.FC = () => {
       setBookmarkedMessages(JSON.parse(saved));
       console.log("Loaded bookmarks from localStorage:", JSON.parse(saved));
     }
-    setHasLoadedBookmarks(true); // ✅ Mark as loaded
+    setHasLoadedBookmarks(true); 
   }, []);
   
   useEffect(() => {
@@ -155,7 +152,7 @@ const ChatInterface: React.FC = () => {
             userId: session?.email,
           }),
         });
-  
+
         if (!res.ok) {
           console.error("Failed to delete bookmarked message");
           setBookmarkedMessages((prev) => [...prev, message.id]);
