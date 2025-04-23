@@ -42,7 +42,7 @@ const Disclaimer = () => {
         />
       </div>
       {/* Navigation buttons */}
-      <div className="flex flex-row justify-between w-[540px] gap-8 animate-slideUp delay-1000">
+      <div className="flex flex-row justify-center w-[540px] gap-8 animate-slideUp delay-1000">
         <GeneralButton
           className="bg-white/70 hover:bg-white/90 hover:text-black/90"
           text="Understood"

@@ -20,7 +20,6 @@ export default function RootLayout({
     <main className={quicksand.className}>
       <Navbar />
       {children}
-      {/* <Toaster position="top-center" reverseOrder={false} /> */}
     </main>
   );
 }
