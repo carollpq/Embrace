@@ -64,25 +64,25 @@ export default function SignUpPage() {
 
   return (
     <div
-      className={`text-2xl py-20 flex-center flex-col gap-4 h-screen w-screen ${
+      className={`text-base md:text-lg py-12 md:py-20 flex-center flex-col gap-4 h-screen w-screen ${
         nightMode ? "bg-home-screen-blue" : "bg-day-mode-screen-2"
       }`}
     >
       {isLoadingPage ? (
         <div className="flex flex-col items-center gap-4">
-          <h2 className="text-2xl font-medium text-white/60 animate-slideUp delay-1000">
+          <h2 className="text-lg md:text-2xl font-medium text-white/60 animate-slideUp delay-1000">
             Loading Authentication Page ...
           </h2>
           {/* Spinning Loader */}
-          <div className="w-12 h-12 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin delay-1000 mt-3"></div>
+          <div className="w-10 h-10 md:w-12 md:h-12 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin delay-1000 mt-3"></div>
         </div>
       ) : (
         <>
           {/* Form section */}
-          <h2 className="text-3xl animate-slideUp delay-1000 text-white/80 mb-4">
+          <h2 className="text-2xl md:text-3xl animate-slideUp text-white/80 mb-4">
             Create An Account
           </h2>
-          <form className="flex-center flex-col max-w-[350px] gap-4 w-full animate-slideUp">
+          <form className="flex flex-col items-center gap-4 w-full animate-slideUp px-4 sm:px-0 max-w-[90vw] sm:max-w-[400px]">
             <TextInput
               label="Name"
               type="text"
@@ -112,7 +112,11 @@ export default function SignUpPage() {
           {/* Re-directs user to Sign In page section */}
           <p className="text-sm animate-slideUp">
             Already have an account?
-            <Link className="font-semibold" href="/sign-in" onClick={() => setIsLoadingPage(true)}>
+            <Link
+              className="font-semibold"
+              href="/sign-in"
+              onClick={() => setIsLoadingPage(true)}
+            >
               Log In
             </Link>
           </p>

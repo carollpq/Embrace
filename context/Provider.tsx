@@ -119,7 +119,7 @@ export const SessionProvider = ({
   const [showSideBar, setShowSideBar] = useState<boolean>(
     typeof window !== "undefined"
       ? localStorage.getItem("showSideBar") === "true"
-      : false
+      : true
   );
   const [fontSize, setFontSize] = useState<string>(
     typeof window !== "undefined"

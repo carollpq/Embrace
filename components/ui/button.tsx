@@ -10,7 +10,12 @@ interface GeneralButtonProps {
   isLoading?: boolean;
 }
 
-const GeneralButton: React.FC<GeneralButtonProps> = ({ text, onClick, className = "", isLoading = false }) => {
+const GeneralButton: React.FC<GeneralButtonProps> = ({
+  text,
+  onClick,
+  className = "",
+  isLoading = false,
+}) => {
   const handleOAuthSignIn = () => {
     if (text === "Continue with Google") {
       signIn("google"); // Initiates Google OAuth sign-in
@@ -20,9 +25,11 @@ const GeneralButton: React.FC<GeneralButtonProps> = ({ text, onClick, className 
   };
 
   return (
-    <div
-      onClick={!isLoading ? (onClick || handleOAuthSignIn) : undefined} // Use onClick if provided, otherwise use OAuth handler
-      className={`${className} flex items-center justify-center text-black/70 rounded-[50px] font-medium py-[0.75rem] px-[1.5rem] text-xl w-full drop-shadow-default text-center hover:cursor-pointer button-transition gap-4`}
+    <button
+      type="button"
+      disabled={isLoading}
+      onClick={!isLoading ? onClick || handleOAuthSignIn : undefined}
+      className={`${className} flex items-center justify-center text-black/70 rounded-full font-medium py-3 px-6 text-base sm:text-lg md:text-xl w-full max-w-[90vw] sm:max-w-[350px] transition-all`}
     >
       {isLoading ? (
         <div className="animate-spin h-5 w-5 border-4 border-black/60 border-t-transparent rounded-full"></div> // Spinner
@@ -33,7 +40,7 @@ const GeneralButton: React.FC<GeneralButtonProps> = ({ text, onClick, className 
           <span>{text}</span>
         </>
       )}
-    </div>
+    </button>
   );
 };
 
