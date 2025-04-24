@@ -17,8 +17,6 @@ const config: Config = {
         "home-screen-pink": "url('/img/pink-bg.png')",
         "profile-pic-jenna": "url('/img/Jenna.png')",
         "profile-pic-marcus": "url('/img/Marcus.png')",
-        "day-mode-toggle": "url('/icons/day-mode-toggle.png')",
-        "night-mode-toggle": "url('/icons/night-mode-toggle.png')",
         "day-mode-screen-2": "url('/img/pink-bg-2.png')",
       },
       dropShadow: {
