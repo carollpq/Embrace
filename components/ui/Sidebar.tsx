@@ -166,8 +166,8 @@ const Sidebar = () => {
           >
             <div
               className={`${
-                showSavedMessages ? "bg-white/70 text-black" : ""
-              } bg-black/50 rounded-lg drop-shadow-md text-left py-2 px-6 flex flex-row justify-between items-center hover:bg-white/70 hover:text-black hover:cursor-pointer ${
+                showSavedMessages ? "bg-white/70 text-black" : "bg-black/50"
+              } rounded-lg drop-shadow-md text-left py-2 px-6 flex flex-row justify-between items-center hover:bg-white/70 hover:text-black hover:cursor-pointer ${
                 showHelp ? "textbox-highlight-glow" : ""
               }`}
               onClick={() => setShowSavedMessages(!showSavedMessages)}
@@ -188,9 +188,9 @@ const Sidebar = () => {
             placement="right"
           >
             <div
-              className={`bg-black/50 rounded-lg drop-shadow-md text-left py-2 px-6 flex flex-row justify-between items-center hover:bg-white/70 hover:text-black hover:cursor-pointer ${
+              className={`rounded-lg drop-shadow-md text-left py-2 px-6 flex flex-row justify-between items-center hover:bg-white/70 hover:text-black hover:cursor-pointer ${
                 showHelp ? "textbox-highlight-glow" : ""
-              }`}
+              } ${showSettings ? "bg-white/70 text-black" : "bg-black/50"}`}
               onClick={() => setShowSettings(!showSettings)}
             >
               <span>Settings</span>
