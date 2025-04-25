@@ -78,7 +78,7 @@ export default function SigninPage() {
           <h2 className="text-2xl md:text-3xl animate-slideUp text-white/80 mb-4">
             Welcome Back!
           </h2>
-          <form className="flex flex-col items-center gap-4 w-full animate-slideUp px-4 sm:px-0 max-w-[90vw] sm:max-w-[400px]">
+          <form className="text-md sm:text-lg flex flex-col items-center gap-4 w-full animate-slideUp px-4 max-w-[90vw] sm:max-w-[400px]">
             <TextInput
               label="Email"
               type="email"
