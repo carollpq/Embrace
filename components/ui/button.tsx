@@ -44,7 +44,7 @@ const GeneralButton: React.FC<GeneralButtonProps> = ({
           <span className="text-sm sm:text-base md:text-lg">{text}</span>
         </>
       )}
-    </button>
+    </div>
   );
 };
 
