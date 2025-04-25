@@ -40,9 +40,10 @@ const ChatMessage = ({
   } = useSession();
 
   const lastSpokenMessage = useRef<string | null>(null); // Track the last spoken message content
-
   const hasPlayedTTS = useRef(false);
   const [isSavingMessage, setIsSavingMessage] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isLoadingAudio, setIsLoadingAudio] = useState(false);
 
   const isLastAssistantMessage = () => {
     const assistantMessages = messages?.filter(
@@ -58,18 +59,21 @@ const ChatMessage = ({
   const speak = async () => {
     if (!message.content) return;
     const cleanedText = removeEmojis(message.content);
-
+  
     try {
+      setIsLoadingAudio(true);
       if (selectedTTS === "polly") {
-        await playPersonaSpeech(cleanedText, selectedPersona); //set on speech end here??
+        await playPersonaSpeech(cleanedText, selectedPersona, () => setIsSpeaking(false), () => setIsSpeaking(true), () => setIsLoadingAudio(false));
       } else {
-        playBrowserTTS(cleanedText, selectedPersona);
-        return;
+        playBrowserTTS(cleanedText, selectedPersona, () => setIsSpeaking(false), () => setIsSpeaking(true), () => setIsLoadingAudio(false));
       }
     } catch (error) {
       console.error("TTS error:", error);
-    } 
+      setIsSpeaking(false);
+      setIsLoadingAudio(false);
+    }
   };
+  
 
   // Play TTS for latest assistant message
   useEffect(() => {
@@ -178,14 +182,17 @@ const ChatMessage = ({
                 title="Play audio"
                 onClick={speak}
                 className="text-blue-500 hover:text-blue-700 text-sm underline"
-              >
+              >{isLoadingAudio ? (
+                <div className="w-4 h-4 absolute top-1 border-4 border-black/20 border-t-black/50 rounded-full animate-spin delay-1000"></div>
+              ) : (
                 <Image
                   className="hover:cursor-pointer"
-                  src="/icons/not-speak.svg"
+                  src={isSpeaking ? "/icons/is-speaking.svg" : "/icons/not-speak.svg"}
                   alt="Speaker icon"
                   width={18}
                   height={18}
                 />
+              )}
               </button>
             </div>
           )}

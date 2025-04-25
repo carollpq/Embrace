@@ -1,7 +1,9 @@
 export const playBrowserTTS = (
   text: string,
   persona: string | null,
-  onEnd?: () => void
+  onEnd?: () => void,
+  onStart?: () => void,
+  onStopLoad?: () => void,
 ) => {
   // Cancel any current speech before starting a new one
   speechSynthesis.cancel();
@@ -54,6 +56,8 @@ export const playBrowserTTS = (
       utterance.voice = selectedVoice;
     }
 
+    onStopLoad?.();
+    onStart?.();
     speechSynthesis.speak(utterance);
   };
 

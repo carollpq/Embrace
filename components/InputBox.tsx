@@ -103,7 +103,7 @@ const InputBox = ({
       {selectedMode === "voice-and-text" ||
       selectedMode === "voice-and-voice" ? (
         <div className="flex flex-col justify-center items-center gap-6">
-          <span className="text-xl">
+          <span className="sm:text-xl text-lg text-center">
             Click here and start speaking with {selectedPersona}!
           </span>
           <button

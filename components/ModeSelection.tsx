@@ -1,7 +1,7 @@
 "use client";
 import GeneralButton from "@/components/ui/button";
 import SelectionCard from "@/components/ui/SelectionCard";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useSession } from "@/context/Provider";
 
 const ModeSelection = ({
@@ -16,10 +16,21 @@ const ModeSelection = ({
   const { setSelectedMode, nightMode, setSelectedTTS } = useSession();
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
   const [loadTTSOptions, setLoadTTSOptions] = useState(false);
+  const continueButtonRef = useRef<HTMLDivElement | null>(null);
 
   const handleCardClick = (mode: string) => {
     setSelectedMode(mode); // Set the selected mode in your session
     setSelectedCard(mode); // Set the selected card locally
+
+    // Scroll the continue button into view on mobile
+    setTimeout(() => {
+      if (window.innerWidth < 640 && continueButtonRef.current) {
+        continueButtonRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }
+    }, 100); // slight delay ensures rendering
   };
 
   const checkIsSelected = () => {
@@ -140,6 +151,7 @@ const ModeSelection = ({
               onClick={() => {
                 checkIsSelected();
               }}
+              ref={continueButtonRef}
             />
           </div>
         </div>

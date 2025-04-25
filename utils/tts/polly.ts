@@ -51,7 +51,7 @@ export function stopSpeech() {
   }
 }
 
-export async function playSpeech(text: string, voiceId = "Danielle") {
+export async function playSpeech(text: string, voiceId = "Danielle", onEnd?: () => void, onStart?: () => void, onStopLoad?: () => void) {
   const audioStream = await getSpeech(text, voiceId);
 
   const audioBlob = new Blob([audioStream], { type: "audio/mpeg" });
@@ -64,11 +64,15 @@ export async function playSpeech(text: string, voiceId = "Danielle") {
 
   currentAudio.onended = () => {
     currentAudio = null; // Reset after playback ends
+    onEnd?.(); // 👈 Call the callback when audio ends
   };
 
+  onStopLoad?.();
+  onStart?.();
   currentAudio.play().catch((err) => {
     console.error("Audio playback failed:", err);
     currentAudio = null;
+    onEnd?.(); // 👈 Also call it if there's an error
   });
 }
 
@@ -78,14 +82,14 @@ const personaVoices = {
   Marcus: "Matthew",
 };
 
-export async function playPersonaSpeech(text: string, persona: string | null) {
+export async function playPersonaSpeech(text: string, persona: string | null, onEnd?: () => void, onStart?: () => void, onStopLoad?: () => void) {
   if (!persona || !(persona in personaVoices)) {
     console.error(`Voice ID not found for persona: ${persona}`);
     return;
   }
 
   const voiceId = personaVoices[persona as keyof typeof personaVoices];
-  await playSpeech(text, voiceId);
+  await playSpeech(text, voiceId, onEnd, onStart, onStopLoad);
 }
 
 
