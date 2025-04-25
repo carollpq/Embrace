@@ -23,7 +23,7 @@ const SelectionCard: React.FC<SelectionCardProps> = ({
   return (
     <div
       onClick={onClick}
-      className={`animflex flex-col justify-center items-center button-transition w-[250px] h-[250px] text-black/60 font-semibold text-xl rounded-[20px] drop-shadow-default ${
+      className={`flex flex-col justify-center items-center button-transition w-[250px] h-[250px] text-black/60 font-semibold text-xl rounded-[20px] drop-shadow-default ${
         isSelected
           ? "bg-white/90 text-black/80 hover:cursor-pointer" // Highlighted style for selected card
           : "bg-white/60 hover:bg-white/80 hover:text-black/80 hover:cursor-pointer" // Default style
