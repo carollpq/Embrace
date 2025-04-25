@@ -30,7 +30,6 @@ const Sidebar = () => {
   const router = useRouter();
 
   const toggleSideBar = () => {
-    if (showSavedMessages) return;
     setShowSideBar(!showSideBar);
   };
 

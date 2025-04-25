@@ -6,7 +6,6 @@ import ChatHeader from "@/components/ui/ChatHeader";
 import Sidebar from "@/components/ui/Sidebar";
 import { useSession } from "@/context/Provider";
 import ExitConfirmationModal from "@/components/ui/ExitConfirmationModal";
-import SavedMessages from "@/components/SavedMessages";
 import SessionExpiredModal from "@/components/ui/SessionExpiredModal";
 
 const quicksand = Quicksand({ weight: ["400"], subsets: ["latin"] });
@@ -29,7 +28,6 @@ export default function RootLayout({
     highContrast,
     showConfirmExit,
     confirmedExit,
-    showSavedMessages,
     session,
   } = useSession();
 
@@ -37,7 +35,7 @@ export default function RootLayout({
     <main
       className={`${quicksand.className} ${
         nightMode ? "bg-home-screen-blue" : "bg-day-mode-screen-2"
-      } flex flex-col md:flex-row h-screen w-screen ${
+      } flex flex-row h-screen w-screen ${
         fontSize === "sm"
           ? "text-sm"
           : fontSize === "lg"
@@ -61,17 +59,13 @@ export default function RootLayout({
           <Sidebar />
           <div
             className={`${
-              !showSideBar ? "w-screen absolute" : "sm:w-full sm:relative w-screen absolute"
+              !showSideBar
+                ? "w-screen absolute"
+                : "sm:w-full sm:relative w-screen absolute"
             } flex flex-col h-screen transition-all duration-300 ease-in-out z-10`}
           >
-            {showSavedMessages ? (
-              <SavedMessages />
-            ) : (
-              <>
-                <ChatHeader />
-                {children}
-              </>
-            )}
+            <ChatHeader />
+            {children}
           </div>
           {showConfirmExit && <ExitConfirmationModal />}
         </>

@@ -61,19 +61,19 @@ const SavedMessages = () => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center gap-4 w-full h-screen">
-        <h2 className="text-3xl font-medium text-white/70 animate-slideUp delay-1000">
+      <div className="flex flex-col items-center justify-center gap-4 w-full h-[85vh]">
+        <h2 className="sm:text-3xl text-2xl font-medium text-white/70 animate-slideUp delay-1000">
           Loading saved messages ...
         </h2>
-        <div className="w-12 h-12 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin delay-1000 mt-3"></div>
+        <div className="sm:w-12 sm:h-12 w-10 h-10 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin delay-1000 mt-3"></div>
       </div>
     );
   }
 
   if (messages.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center gap-4 w-full h-screen">
-        <h2 className="text-3xl font-medium text-white/70 animate-slideUp delay-1000">
+      <div className="flex flex-col items-center justify-center gap-4 w-full h-[85vh]">
+        <h2 className="sm:text-3xl text-2xl font-medium text-white/70 animate-slideUp delay-1000">
           No Saved Messages
         </h2>
       </div>
@@ -81,9 +81,9 @@ const SavedMessages = () => {
   }
 
   return (
-    <div className="flex flex-col gap-6 w-full h-screen p-10 pl-16">
-      <h2 className="text-3xl font-medium text-white ">Saved Messages</h2>
-      <div className="max-w-[60%] overflow-y-auto space-y-4 animate-slideUp delay-1000">
+    <div className="flex flex-col gap-6 w-full h-[85vh] p-2 sm:pl-16">
+      <h2 className="sm:text-3xl text-2xl font-medium text-white ">Saved Messages</h2>
+      <div className="sm:max-w-[60%] w-full overflow-y-auto space-y-4 animate-slideUp delay-1000">
         {messages.map((msg) => (
           <div
             key={msg._id}

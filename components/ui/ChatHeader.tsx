@@ -27,6 +27,7 @@ const ChatHeader = () => {
     fontSize,
     customTraits,
     setCustomTraits,
+    showSavedMessages,
   } = useSession();
   const [showPopUp, setShowPopUp] = useState(false);
   const [showCustomize, setShowCustomize] = useState(false);
@@ -68,9 +69,9 @@ const ChatHeader = () => {
   }, [showPopUp]);
 
   return (
-    <div className="relative z-[50] flex flex-row justify-between top-0 left-0 sm:text-xl text-lg py-3 px-9 bg-[#010f17]/40 drop-shadow-md">
+    <div className={`relative z-[50] flex flex-row justify-between top-0 left-0 sm:text-xl text-lg py-3 px-9 ${showSavedMessages ? "bg-transparent h-[10vh]" : "bg-[#010f17]/40"}  drop-shadow-md`}>
       {/* Chatbot Persona */}
-      <div className="flex flex-row gap-5 flex-center">
+      <div className={`flex flex-row sm:gap-5 gap-2 flex-center`}>
         {!showSideBar && (
           <Image
             src="/icons/bars-solid.svg"
@@ -81,15 +82,15 @@ const ChatHeader = () => {
             className="hover:cursor-pointer"
           />
         )}
-        <div className="relative">
+        <div className={`relative ${showSavedMessages ? "hidden" : "block"}`}>
           <div
-            className={`flex items-center gap-4 hover:cursor-pointer hover:bg-white/10 rounded-xl py-2 px-3 ${
+            className={`flex items-center sm:gap-4 gap-2 hover:cursor-pointer hover:bg-white/10 rounded-xl py-2 px-3 ${
               showHelp ? "textbox-highlight-glow pointer-events-none" : ""
             }`}
             onClick={() => setShowPopUp(!showPopUp)}
           >
             <div
-              className={`w-12 h-12 bg-black/20 rounded-full bg-cover ${
+              className={`w-10 h-10 sm:w-12 sm:h-12 bg-black/20 rounded-full bg-cover ${
                 selectedPersona === "Jenna"
                   ? "bg-profile-pic-jenna"
                   : "bg-profile-pic-marcus"
@@ -111,11 +112,11 @@ const ChatHeader = () => {
           {/* Popup Card */}
           {showPopUp && (
             <div
-              //ref={popupRef}
-              className="absolute left-0 mt-4 w-[20rem] bg-black shadow-lg rounded-lg py-4 px-5 text-black z-[999]"
-            >
-              <div className="flex flex-row items-center justify-between">
-                <h3 className="text-lg font-semibold text-white">
+            //ref={popupRef}
+            className="absolute left-0 mt-4 w-[15rem] sm:w-[20rem] bg-black shadow-lg rounded-lg py-4 px-5 text-black z-[999]"
+          >
+              <div className="flex sm:flex-row flex-col sm:items-center items-start justify-between">
+                <h3 className="sm:text-lg text-md font-semibold text-white">
                   About {selectedPersona}
                 </h3>
                 <p
@@ -143,7 +144,7 @@ const ChatHeader = () => {
               {(selectedMode === "text-and-voice" ||
                 selectedMode === "voice-and-voice") && (
                 <>
-                  <div className="flex flex-row items-center justify-between mt-5">
+                  <div className="flex flex-col sm:flex-row sm:items-center items-start justify-between mt-5">
                     <h4 className="text-sm font-normal text-white">
                       Voice mode :{" "}
                       {selectedTTS === "polly" ? "Online" : "Offline"}
@@ -184,7 +185,7 @@ const ChatHeader = () => {
                   : marcusDefaultTraits);
 
               return (
-                <div className="absolute md:left-[21rem] mt-[11rem] md:mt-4 md:w-[22rem] w-[20rem] bg-black shadow-lg rounded-lg py-4 px-5 text-white z-[999]">
+                <div className="absolute sm:left-[21rem] mt-4 sm:w-[20rem] w-[15rem] bg-black shadow-lg rounded-lg py-4 px-5 text-white z-[999] overflow-y-auto">
                   <h3 className="text-md font-semibold mb-3">
                     Fine-tune {selectedPersona}
                   </h3>
@@ -267,9 +268,9 @@ const ChatHeader = () => {
           onClick={() => setShowHelp(!showHelp)}
         >
           <span
-            className={
-              showHelp ? "text-white font-medium z-20" : "text-white/60"
-            }
+            className={`
+              ${showHelp ? "text-white font-medium z-20" : "text-white/60"} sm:block hidden
+            `}
           >
             Help
           </span>

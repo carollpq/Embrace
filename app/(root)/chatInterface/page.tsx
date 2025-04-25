@@ -6,6 +6,7 @@ import { useRef, useLayoutEffect, useEffect, FormEvent, useState } from "react";
 import { useSession } from "@/context/Provider";
 import { motion, AnimatePresence } from "framer-motion";
 import { stopSpeech } from "@/utils/tts/polly";
+import SavedMessages from "@/components/SavedMessages";
 
 const ChatInterface: React.FC = () => {
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
@@ -19,6 +20,7 @@ const ChatInterface: React.FC = () => {
     selectedMood,
     session,
     setHasUserTriggeredResponse,
+    showSavedMessages,
   } = useSession();
   const [bookmarkedMessages, setBookmarkedMessages] = useState<string[]>([]);
   const [hasLoadedBookmarks, setHasLoadedBookmarks] = useState(false);
@@ -287,45 +289,49 @@ const ChatInterface: React.FC = () => {
 
   return (
     <div className="relative px-6">
-      <div className="flex flex-col h-[85vh] justify-between mt-4">
-        <div
-          ref={messageContainerRef}
-          className="flex-1 overflow-y-auto h-[100px] hide-scrollbar"
-        >
-          {messages.length === 0 && (
-            <div className="flex items-center justify-center h-full text-4xl text-white animate-slideUp delay-1000">
-              Hi, I&apos;m here for you 🤗
-            </div>
-          )}
-          <AnimatePresence initial={false}>
-            {messages.map((message, index) => (
-              <motion.div
-                key={message.id || index}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
-                className="px-4 py-2"
-              >
-                <ChatMessage
-                  message={message}
-                  isBookmarked={isBookmarked(message.id)}
-                  toggleBookmark={() => toggleBookmark(message)}
-                />
-              </motion.div>
-            ))}
-          </AnimatePresence>
+      {!showSavedMessages ? (
+        <div className="flex flex-col h-[85vh] justify-between mt-4">
+          <div
+            ref={messageContainerRef}
+            className="flex-1 overflow-y-auto h-[100px] hide-scrollbar"
+          >
+            {messages.length === 0 && (
+              <div className="flex items-center justify-center h-full sm:text-4xl text-2xl text-white animate-slideUp delay-1000">
+                Hi, I&apos;m here for you 🤗
+              </div>
+            )}
+            <AnimatePresence initial={false}>
+              {messages.map((message, index) => (
+                <motion.div
+                  key={message.id || index}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
+                  className="px-4 py-2"
+                >
+                  <ChatMessage
+                    message={message}
+                    isBookmarked={isBookmarked(message.id)}
+                    toggleBookmark={() => toggleBookmark(message)}
+                  />
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+          <div className="mb-[40px]">
+            <InputBox
+              handleSubmit={handleSubmit}
+              handleInputChange={(e) => setChatInput(e.target.value)}
+              handleDirectSubmit={handleDirectSubmit}
+              input={chatInput}
+              setHasUserTriggeredResponse={setHasUserTriggeredResponse}
+            />
+          </div>
         </div>
-        <div className="mb-[40px]">
-          <InputBox
-            handleSubmit={handleSubmit}
-            handleInputChange={(e) => setChatInput(e.target.value)}
-            handleDirectSubmit={handleDirectSubmit}
-            input={chatInput}
-            setHasUserTriggeredResponse={setHasUserTriggeredResponse}
-          />
-        </div>
-      </div>
+      ) : (
+        <SavedMessages />
+      )}
     </div>
   );
 };
