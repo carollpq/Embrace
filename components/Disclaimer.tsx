@@ -7,7 +7,7 @@ const Disclaimer = () => {
   const { setShowDisclaimer } = useSession();
   return (
     <div className="flex flex-col items-center mt-14 overflow-y-auto space-y-4 py-6">
-      <h2 className="text-2xl sm:text-3xl font-medium text-white animate-slideUp delay-1000">
+      <h2 className="text-2xl sm:text-3xl font-medium text-white animate-slideUp delay-1000 text-center">
         Important Things to Take Note
       </h2>
       {/* Selection cards */}

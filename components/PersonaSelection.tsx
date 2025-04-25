@@ -105,7 +105,7 @@ const PersonaSelection = ({
           {/* Error Message (if user tries to continue without selection) */}
           {errorMessage && <p className="text-red-800">{errorMessage}</p>}
 
-          <div className="flex flex-col sm:flex-row justify-between w-full sm:gap-8 gap-2 animate-slideUp delay-1000">
+          <div className="flex flex-col sm:flex-row justify-between w-full sm:gap-8 gap-2 animate-slideUp delay-1000 mb-10">
             <GeneralButton
               className="py-[0.50rem] bg-transparent border-4 border-white/40 text-white/70 hover:text-black/70 hover:bg-white/50 hover:border-transparent"
               text="Back"

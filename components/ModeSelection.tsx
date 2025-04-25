@@ -128,7 +128,7 @@ const ModeSelection = ({
             />
           </div>
           {/* Navigation buttons */}
-          <div className="flex flex-col sm:flex-row justify-between w-full sm:gap-8 gap-2 animate-slideUp delay-1000">
+          <div className="flex flex-col sm:flex-row justify-between w-full sm:gap-8 gap-2 animate-slideUp delay-1000 mb-10">
             <GeneralButton
               className="bg-transparent border-4 border-white/40 text-white/70 hover:text-black/70 hover:bg-white/50 hover:border-transparent py-[0.50rem]"
               text="Back"
