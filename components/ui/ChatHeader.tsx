@@ -23,7 +23,7 @@ const ChatHeader = () => {
     setSelectedTTS,
     selectedMode,
     showHelp,
-    setShowHelp,
+    //setShowHelp,
     fontSize,
     customTraits,
     setCustomTraits,
@@ -265,7 +265,7 @@ const ChatHeader = () => {
       >
         <div
           className="flex flex-row justify-center items-center gap-2 hover:cursor-pointer"
-          onClick={() => setShowHelp(!showHelp)}
+          //onClick={() => setShowHelp(!showHelp)}
         >
           <span
             className={`
