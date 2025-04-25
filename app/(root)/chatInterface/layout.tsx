@@ -37,7 +37,7 @@ export default function RootLayout({
     <main
       className={`${quicksand.className} ${
         nightMode ? "bg-home-screen-blue" : "bg-day-mode-screen-2"
-      } flex flex-row h-screen w-screen justify-between ${
+      } flex flex-col md:flex-row h-screen w-screen ${
         fontSize === "sm"
           ? "text-sm"
           : fontSize === "lg"
