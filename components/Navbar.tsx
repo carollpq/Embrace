@@ -28,7 +28,7 @@ const Navbar = () => {
       <span className={`${pacifico.className} text-3xl text-white`}>Embrace</span>
 
       {/* Hamburger icon on mobile */}
-      <div className="xs:hidden">
+      <div className="sm:hidden">
         {menuOpen ? (
           <X
             className="w-8 h-8 text-white cursor-pointer"
