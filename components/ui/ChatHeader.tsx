@@ -68,7 +68,7 @@ const ChatHeader = () => {
   }, [showPopUp]);
 
   return (
-    <div className="relative z-[50] flex flex-row justify-between top-0 left-0 text-xl py-3 px-9 bg-[#010f17]/40 drop-shadow-md">
+    <div className="relative z-[50] flex flex-row justify-between top-0 left-0 sm:text-xl text-lg py-3 px-9 bg-[#010f17]/40 drop-shadow-md">
       {/* Chatbot Persona */}
       <div className="flex flex-row gap-5 flex-center">
         {!showSideBar && (
@@ -96,7 +96,7 @@ const ChatHeader = () => {
               }`}
             ></div>
             <div
-              className={`text-center text-white text-xl font-semibold ${quicksand.className}`}
+              className={`text-center text-white sm:text-xl text-lg font-semibold ${quicksand.className}`}
             >
               {selectedPersona}
             </div>
@@ -184,7 +184,7 @@ const ChatHeader = () => {
                   : marcusDefaultTraits);
 
               return (
-                <div className="absolute left-[21rem] mt-4 w-[22rem] bg-black/90 shadow-lg rounded-lg py-4 px-5 text-white z-[999]">
+                <div className="absolute md:left-[21rem] mt-[11rem] md:mt-4 md:w-[22rem] w-[20rem] bg-black shadow-lg rounded-lg py-4 px-5 text-white z-[999]">
                   <h3 className="text-md font-semibold mb-3">
                     Fine-tune {selectedPersona}
                   </h3>

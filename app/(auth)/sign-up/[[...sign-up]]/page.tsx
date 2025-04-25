@@ -64,7 +64,7 @@ export default function SignUpPage() {
 
   return (
     <div
-      className={`text-base md:text-lg py-12 md:py-20 flex-center flex-col gap-4 h-screen w-screen ${
+      className={`text-base md:text-lg py-12 md:py-20 flex-center flex-col gap-4 h-screen w-screen px-4 ${
         nightMode ? "bg-home-screen-blue" : "bg-day-mode-screen-2"
       }`}
     >

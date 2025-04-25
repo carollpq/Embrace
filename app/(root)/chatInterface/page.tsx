@@ -286,7 +286,7 @@ const ChatInterface: React.FC = () => {
   }, [messages]);
 
   return (
-    <div className="relative">
+    <div className="relative px-6">
       <div className="flex flex-col h-[85vh] justify-between mt-4">
         <div
           ref={messageContainerRef}

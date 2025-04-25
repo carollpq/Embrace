@@ -34,10 +34,10 @@ const Sidebar = () => {
   };
 
   return (
-    <div className={`relative ${showHelp ? "z-20 pointer-events-none" : ""}`}>
+    <div className={`relative ${showHelp ? "pointer-events-none" : ""} ${showSideBar ? "z-20" : ""}`}>
       <div
         className={`bg-[#021017]/70 w-[300px] min-w-[300px] h-screen flex flex-col drop-shadow-lg p-6 gap-10 transform transition-transform duration-300 ease-in-out ${
-          showSideBar ? "translate-x-0" : "-translate-x-full"
+          showSideBar ? "translate-x-0 bg-[#021017]" : "-translate-x-full"
         }`}
       >
         {/* Hamburger icon and Logo */}
@@ -97,7 +97,7 @@ const Sidebar = () => {
               className={`${
                 selectedMode === "text-and-text"
                   ? "bg-white/70 text-black"
-                  : "bg-[#021017]/80"
+                  : "bg-black/50"
               } rounded-lg drop-shadow-md text-left py-2 px-6 flex flex-row justify-between items-center hover:bg-white/70 hover:text-black hover:cursor-pointer ${
                 showHelp ? "textbox-highlight-glow" : ""
               }`}
@@ -112,7 +112,7 @@ const Sidebar = () => {
               className={`${
                 selectedMode === "text-and-voice"
                   ? "bg-white/70 text-black"
-                  : "bg-[#021017]/80"
+                  : "bg-black/50"
               } rounded-lg drop-shadow-md text-left py-2 px-6 flex flex-row justify-between items-center hover:bg-white/70 hover:text-black hover:cursor-pointer ${
                 showHelp ? "textbox-highlight-glow" : ""
               }`}
@@ -127,7 +127,7 @@ const Sidebar = () => {
               className={`${
                 selectedMode === "voice-and-text"
                   ? "bg-white/70 text-black"
-                  : "bg-[#021017]/80"
+                  : "bg-black/50"
               } rounded-lg drop-shadow-md text-left py-2 px-6 flex flex-row justify-between items-center hover:bg-white/70 hover:text-black hover:cursor-pointer ${
                 showHelp ? "textbox-highlight-glow" : ""
               }`}
@@ -142,7 +142,7 @@ const Sidebar = () => {
               className={`${
                 selectedMode === "voice-and-voice"
                   ? "bg-white/70 text-black"
-                  : "bg-[#021017]/80"
+                  : "bg-black/50"
               } rounded-lg drop-shadow-md text-left py-2 px-6 flex flex-row justify-between items-center hover:bg-white/70 hover:text-black hover:cursor-pointer ${
                 showHelp ? "textbox-highlight-glow" : ""
               }`}
@@ -167,7 +167,7 @@ const Sidebar = () => {
             <div
               className={`${
                 showSavedMessages ? "bg-white/70 text-black" : ""
-              } bg-[#021017]/80 rounded-lg drop-shadow-md text-left py-2 px-6 flex flex-row justify-between items-center hover:bg-white/70 hover:text-black hover:cursor-pointer ${
+              } bg-black/50 rounded-lg drop-shadow-md text-left py-2 px-6 flex flex-row justify-between items-center hover:bg-white/70 hover:text-black hover:cursor-pointer ${
                 showHelp ? "textbox-highlight-glow" : ""
               }`}
               onClick={() => setShowSavedMessages(!showSavedMessages)}
@@ -188,7 +188,7 @@ const Sidebar = () => {
             placement="right"
           >
             <div
-              className={`bg-[#021017]/80 rounded-lg drop-shadow-md text-left py-2 px-6 flex flex-row justify-between items-center hover:bg-white/70 hover:text-black hover:cursor-pointer ${
+              className={`bg-black/50 rounded-lg drop-shadow-md text-left py-2 px-6 flex flex-row justify-between items-center hover:bg-white/70 hover:text-black hover:cursor-pointer ${
                 showHelp ? "textbox-highlight-glow" : ""
               }`}
               onClick={() => setShowSettings(!showSettings)}

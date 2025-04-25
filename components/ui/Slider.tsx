@@ -25,7 +25,7 @@ const SliderSetting: React.FC<SliderSettingProps> = ({
         </span>
       </div>
       {description && (
-        <p className="text-white/70 text-xs sm:text-sm leading-snug sm:leading-normal">
+        <p className="text-white/70 text-xs md:text-sm leading-snug sm:leading-normal">
           {description}
         </p>
       )}

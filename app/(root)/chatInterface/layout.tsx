@@ -61,7 +61,7 @@ export default function RootLayout({
           <Sidebar />
           <div
             className={`${
-              !showSideBar ? "w-screen absolute" : "w-full relative"
+              !showSideBar ? "w-screen absolute" : "sm:w-full sm:relative w-screen absolute"
             } flex flex-col h-screen transition-all duration-300 ease-in-out z-10`}
           >
             {showSavedMessages ? (

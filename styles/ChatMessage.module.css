@@ -3,7 +3,7 @@
     max-width: 500px;
     align-self: flex-end;
     margin: 12px;
-    margin-right: 20%;
+    margin-right: 10%;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -17,7 +17,7 @@
   .chat-message-chatbot {
     max-width: 500px;
     margin: 12px;
-    margin-left: 15%;
+    margin-left: 10%;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -53,27 +53,35 @@
   }
   
   /* Media query for screens smaller than 900px wide */
-  @media (max-width: 900px) {
+  @media (max-width: 600px) {
     .chat-message-user {
       align-self: flex-start;
-      margin-left: 15%;
+      margin-left: 0%;
     }
   
     .chat-message-chatbot {
       max-width: 500px;
       min-width: 300px;
+      margin-left: 0%;
+    }
+  }
+
+  @media (min-width: 600px) and (max-width: 900px) {
+    .chat-message-user {
+      margin-right: 2%;
+    }
+  
+    .chat-message-chatbot {
+      max-width: 500px;
+      min-width: 300px;
+      margin-left: 2%;
     }
   }
   
-  /* Media query for screens ranging 900px - 1200px */
+  /* Media query for screens ranging 900px - 1200px
   @media (min-width: 900px) and (max-width: 1200px) {
     .chat-message {
       margin: 0 auto;
     }
-  
-    .chat-message-user {
-      align-self: flex-start;
-      margin-left: 15%;
-    }
-  }
+  } */
   

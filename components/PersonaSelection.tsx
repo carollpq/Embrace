@@ -80,7 +80,7 @@ const PersonaSelection = ({
           </div>
         </>
       ) : (
-        <>
+        <div className="flex flex-col items-center justify-center gap-6 absolute top-10 my-10 mx-5 sm:static sm:my-0 sm:mx-0">
           <h2 className="text-2xl font-medium text-white/60 animate-slideUp delay-1000 text-center">
             Select Your Speaker
           </h2>
@@ -107,11 +107,6 @@ const PersonaSelection = ({
 
           <div className="flex flex-col sm:flex-row justify-between w-full sm:gap-8 gap-2 animate-slideUp delay-1000">
             <GeneralButton
-              className="bg-white/70 hover:bg-white/90 hover:text-black/90"
-              text="Continue"
-              onClick={handleContinue}
-            />
-            <GeneralButton
               className="py-[0.50rem] bg-transparent border-4 border-white/40 text-white/70 hover:text-black/70 hover:bg-white/50 hover:border-transparent"
               text="Back"
               onClick={() => {
@@ -119,8 +114,13 @@ const PersonaSelection = ({
                 setLoadingModeSelection(true);
               }}
             />
+            <GeneralButton
+              className="bg-white/70 hover:bg-white/90 hover:text-black/90"
+              text="Continue"
+              onClick={handleContinue}
+            />
           </div>
-        </>
+        </div>
       )}
     </div>
   );
