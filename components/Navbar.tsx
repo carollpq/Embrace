@@ -23,12 +23,12 @@ const Navbar = () => {
   if (isLoggingOut) return null;
 
   return (
-    <nav className="absolute top-0 left-0 w-full py-6 px-6 sm:px-14 flex items-center justify-between z-50">
+    <nav className="absolute top-0 left-0 w-full py-6 px-6 sm:px-14 flex items-center justify-between">
       {/* Logo */}
       <span className={`${pacifico.className} text-3xl text-white`}>Embrace</span>
 
       {/* Hamburger icon on mobile */}
-      <div className="sm:hidden z-50">
+      <div className="sm:hidden">
         {menuOpen ? (
           <X
             className="w-8 h-8 text-white cursor-pointer"

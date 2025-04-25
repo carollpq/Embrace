@@ -8,7 +8,7 @@ import { useSession } from "@/context/Provider";
 const About = () => {
     const { setShowAbout } = useSession();
   return (
-    <div className="flex flex-col items-center mt-14 overflow-y-auto space-y-4 py-6">
+    <div className="flex flex-col items-center mt-14 sm:mt-10 overflow-y-auto space-y-4 py-6">
       <h2 className="text-2xl sm:text-3xl font-medium text-white animate-slideUp delay-1000">
         About This Website
       </h2>

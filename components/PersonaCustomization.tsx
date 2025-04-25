@@ -3,7 +3,12 @@
 import React, { useState, useEffect } from "react";
 import SliderSetting from "@/components/ui/Slider"; // ensure default export
 import GeneralButton from "@/components/ui/button";
-import { jennaDefaultTraits, marcusDefaultTraits, defaultTraits, useSession } from "@/context/Provider";
+import {
+  jennaDefaultTraits,
+  marcusDefaultTraits,
+  defaultTraits,
+  useSession,
+} from "@/context/Provider";
 import { useRouter } from "next/navigation";
 
 const traitDescriptions = {
@@ -33,26 +38,26 @@ const PersonaCustomization = () => {
 
   return (
     <div
-      className={`flex flex-col h-screen w-screen relative items-center justify-center gap-3 ${
+      className={`flex flex-col h-screen w-screen items-center justify-center gap-3 z-50 px-4 sm:px-8 md:px-12 overflow-y-auto ${
         nightMode ? "bg-home-screen-blue" : "bg-day-mode-screen-2"
       }`}
     >
       {/*When user clicks 'Save and chat'*/}
       {isLoading ? (
-        <div className="flex flex-col items-center gap-4">
-          <h2 className="text-2xl font-medium text-white/70 animate-slideUp delay-1000">
+        <div className="flex flex-col items-center gap-4 text-center px-4">
+          <h2 className="sm:text-2xl text-xl font-medium text-white/70 animate-slideUp delay-1000">
             Loading Your Chat Page, Be Ready to Talk Soon!
           </h2>
           {/* Spinning Loader */}
-          <div className="w-12 h-12 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin delay-1000 mt-3"></div>
+          <div className="w-10 h-10 sm:w-12 sm:h-12 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin delay-1000 mt-3"></div>
         </div>
       ) : (
         <>
-          <div className="max-w-3xl mx-auto text-white px-20 py-6 bg-black/40 rounded-2xl shadow-xl space-y-5 animate-slideUp">
-            <h2 className="text-2xl font-semibold mb-4">
+          <div className="w-full max-w-3xl px-4 sm:px-10 py-6 bg-black/40 rounded-2xl shadow-xl animate-slideUp">
+            <h2 className="text-lg sm:text-2xl font-semibold mb-2 sm:mb-4 text-white">
               Customize Your AI Companion
             </h2>
-            <p className="text-md text-white/90 mb-6">
+            <p className="text-sm sm:text-md text-white/90 mb-4 sm:mb-6">
               Adjust how your chosen persona communicates with you. This helps
               the assistant respond in a way that best supports your needs.
             </p>
@@ -71,7 +76,7 @@ const PersonaCustomization = () => {
               />
             ))}
 
-            <div className="flex justify-end gap-4 pt-6">
+            <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 pt-4 sm:pt-6">
               <GeneralButton
                 text="Reset"
                 className="bg-transparent border-4 border-white/40 text-white/90 hover:text-black/70 hover:bg-white/50 hover:border-transparent py-[0.50rem]"

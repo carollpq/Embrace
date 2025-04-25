@@ -33,17 +33,17 @@ const ModeSelection = ({
 
   return (
     <div
-      className={`flex flex-col h-screen w-screen relative items-center justify-center gap-4 ${
+      className={`flex flex-col min-h-screen w-screen relative items-center justify-center px-4 py-10 sm:px-8 gap-6 overflow-y-auto ${
         nightMode ? "bg-home-screen-blue" : "bg-day-mode-screen-2"
       }`}
     >
       {!loadTTSOptions ? (
-        <div className="flex flex-col items-center gap-4">
-          <h2 className="text-2xl font-medium text-white/60 animate-slideUp delay-1000">
+        <div className="flex flex-col items-center justify-center gap-6 absolute top-10 my-10 mx-5 sm:static sm:my-0 sm:mx-0">
+          <h2 className="text-2xl font-medium text-center text-white/60 animate-slideUp delay-1000">
             Select Your Mode of Communication
           </h2>
           {/* Selection cards */}
-          <div className="grid grid-cols-2 grid-rows-2 gap-8 animate-slideUp delay-1000">
+          <div className="grid grid-cols-1 sm:grid-cols-2 grid-rows-2 sm:gap-8 gap-4 animate-slideUp delay-1000">
             <SelectionCard
               title="Text and Text"
               description="Message with the chatbot and it will message you back!"
@@ -74,7 +74,7 @@ const ModeSelection = ({
             />
           </div>
           {/* Navigation buttons */}
-          <div className="flex flex-row justify-between w-[540px] gap-8 animate-slideUp delay-1000">
+          <div className="flex flex-col sm:flex-row justify-between w-full sm:gap-8 gap-2 animate-slideUp delay-1000 mb-10">
             <GeneralButton
               className="bg-transparent border-4 border-white/40 text-white/70 hover:text-black/70 hover:bg-white/50 hover:border-transparent py-[0.50rem]"
               text="Back"
@@ -100,12 +100,12 @@ const ModeSelection = ({
           </div>
         </div>
       ) : (
-        <div className="flex flex-col items-center gap-16">
-          <h2 className="text-2xl font-medium text-white/60 animate-slideUp delay-1000">
+        <div className="flex flex-col items-center justify-center gap-6 absolute top-10 my-10 mx-5 sm:static sm:my-0 sm:mx-0">
+          <h2 className="text-2xl font-medium text-white/60 animate-slideUp text-center delay-1000">
             Select Your Choice of TTS
           </h2>
           {/* Selection cards */}
-          <div className="grid grid-cols-2 gap-8 animate-slideUp delay-1000">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 animate-slideUp delay-1000">
             <SelectionCard
               title="Online TTS"
               description="Great if you prefer a smoother, more natural tone and don’t mind waiting a moment."
@@ -128,7 +128,7 @@ const ModeSelection = ({
             />
           </div>
           {/* Navigation buttons */}
-          <div className="flex flex-row justify-between w-[540px] gap-8 animate-slideUp delay-1000">
+          <div className="flex flex-col sm:flex-row justify-between w-full sm:gap-8 gap-2 animate-slideUp delay-1000">
             <GeneralButton
               className="bg-transparent border-4 border-white/40 text-white/70 hover:text-black/70 hover:bg-white/50 hover:border-transparent py-[0.50rem]"
               text="Back"
