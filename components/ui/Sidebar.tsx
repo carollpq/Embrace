@@ -23,6 +23,7 @@ const Sidebar = () => {
     setShowConfirmExit,
     showSavedMessages,
     setShowSavedMessages,
+    nightMode,
   } = useSession();
 
   const [showSettings, setShowSettings] = useState(false);
@@ -36,8 +37,8 @@ const Sidebar = () => {
   return (
     <div className={`relative ${showHelp ? "pointer-events-none" : ""} ${showSideBar ? "z-20" : ""}`}>
       <div
-        className={`bg-[#021017]/70 w-[300px] min-w-[300px] h-screen flex flex-col drop-shadow-lg p-6 gap-10 transform transition-transform duration-300 ease-in-out ${
-          showSideBar ? "translate-x-0 bg-[#021017]" : "-translate-x-full"
+        className={`${nightMode ? "bg-[#021017]": "bg-[#1d1629]"} w-[300px] min-w-[300px] h-screen flex flex-col drop-shadow-lg p-6 gap-10 transform transition-transform duration-300 ease-in-out ${
+          showSideBar ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         {/* Hamburger icon and Logo */}
