@@ -23,7 +23,7 @@ const SelectionCard: React.FC<SelectionCardProps> = ({
   return (
     <div
       onClick={onClick}
-      className={`animflex flex-col justify-center items-center button-transition w-[250px] h-[250px] text-black/60 font-semibold text-xl rounded-[20px] drop-shadow-default ${
+      className={`flex flex-col justify-center items-center button-transition w-[220px] h-[220px] sm:w-[250px] sm:h-[250px] text-black/60 font-semibold text-lg sm:text-xl rounded-[20px] drop-shadow-default ${
         isSelected
           ? "bg-white/90 text-black/80 hover:cursor-pointer" // Highlighted style for selected card
           : "bg-white/60 hover:bg-white/80 hover:text-black/80 hover:cursor-pointer" // Default style
@@ -31,7 +31,7 @@ const SelectionCard: React.FC<SelectionCardProps> = ({
     >
       <h2 className={`${titleStyle ? titleStyle: "text-left absolute top-7 left-8"}`}>{title}</h2>
       <div className="flex flex-row px-8 flex-wrap">
-        <span className={`${descStyle ? descStyle : "font-semibold text-sm absolute left-8 top-16 pr-8"}`}>
+        <span className={`${descStyle ? descStyle : "font-semibold sm:text-sm text-xs absolute left-8 top-16 pr-8"}`}>
           {description}
         </span>
         {svg && (

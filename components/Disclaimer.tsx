@@ -6,12 +6,12 @@ import { useSession } from "@/context/Provider";
 const Disclaimer = () => {
   const { setShowDisclaimer } = useSession();
   return (
-    <div className="flex flex-col items-center gap-4">
-      <h2 className="text-2xl font-medium text-white animate-slideUp delay-1000">
+    <div className="flex flex-col items-center mt-14 overflow-y-auto space-y-4 py-6">
+      <h2 className="text-2xl sm:text-3xl font-medium text-white animate-slideUp delay-1000">
         Important Things to Take Note
       </h2>
       {/* Selection cards */}
-      <div className="grid grid-cols-2 grid-rows-2 gap-8 animate-slideUp delay-1000">
+      <div className="grid grid-cols-1 sm:grid-cols-2 grid-rows-2 gap-4 animate-slideUp delay-1000">
         <SelectionCard
           titleStyle="text-left absolute top-7 left-7 text-[16px] text-black mr-2"
           descStyle="font-semibold absolute text-sm left-7 top-24 pr-8"
@@ -42,7 +42,7 @@ const Disclaimer = () => {
         />
       </div>
       {/* Navigation buttons */}
-      <div className="flex flex-row justify-center w-[540px] gap-8 animate-slideUp delay-1000">
+      <div className="flex flex-row justify-between w-full gap-8 animate-slideUp delay-1000">
         <GeneralButton
           className="bg-white/70 hover:bg-white/90 hover:text-black/90"
           text="Understood"

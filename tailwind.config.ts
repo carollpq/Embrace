@@ -17,8 +17,6 @@ const config: Config = {
         "home-screen-pink": "url('/img/pink-bg.png')",
         "profile-pic-jenna": "url('/img/Jenna.png')",
         "profile-pic-marcus": "url('/img/Marcus.png')",
-        "day-mode-toggle": "url('/icons/day-mode-toggle.png')",
-        "night-mode-toggle": "url('/icons/night-mode-toggle.png')",
         "day-mode-screen-2": "url('/img/pink-bg-2.png')",
       },
       dropShadow: {
@@ -30,22 +28,26 @@ const config: Config = {
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
         typing: {
-          '0%, 80%, 100%': { transform: 'scale(0)' },
-          '40%': { transform: 'scale(1)' },
+          "0%, 80%, 100%": { transform: "scale(0)" },
+          "40%": { transform: "scale(1)" },
         },
       },
       animation: {
         slideUp: "slideUp 0.7s ease-out",
-        'typing-dot': 'typing 1.2s infinite ease-in-out',
+        "typing-dot": "typing 1.2s infinite ease-in-out",
       },
       transitionProperty: {
         colors: "background-color, color, border-color",
       },
       fontSize: {
-        'sm-msg': '1rem',
-        'base-msg': '1.25rem',
-        'lg-msg': '1.5rem',
-        'xl-msg': '1.75rem',
+        "sm-msg": "1rem",
+        "base-msg": "1.25rem",
+        "lg-msg": "1.5rem",
+        "xl-msg": "1.75rem",
+      },
+      screens: {
+        xs: "360px", // very small phones
+        xsm: "480px", // slightly larger phones (iPhone SE, old Androids)
       },
     },
   },

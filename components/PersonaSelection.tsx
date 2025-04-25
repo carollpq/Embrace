@@ -38,7 +38,7 @@ const PersonaSelection = ({
 
   return (
     <div
-      className={`flex flex-col items-center h-screen w-screen relative justify-center gap-[5rem] ${
+      className={`flex flex-col min-h-screen w-screen relative items-center justify-center px-4 py-10 sm:px-8 gap-6 overflow-y-auto ${
         nightMode ? "bg-home-screen-blue" : "bg-day-mode-screen-2"
       }`}
     >
@@ -52,13 +52,13 @@ const PersonaSelection = ({
         </div>
       ) : loadCustomizationOption ? (
         <>
-          <div className="flex flex-col items-center gap-16">
-            <h2 className="text-2xl font-medium text-white/80 animate-slideUp delay-1000">
+          <div className="flex flex-col items-center justify-center gap-8 px-4 py-10">
+            <h2 className="sm:text-2xl text-xl font-medium text-white/80 animate-slideUp delay-1000 text-center">
               Would you like to personalize how {selectedPersona} supports you
               today?
             </h2>
             {/* Navigation buttons */}
-            <div className="flex flex-row justify-between w-[540px] gap-8 animate-slideUp delay-1000">
+            <div className="flex flex-col sm:flex-row justify-between w-full sm:gap-8 gap-2 animate-slideUp delay-1000">
               <GeneralButton
                 className="bg-transparent border-4 border-white/40 text-white/70 hover:text-black/70 hover:bg-white/50 hover:border-transparent py-[0.50rem]"
                 text="No, start chatting"
@@ -81,11 +81,11 @@ const PersonaSelection = ({
         </>
       ) : (
         <>
-          <h2 className="text-2xl font-medium text-white/60 animate-slideUp delay-1000">
+          <h2 className="text-2xl font-medium text-white/60 animate-slideUp delay-1000 text-center">
             Select Your Speaker
           </h2>
           {/* Selection cards */}
-          <div className="grid grid-cols-2 gap-16 animate-slideUp delay-1000">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 animate-slideUp delay-1000">
             <SelectionCard
               title="Say Hi to Jenn!"
               description="Jenna is a warm and empathetic AI companion who helps users feel safe, heard, and gently supported."
@@ -105,7 +105,7 @@ const PersonaSelection = ({
           {/* Error Message (if user tries to continue without selection) */}
           {errorMessage && <p className="text-red-800">{errorMessage}</p>}
 
-          <div className="flex flex-col w-[400px] gap-2 justify-between animate-slideUp delay-1000">
+          <div className="flex flex-col sm:flex-row justify-between w-full sm:gap-8 gap-2 animate-slideUp delay-1000">
             <GeneralButton
               className="bg-white/70 hover:bg-white/90 hover:text-black/90"
               text="Continue"
