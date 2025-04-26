@@ -29,9 +29,9 @@ const SelectionCard: React.FC<SelectionCardProps> = ({
           : "bg-white/60 hover:bg-white/80 hover:text-black/80 hover:cursor-pointer" // Default style
       }`}
     >
-      <h2 className={`${titleStyle ? titleStyle: "text-left absolute top-5 left-8 sm:text-md text-sm text-black/90"}`}>{title}</h2>
+      <h2 className={`${titleStyle ? titleStyle: "text-left absolute top-5 left-8 sm:text-lg text-md text-black/80"}`}>{title}</h2>
       <div className="flex flex-row px-8 flex-wrap">
-        <span className={`${descStyle ? descStyle : "font-semibold sm:text-sm text-xs absolute left-8 top-12 pr-8"}`}>
+        <span className={`${descStyle ? descStyle : "font-semibold sm:text-sm text-xs absolute left-8 top-16 pr-8"}`}>
           {description}
         </span>
         {svg && (

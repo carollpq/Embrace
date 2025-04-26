@@ -45,7 +45,7 @@ const Navbar = () => {
       {/* Links */}
       <div
         className={`flex flex-col sm:flex-row gap-6 sm:gap-8 text-white/60 text-xl font-medium transition-all duration-300 ease-in-out 
-        ${menuOpen ? "absolute top-20 left-0 w-full bg-black/60 py-6 px-8" : "hidden sm:flex"}`}
+        ${menuOpen ? "absolute top-20 left-0 w-full bg-black/80 py-6 px-8 z-20" : "hidden sm:flex"}`}
       >
         <span
           className={`cursor-pointer hover:text-white ${
