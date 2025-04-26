@@ -72,7 +72,7 @@ export async function playSpeech(text: string, voiceId = "Danielle", onEnd?: () 
   currentAudio.play().catch((err) => {
     console.error("Audio playback failed:", err);
     currentAudio = null;
-    onEnd?.(); // 👈 Also call it if there's an error
+    onEnd?.(); // Also call it if there's an error
   });
 }
 
