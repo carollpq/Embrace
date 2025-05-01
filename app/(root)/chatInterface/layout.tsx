@@ -3,8 +3,8 @@
 import "../../globals.css";
 import { Quicksand } from "next/font/google";
 import ChatHeader from "@/components/ui/ChatHeader";
-import Sidebar from "@/components/ui/Sidebar";
-import ExitConfirmationModal from "@/components/ui/ExitConfirmationModal";
+import Sidebar from "@/components/sidebar/Sidebar";
+import ExitConfirmationModal from "@/components/ExitConfirmationModal";
 import SessionExpiredModal from "@/components/ui/SessionExpiredModal";
 import { useModal } from "@/context/ModalContext";
 import { useSettings } from "@/context/SettingsContext";
