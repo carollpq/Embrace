@@ -112,8 +112,8 @@ const Sidebar = () => {
             showHelp={showHelp}
             tooltipText="Set Night/Day mode, adjust font size, and toggle between high contrast"
           >
-            {showSettings && <Settings />}
           </MenuItem>
+          {showSettings && <Settings />}
         </div>
       </div>
     </div>
