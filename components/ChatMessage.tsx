@@ -2,21 +2,10 @@
 
 import style from "../styles/ChatMessage.module.css";
 import { Message } from "ai/react";
-import { useEffect, useRef, useState } from "react";
-import { playPersonaSpeech } from "@/utils/tts/polly";
-import { playBrowserTTS } from "@/utils/tts/browserTTS";
+import { useState } from "react";
 import { useSession } from "@/context/Provider";
 import Image from "next/image";
-
-function removeEmojis(text: string): string {
-  return text
-    .replace(
-      /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu,
-      ""
-    )
-    .replace(/[*#/\\~_`|<>{}[\]()]/g, "")
-    .trim();
-}
+import { useTextToSpeech } from "@/hooks/useTextToSpeech";
 
 const ChatMessage = ({
   message,
@@ -39,69 +28,18 @@ const ChatMessage = ({
     setHasUserTriggeredResponse,
   } = useSession();
 
-  const lastSpokenMessage = useRef<string | null>(null); // Track the last spoken message content
-  const hasPlayedTTS = useRef(false);
   const [isSavingMessage, setIsSavingMessage] = useState(false);
-  const [isSpeaking, setIsSpeaking] = useState(false);
-  const [isLoadingAudio, setIsLoadingAudio] = useState(false);
-
-  const isLastAssistantMessage = () => {
-    const assistantMessages = messages?.filter(
-      (msg) => msg.role === "assistant" && msg.content !== "__typing__"
-    );
-    return (
-      assistantMessages?.length > 0 &&
-      assistantMessages[assistantMessages.length - 1].content ===
-        message.content
-    );
-  };
-
-  const speak = async () => {
-    if (!message.content) return;
-    const cleanedText = removeEmojis(message.content);
   
-    try {
-      setIsLoadingAudio(true);
-      if (selectedTTS === "polly") {
-        await playPersonaSpeech(cleanedText, selectedPersona, () => setIsSpeaking(false), () => setIsSpeaking(true), () => setIsLoadingAudio(false));
-      } else {
-        playBrowserTTS(cleanedText, selectedPersona, () => setIsSpeaking(false), () => setIsSpeaking(true), () => setIsLoadingAudio(false));
-      }
-    } catch (error) {
-      console.error("TTS error:", error);
-      setIsSpeaking(false);
-      setIsLoadingAudio(false);
-    }
-  };
-  
-
-  // Play TTS for latest assistant message
-  useEffect(() => {
-    if (
-      !isUser &&
-      message.content &&
-      message.content !== lastSpokenMessage.current && // Only speak if different from last spoken message
-      (selectedMode === "text-and-voice" || selectedMode === "voice-and-voice") &&
-      isLastAssistantMessage()
-    ) {
-      speak(); // Trigger TTS
-      lastSpokenMessage.current = message.content; // Update the last spoken message content
-      setHasUserTriggeredResponse(false); // Reset the flag
-    }
-  }, [
-    message.content,
+  const { isSpeaking, isLoadingAudio, speak } = useTextToSpeech({
+    message,
     isUser,
     selectedMode,
     selectedTTS,
     selectedPersona,
     messages,
     hasUserTriggeredResponse,
-  ]);
-
-  // ✅ Optional cleanup effect — resets flag when message content changes
-  useEffect(() => {
-    hasPlayedTTS.current = false;
-  }, [message.content]);
+    setHasUserTriggeredResponse,
+  });
 
   const handleToggleSave = async () => {
     setIsSavingMessage(true);
@@ -172,7 +110,7 @@ const ChatMessage = ({
           </button>
         )}
 
-        {/*  Replay  */}
+        {/* Replay */}
         {!isUser &&
           !isTypingPlaceholder &&
           (selectedMode === "text-and-voice" ||
@@ -182,17 +120,18 @@ const ChatMessage = ({
                 title="Play audio"
                 onClick={speak}
                 className="text-blue-500 hover:text-blue-700 text-sm underline"
-              >{isLoadingAudio ? (
-                <div className="w-4 h-4 absolute top-1 border-4 border-black/20 border-t-black/50 rounded-full animate-spin delay-1000"></div>
-              ) : (
-                <Image
-                  className="hover:cursor-pointer"
-                  src={isSpeaking ? "/icons/is-speaking.svg" : "/icons/not-speak.svg"}
-                  alt="Speaker icon"
-                  width={18}
-                  height={18}
-                />
-              )}
+              >
+                {isLoadingAudio ? (
+                  <div className="w-4 h-4 absolute top-1 border-4 border-black/20 border-t-black/50 rounded-full animate-spin delay-1000"></div>
+                ) : (
+                  <Image
+                    className="hover:cursor-pointer"
+                    src={isSpeaking ? "/icons/is-speaking.svg" : "/icons/not-speak.svg"}
+                    alt="Speaker icon"
+                    width={18}
+                    height={18}
+                  />
+                )}
               </button>
             </div>
           )}
