@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import SelectionCard from "./ui/SelectionCard";
-import GeneralButton from "./ui/button";
+import SelectionCard from "../ui/SelectionCard";
+import GeneralButton from "../ui/button";
 import { useModal } from "@/context/ModalContext";
 
 const About = () => {

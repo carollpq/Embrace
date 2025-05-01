@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useChat } from "@/context/ChatContext";
 import GeneralButton from "@/components/ui/button";
 import { useSettings } from "@/context/SettingsContext";
+import { useOnboarding } from '@/context/OnboardingContext';
 
 const moods = [
   { label: "Anxious", emoji: "😟" },
@@ -14,16 +15,11 @@ const moods = [
   { label: "Stressed", emoji: "😐" },
 ];
 
-const MoodSelection = ({
-  setLoadingModeSelection,
-  setLoadingMoodSelection,
-}: {
-  setLoadingModeSelection: (status: boolean) => void;
-  setLoadingMoodSelection: (status: boolean) => void;
-}) => {
+const MoodSelection = () => {
   const { setMood } = useChat();
   const { settings: { nightMode } } = useSettings();
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
+  const { goNext, goBack } = useOnboarding();
 
   const handleCardClick = (mood: string) => {
     setMood(mood); // Set the selected mode in your session
@@ -34,8 +30,7 @@ const MoodSelection = ({
     if (!selectedCard) {
       alert("Please select a mood to move onto the next page.");
     } else {
-      setLoadingMoodSelection(false);
-      setLoadingModeSelection(true);
+      goNext();
     }
   };
 
@@ -68,9 +63,7 @@ const MoodSelection = ({
           <GeneralButton
             className="bg-transparent border-4 border-white/40 text-white/70 hover:text-black/70 hover:bg-white/50 hover:border-transparent py-[0.50rem]"
             text="Back"
-            onClick={() => {
-              setLoadingMoodSelection(false);
-            }}
+            onClick={goBack}
           />
           <GeneralButton
             className="bg-white/70 hover:bg-white/90 hover:text-black/90"

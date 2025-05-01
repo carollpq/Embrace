@@ -3,20 +3,14 @@ import GeneralButton from "@/components/ui/button";
 import SelectionCard from "@/components/ui/SelectionCard";
 import React, { useState, useRef } from "react";
 import { useSettings } from "@/context/SettingsContext";
+import { useOnboarding } from '@/context/OnboardingContext';
 
-const ModeSelection = ({
-  setLoadingModeSelection,
-  setLoadingMoodSelection,
-  setLoadingPersonaSelection,
-}: {
-  setLoadingModeSelection: (status: boolean) => void;
-  setLoadingPersonaSelection: (status: boolean) => void;
-  setLoadingMoodSelection: (status: boolean) => void;
-}) => {
+const ModeSelection = () => {
   const { settings: { nightMode }, updateSettings } = useSettings();
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
   const [loadTTSOptions, setLoadTTSOptions] = useState(false);
   const continueButtonRef = useRef<HTMLDivElement | null>(null);
+  const { goNext, goBack } = useOnboarding();
 
   const handleCardClick = (mode: string) => {
     updateSettings('mode', mode); // Set the selected mode in your session
@@ -37,8 +31,7 @@ const ModeSelection = ({
     if (!selectedCard) {
       alert("Please select a mode of conversation to move onto the next page.");
     } else {
-      setLoadingPersonaSelection(true);
-      setLoadingModeSelection(false);
+      goNext();
     }
   };
 
@@ -89,10 +82,7 @@ const ModeSelection = ({
             <GeneralButton
               className="bg-transparent border-4 border-white/40 text-white/70 hover:text-black/70 hover:bg-white/50 hover:border-transparent py-[0.50rem]"
               text="Back"
-              onClick={() => {
-                setLoadingModeSelection(false);
-                setLoadingMoodSelection(true);
-              }}
+              onClick={goBack}
             />
             <GeneralButton
               className="bg-white/70 hover:bg-white/90 hover:text-black/90"

@@ -1,7 +1,7 @@
 import React from "react";
 import { Quicksand } from "next/font/google";
 import Image from "next/image";
-import HelpTooltip from "@/components/ui/HelpTooltip";
+import HelpTooltip from "@/components/chat/HelpTooltip";
 import SliderSetting from "@/components/ui/Slider";
 import { Traits } from "@/types/context";
 import { jennaDefaultTraits, marcusDefaultTraits, useChat } from "@/context/ChatContext";

@@ -1,4 +1,4 @@
-import style from "../styles/InputBox.module.css";
+import style from "@/styles/InputBox.module.css";
 
 interface VoiceInputButtonProps {
   isListening: boolean;

@@ -26,7 +26,7 @@ export default function StartPage() {
 
   useEffect(() => {
     setLoggingOut(false);
-  }, [setLoggingOut]);
+  }, []);
 
   return (
     <div

@@ -1,6 +1,6 @@
 "use client";
 
-import style from "../styles/ChatMessage.module.css";
+import style from "@/styles/ChatMessage.module.css";
 import { Message } from "ai/react";
 import { useState } from "react";
 import Image from "next/image";

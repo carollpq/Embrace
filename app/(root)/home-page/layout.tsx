@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "../../globals.css";
 import { Quicksand } from "next/font/google";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/home/Navbar";
 
 const quicksand = Quicksand({ weight: ["400"], subsets: ["latin"] });
 

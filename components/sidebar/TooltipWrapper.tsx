@@ -1,7 +1,7 @@
 // components/ui/TooltipWrapper.tsx
 "use client";
 import React, { useRef, useEffect, useState } from "react";
-import HelpTooltip from "./HelpTooltip";
+import HelpTooltip from "../chat/HelpTooltip";
 
 interface TooltipWrapperProps {
   children: React.ReactNode;

@@ -1,11 +1,11 @@
 "use client";
 
-import InputBox from "@/components/InputBox";
-import ChatMessage from "@/components/ChatMessage";
+import InputBox from "@/components/inputBox/InputBox";
+import ChatMessage from "@/components/chat/ChatMessage";
 import { useRef, useLayoutEffect, useEffect, FormEvent, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { stopSpeech } from "@/utils/tts/polly";
-import SavedMessages from "@/components/SavedMessages";
+import SavedMessages from "@/components/sidebar/SavedMessages";
 import { useSession } from "@/context/SessionContext";
 import { useSettings } from "@/context/SettingsContext";
 import { useChat } from "@/context/ChatContext";

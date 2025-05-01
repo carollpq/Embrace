@@ -1,5 +1,5 @@
 import { forwardRef } from "react";
-import style from "../styles/InputBox.module.css";
+import style from "@/styles/InputBox.module.css";
 
 interface TextInputAreaProps {
   value: string;

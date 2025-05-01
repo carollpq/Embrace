@@ -46,6 +46,7 @@ export const SessionProvider = ({ children }: { children: React.ReactNode }) => 
       });
     } finally {
       setUser(null);
+      setIsLoggingOut(false);
       router.push("/");
     }
   };

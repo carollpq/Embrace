@@ -1,8 +1,9 @@
-'use client';
-import { SessionProvider } from './SessionContext';
-import { SettingsProvider } from './SettingsContext';
-import { ChatProvider } from './ChatContext';
-import { ModalProvider } from './ModalContext';
+"use client";
+import { SessionProvider } from "./SessionContext";
+import { SettingsProvider } from "./SettingsContext";
+import { ChatProvider } from "./ChatContext";
+import { ModalProvider } from "./ModalContext";
+import { OnboardingProvider } from "./OnboardingContext";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -10,7 +11,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <SettingsProvider>
         <ChatProvider>
           <ModalProvider>
-            {children}
+            <OnboardingProvider>{children}</OnboardingProvider>
           </ModalProvider>
         </ChatProvider>
       </SettingsProvider>

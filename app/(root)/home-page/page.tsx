@@ -1,42 +1,31 @@
+// app/page.tsx
 "use client";
 
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/context/SessionContext";
 import { useSettings } from "@/context/SettingsContext";
 import { useModal } from "@/context/ModalContext";
-import Toggle from "@/components/ui/toggle";
-import MoodSelection from "@/components/MoodSelection";
-import ModeSelection from "@/components/ModeSelection";
-import PersonaSelection from "@/components/PersonaSelection";
-import PersonaCustomization from "@/components/PersonaCustomization";
-import Disclaimer from "@/components/Disclaimer";
-import About from "@/components/About";
+import { OnboardingFlowManager } from "@/components/onboard/OnboardingFlowManager";
+import Disclaimer from "@/components/home/Disclaimer";
+import About from "@/components/home/About";
+import { LogoutView } from "@/components/home/LogoutView";
+import { useEffect } from "react";
 
 export default function Home() {
   const router = useRouter();
   const { user: session, isLoggingOut } = useSession();
-  const { settings: { nightMode } } = useSettings();
   const {
-    showDisclaimer,
-    showAbout,
-    confirmedExit,
-    setConfirmedExit
-  } = useModal();
-
-  const [loadingMoodSelection, setLoadingMoodSelection] = useState(false);
-  const [loadingModeSelection, setLoadingModeSelection] = useState(false);
-  const [loadingPersonaSelection, setLoadingPersonaSelection] = useState(false);
-  const [loadingPersonaCustomization, setLoadingCustomizationSelection] = useState(false);
+    settings: { nightMode },
+  } = useSettings();
+  const { showDisclaimer, showAbout, confirmedExit, setConfirmedExit } =
+    useModal();
 
   useEffect(() => {
     if (confirmedExit) setConfirmedExit(false);
   }, [confirmedExit, setConfirmedExit]);
 
   useEffect(() => {
-    if (session === null) {
-      router.replace("/");
-    }
+    if (session === null) router.replace("/");
   }, [session, router]);
 
   return (
@@ -48,56 +37,13 @@ export default function Home() {
       } transition-colors duration-500 ease-in-out`}
     >
       {isLoggingOut ? (
-        <div className="flex flex-col items-center gap-4">
-          <h2 className="text-3xl font-medium text-white/70 animate-slideUp delay-1000">
-            Logging Out ...
-          </h2>
-          <div className="w-12 h-12 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin delay-1000 mt-3"></div>
-        </div>
+        <LogoutView />
       ) : showDisclaimer ? (
         <Disclaimer />
       ) : showAbout ? (
         <About />
-      ) : loadingMoodSelection ? (
-        <MoodSelection
-          setLoadingModeSelection={setLoadingModeSelection}
-          setLoadingMoodSelection={setLoadingMoodSelection}
-        />
-      ) : loadingModeSelection ? (
-        <ModeSelection
-          setLoadingModeSelection={setLoadingModeSelection}
-          setLoadingPersonaSelection={setLoadingPersonaSelection}
-          setLoadingMoodSelection={setLoadingMoodSelection}
-        />
-      ) : loadingPersonaSelection ? (
-        <PersonaSelection
-          setLoadingModeSelection={setLoadingModeSelection}
-          setLoadingPersonaSelection={setLoadingPersonaSelection}
-          setLoadingCustomizationSelection={setLoadingCustomizationSelection}
-        />
-      ) : loadingPersonaCustomization ? (
-        <PersonaCustomization />
       ) : (
-        <>
-          {session && (
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium animate-slideUp delay-1000">
-              Welcome, {session.name}
-            </h2>
-          )}
-          <p className="sm:text-3xl text-2xl font-medium animate-slideUp delay-1000 text-white/70">
-            Ready to talk?
-          </p>
-          <div className="flex flex-col md:flex-row gap-6 md:gap-10 w-full justify-center items-center animate-slideUp delay-1000">
-            <button
-              className="text-xl md:text-2xl w-[150px] md:w-[200px] py-3 md:py-4 rounded-[20px] md:rounded-[30px] bg-white text-black/60 hover:bg-[#1d1d1d] hover:text-white button-transition drop-shadow-default"
-              onClick={() => setLoadingMoodSelection(true)}
-            >
-              Start
-            </button>
-          </div>
-
-          <Toggle />
-        </>
+        <OnboardingFlowManager />
       )}
     </div>
   );

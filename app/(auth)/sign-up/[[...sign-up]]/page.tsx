@@ -1,7 +1,7 @@
 "use client";
 
 import GeneralButton from "@/components/ui/button";
-import TextInput from "@/components/AuthInput";
+import TextInput from "@/components/ui/AuthInput";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";

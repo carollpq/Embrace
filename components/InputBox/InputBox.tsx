@@ -2,7 +2,7 @@
 
 import style from "@/styles/InputBox.module.css";
 import { useEffect, useRef } from "react";
-import HelpTooltip from "@/components/ui/HelpTooltip";
+import HelpTooltip from "@/components/chat/HelpTooltip";
 import { useSpeechToText } from "@/hooks/useSpeechToText"; 
 import { VoiceInputButton } from "./VoiceInputButton";
 import { TextInputArea } from "./TextInputArea";
