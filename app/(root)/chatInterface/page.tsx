@@ -3,95 +3,83 @@
 import InputBox from "@/components/InputBox";
 import ChatMessage from "@/components/ChatMessage";
 import { useRef, useLayoutEffect, useEffect, FormEvent, useState } from "react";
-import { useSession } from "@/context/Provider";
 import { motion, AnimatePresence } from "framer-motion";
 import { stopSpeech } from "@/utils/tts/polly";
 import SavedMessages from "@/components/SavedMessages";
+import { useSession } from "@/context/SessionContext";
+import { useSettings } from "@/context/SettingsContext";
+import { useChat } from "@/context/ChatContext";
+import { useModal } from "@/context/ModalContext";
 
 const ChatInterface: React.FC = () => {
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
+  
+  // Get session data
+  const { user } = useSession();
+  
+  // Get chat state and methods
   const {
     messages,
     setMessages,
-    chatInput,
-    setChatInput,
-    selectedPersona,
-    customTraits,
-    selectedMood,
-    session,
+    input: chatInput,
+    setInput: setChatInput,
     setHasUserTriggeredResponse,
-    showSavedMessages,
-  } = useSession();
+    mood: selectedMood,
+    customTraits,
+  } = useChat();
+  
+  // Get settings
+  const { 
+    settings: { 
+      persona: selectedPersona,
+    } 
+  } = useSettings();
+  
+  // Get modal state
+  const { showSavedMessages } = useModal();
+
   const [bookmarkedMessages, setBookmarkedMessages] = useState<string[]>([]);
   const [hasLoadedBookmarks, setHasLoadedBookmarks] = useState(false);
 
   const moodToPrompt: Record<string, string> = {
-    Anxious: `Hey there, ${
-      session ? `I'm ${session.name}.` : ""
-    } I'm feeling anxious.`,
-    Sad: `Hey there, ${
-      session ? `I'm ${session.name}.` : ""
-    } I'm feeling really sad today.`,
-    Angry: `Hey there, ${
-      session ? `I'm ${session.name}.` : ""
-    } I'm angry about something that happened.`,
-    Happy: `Hey there, ${
-      session ? `I'm ${session.name}.` : ""
-    } I'm in a happy mood today!`,
-    Neutral: `Hey there, ${
-      session ? `I'm ${session.name}.` : ""
-    } I'm feeling okay, nothing in particular.`,
-    Stressed: `Hey there, ${
-      session ? `I'm ${session.name}.` : ""
-    } I'm stressed and overwhelmed.`,
+    Anxious: `Hey there, ${user ? `I'm ${user.name}.` : ""} I'm feeling anxious.`,
+    Sad: `Hey there, ${user ? `I'm ${user.name}.` : ""} I'm feeling really sad today.`,
+    Angry: `Hey there, ${user ? `I'm ${user.name}.` : ""} I'm angry about something that happened.`,
+    Happy: `Hey there, ${user ? `I'm ${user.name}.` : ""} I'm in a happy mood today!`,
+    Neutral: `Hey there, ${user ? `I'm ${user.name}.` : ""} I'm feeling okay, nothing in particular.`,
+    Stressed: `Hey there, ${user ? `I'm ${user.name}.` : ""} I'm stressed and overwhelmed.`,
   };
 
+  // Bookmark management effects remain the same
   useEffect(() => {
     const saved = localStorage.getItem("bookmarkedMessages");
-    if (saved) {
-      setBookmarkedMessages(JSON.parse(saved));
-      console.log("Loaded bookmarks from localStorage:", JSON.parse(saved));
-    }
+    if (saved) setBookmarkedMessages(JSON.parse(saved));
     setHasLoadedBookmarks(true);
   }, []);
 
-  // Clear bookmarked messages from localStorage when navigating away
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      // Optional: Prevent refresh if you want
       e.preventDefault();
       localStorage.removeItem("bookmarkedMessages");
     };
-
     window.addEventListener("beforeunload", handleBeforeUnload);
-
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, []);
 
   useEffect(() => {
     if (hasLoadedBookmarks) {
-      localStorage.setItem(
-        "bookmarkedMessages",
-        JSON.stringify(bookmarkedMessages)
-      );
-      console.log("Updated localStorage with bookmarks:", bookmarkedMessages);
+      localStorage.setItem("bookmarkedMessages", JSON.stringify(bookmarkedMessages));
     }
   }, [bookmarkedMessages, hasLoadedBookmarks]);
 
-  // Stop speech on mount/unmount
+  // Speech and message effects
   useEffect(() => {
     stopSpeech();
-
-    return () => {
-      stopSpeech();
-    };
+    return () => stopSpeech();
   }, []);
 
-  // Prevent page refresh while chatting
   useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      e.preventDefault();
-    };
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => e.preventDefault();
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [messages]);
@@ -108,11 +96,7 @@ const ChatInterface: React.FC = () => {
 
         setMessages([
           introMessage,
-          {
-            id: "typing-placeholder",
-            role: "assistant" as const,
-            content: "__typing__",
-          },
+          { id: "typing-placeholder", role: "assistant", content: "__typing__" },
         ]);
 
         const res = await fetch("/api/chatbot", {
@@ -127,73 +111,55 @@ const ChatInterface: React.FC = () => {
         });
 
         const data = await res.json();
-
-        setMessages([
-          introMessage,
-          {
-            id: Date.now().toString(),
-            role: "assistant",
-            content: data.content,
-          },
-        ]);
+        setMessages([introMessage, {
+          id: Date.now().toString(),
+          role: "assistant",
+          content: data.content,
+        }]);
       }
     };
-
     sendIntroFromMood();
   }, [messages.length, selectedMood, selectedPersona, customTraits]);
 
-  // Toggles the bookmarked state of the assistant messages
   const toggleBookmark = async (message: { id: string; content: string }) => {
     try {
       const isBookmarked = bookmarkedMessages.includes(message.id);
+      const newBookmarks = isBookmarked
+        ? bookmarkedMessages.filter(id => id !== message.id)
+        : [...bookmarkedMessages, message.id];
+      
+      setBookmarkedMessages(newBookmarks);
+      
+      const endpoint = isBookmarked ? "/api/delete-saved-message" : "/api/save-message";
+      const method = isBookmarked ? "DELETE" : "POST";
+      
+      const res = await fetch(endpoint, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: user?.email,
+          content: message.content,
+          messageId: message.id,
+        }),
+      });
 
-      if (!isBookmarked) {
-        setBookmarkedMessages((prev) => [...prev, message.id]);
-
-        const res = await fetch("/api/save-message", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            userId: session?.email,
-            content: message.content,
-            messageId: message.id,
-          }),
-        });
-
-        if (!res.ok) {
-          console.error("Failed to save bookmarked message");
-          setBookmarkedMessages((prev) =>
-            prev.filter((id) => id !== message.id)
-          );
-        }
-      } else {
-        setBookmarkedMessages((prev) => prev.filter((id) => id !== message.id));
-
-        const res = await fetch("/api/delete-saved-message", {
-          method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            messageId: message.id,
-            userId: session?.email,
-          }),
-        });
-
-        if (!res.ok) {
-          console.error("Failed to delete bookmarked message");
-          setBookmarkedMessages((prev) => [...prev, message.id]);
-        }
+      if (!res.ok) {
+        throw new Error(`Failed to ${isBookmarked ? "delete" : "save"} bookmarked message`);
       }
     } catch (error) {
       console.error("Error toggling bookmark:", error);
+      setBookmarkedMessages(prev => 
+        bookmarkedMessages.includes(message.id)
+          ? [...prev, message.id]
+          : prev.filter(id => id !== message.id)
+      );
     }
   };
 
-  const isBookmarked = (messageId: string) =>
-    bookmarkedMessages.includes(messageId);
+  const isBookmarked = (messageId: string) => bookmarkedMessages.includes(messageId);
 
-  // ✍️ Handle text submit
   const handleSubmit = async (e?: FormEvent<HTMLFormElement>) => {
-    if (e?.preventDefault) e.preventDefault();
+    e?.preventDefault();
     stopSpeech();
     if (!chatInput.trim()) return;
 
@@ -203,13 +169,11 @@ const ChatInterface: React.FC = () => {
       content: chatInput,
     };
 
-    const typingPlaceholder = {
+    setMessages(prev => [...prev, userMessage, {
       id: "typing-placeholder",
-      role: "assistant" as const,
+      role: "assistant",
       content: "__typing__",
-    };
-
-    setMessages((prev) => [...prev, userMessage, typingPlaceholder]);
+    }]);
     setChatInput("");
 
     const res = await fetch("/api/chatbot", {
@@ -224,19 +188,16 @@ const ChatInterface: React.FC = () => {
     });
 
     const data = await res.json();
-
-    setMessages((prev) =>
-      prev
-        .filter((msg) => msg.id !== "typing-placeholder")
-        .concat({
-          id: Date.now().toString(),
-          role: "assistant" as const,
-          content: data.content,
-        })
+    setMessages(prev => prev
+      .filter(msg => msg.id !== "typing-placeholder")
+      .concat({
+        id: Date.now().toString(),
+        role: "assistant",
+        content: data.content,
+      })
     );
   };
 
-  // Handle voice input
   const handleDirectSubmit = async (text: string) => {
     stopSpeech();
     const userMessage = {
@@ -245,13 +206,11 @@ const ChatInterface: React.FC = () => {
       content: text,
     };
 
-    const typingPlaceholder = {
+    setMessages(prev => [...prev, userMessage, {
       id: "typing-placeholder",
-      role: "assistant" as const,
+      role: "assistant",
       content: "__typing__",
-    };
-
-    setMessages((prev) => [...prev, userMessage, typingPlaceholder]);
+    }]);
 
     const res = await fetch("/api/chatbot", {
       method: "POST",
@@ -265,19 +224,16 @@ const ChatInterface: React.FC = () => {
     });
 
     const data = await res.json();
-
-    setMessages((prev) =>
-      prev
-        .filter((msg) => msg.id !== "typing-placeholder")
-        .concat({
-          id: Date.now().toString(),
-          role: "assistant" as const,
-          content: data.content,
-        })
+    setMessages(prev => prev
+      .filter(msg => msg.id !== "typing-placeholder")
+      .concat({
+        id: Date.now().toString(),
+        role: "assistant",
+        content: data.content,
+      })
     );
   };
 
-  // Auto scroll on new messages
   useLayoutEffect(() => {
     if (messageContainerRef.current) {
       messageContainerRef.current.scrollTo({
@@ -297,7 +253,7 @@ const ChatInterface: React.FC = () => {
           >
             {messages.length === 0 && (
               <div className="flex items-center justify-center h-full sm:text-4xl text-2xl text-white animate-slideUp delay-1000">
-                Hi, I&apos;m here for you 🤗
+                Hi, I'm here for you 🤗
               </div>
             )}
             <AnimatePresence initial={false}>

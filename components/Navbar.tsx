@@ -2,21 +2,24 @@
 
 import React, { useState } from "react";
 import { Pacifico } from "next/font/google";
-import { useSession } from "@/context/Provider";
-import { Menu, X } from "lucide-react"; // You can replace this with your own icons if needed
+import { useSession } from "@/context/SessionContext";
+import { useModal } from "@/context/ModalContext";
+import { Menu, X } from "lucide-react";
 
 const pacifico = Pacifico({ weight: ["400"], subsets: ["latin"] });
 
 const Navbar = () => {
+  // Session related functions
+  const { logout, isLoggingOut } = useSession();
+  
+  // Modal related functions
   const {
-    logout,
-    setIsLoggingOut,
-    isLoggingOut,
-    setShowDisclaimer,
+    setLoggingOut,
+    toggleDisclaimer,
+    toggleAbout,
     showDisclaimer,
-    setShowAbout,
-    showAbout,
-  } = useSession();
+    showAbout
+  } = useModal();
 
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -52,8 +55,8 @@ const Navbar = () => {
             showAbout ? "text-white" : ""
           }`}
           onClick={() => {
-            setShowAbout(true);
-            setShowDisclaimer(false);
+            toggleAbout();
+            if (showDisclaimer) toggleDisclaimer(false);
             setMenuOpen(false);
           }}
         >
@@ -64,8 +67,8 @@ const Navbar = () => {
             showDisclaimer ? "text-white" : ""
           }`}
           onClick={() => {
-            setShowDisclaimer(true);
-            setShowAbout(false);
+            toggleDisclaimer();
+            if (showAbout) toggleAbout(false);
             setMenuOpen(false);
           }}
         >
@@ -74,7 +77,7 @@ const Navbar = () => {
         <span
           className="cursor-pointer hover:text-white"
           onClick={() => {
-            setIsLoggingOut(true);
+            setLoggingOut(true);
             logout();
             setMenuOpen(false);
           }}

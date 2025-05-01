@@ -2,12 +2,13 @@
 
 import style from "../styles/InputBox.module.css";
 import { useEffect, useRef } from "react";
-import { useSession } from "@/context/Provider";
 import HelpTooltip from "@/components/ui/HelpTooltip";
-import { useSpeechToText } from "@/hooks/useSpeechToText"; 
+import { useSpeechToText } from "@/hooks/useSpeechToText";
 import { VoiceInputButton } from "./VoiceInputButton";
 import { TextInputArea } from "./TextInputArea";
 import { SendButton } from "./SendButton";
+import { useSettings } from "@/context/SettingsContext";
+import { useModal } from "@/context/ModalContext";
 
 interface InputBoxProps {
   handleSubmit: () => void;
@@ -24,18 +25,21 @@ const InputBox = ({
   input,
   setHasUserTriggeredResponse,
 }: InputBoxProps) => {
-  const { selectedMode, selectedPersona, showHelp } = useSession();
   const inputBoxTextArea = useRef<HTMLTextAreaElement>(null);
 
-  const {
-    isListening,
-    handleSTT,
-    browserSupportsSpeechRecognition,
-  } = useSpeechToText({
-    handleDirectSubmit,
-    handleInputChange,
-    setHasUserTriggeredResponse,
-  });
+  // Get settings from SettingsContext
+  const { settings } = useSettings();
+  const { mode: selectedMode, persona: selectedPersona } = settings;
+
+  // Get modal state from ModalContext
+  const { showHelp } = useModal();
+
+  const { isListening, handleSTT, browserSupportsSpeechRecognition } =
+    useSpeechToText({
+      handleDirectSubmit,
+      handleInputChange,
+      setHasUserTriggeredResponse,
+    });
 
   // Cleanup on unmount
   useEffect(() => {
@@ -50,19 +54,23 @@ const InputBox = ({
     };
   }, []);
 
-  const isVoiceMode = selectedMode === "voice-and-text" || 
-                      selectedMode === "voice-and-voice";
+  const isVoiceMode =
+    selectedMode === "voice-and-text" || selectedMode === "voice-and-voice";
 
   return (
-    <div className={`${style["chat-input-holder"]} ${showHelp ? "pointer-events-none" : ""}`}>
+    <div
+      className={`${style["chat-input-holder"]} ${
+        showHelp ? "pointer-events-none" : ""
+      }`}
+    >
       {isVoiceMode ? (
         <div className="flex flex-col justify-center items-center gap-6">
           <span className="sm:text-xl text-lg text-center">
             Click here and start speaking with {selectedPersona}!
           </span>
-          <VoiceInputButton 
-            isListening={isListening} 
-            onClick={handleSTT} 
+          <VoiceInputButton
+            isListening={isListening}
+            onClick={handleSTT}
             disabled={!browserSupportsSpeechRecognition}
           />
         </div>

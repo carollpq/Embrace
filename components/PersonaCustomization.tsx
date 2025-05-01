@@ -3,12 +3,8 @@
 import React, { useState, useEffect } from "react";
 import SliderSetting from "@/components/ui/Slider"; // ensure default export
 import GeneralButton from "@/components/ui/button";
-import {
-  jennaDefaultTraits,
-  marcusDefaultTraits,
-  defaultTraits,
-  useSession,
-} from "@/context/Provider";
+import { useSettings } from "@/context/SettingsContext";
+import { useChat, defaultTraits, jennaDefaultTraits, marcusDefaultTraits } from "@/context/ChatContext";
 import { useRouter } from "next/navigation";
 
 const traitDescriptions = {
@@ -20,7 +16,9 @@ const traitDescriptions = {
 };
 
 const PersonaCustomization = () => {
-  const { nightMode, selectedPersona, setCustomTraits } = useSession();
+
+  const { settings: { nightMode, persona: selectedPersona }} = useSettings();
+  const { setCustomTraits } = useChat();
   // Get default traits based on selected persona
   const getDefaultTraits = () => {
     return selectedPersona === "Jenna"

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useSession } from "@/context/Provider";
 import Image from "next/image";
+import { useSession } from "@/context/SessionContext";
 import { stopSpeech } from "@/utils/tts/polly";
 
 type SavedMessage = {
@@ -11,7 +11,7 @@ type SavedMessage = {
 };
 
 const SavedMessages = () => {
-  const { session } = useSession();
+  const { user } = useSession();
   const [messages, setMessages] = useState<SavedMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [deletingMessageId, setDeletingMessageId] = useState<string | null>(null); // Track the message being deleted
@@ -20,11 +20,11 @@ const SavedMessages = () => {
   
   useEffect(() => {
     const fetchSavedMessages = async () => {
-      if (!session?.email) return;
+      if (!user?.email) return;
 
       try {
         const res = await fetch(
-          `/api/get-saved-messages?userId=${session.email}`
+          `/api/get-saved-messages?userId=${user.email}`
         );
         const data = await res.json();
         setMessages(data.messages || []);
@@ -36,7 +36,7 @@ const SavedMessages = () => {
     };
 
     fetchSavedMessages();
-  }, [session?.email]);
+  }, [user?.email]);
 
   const handleDelete = async (id: string) => {
     try {
@@ -44,7 +44,7 @@ const SavedMessages = () => {
       const res = await fetch("/api/delete-saved-message", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messageId: id, userId: session?.email }),
+        body: JSON.stringify({ messageId: id, userId: user?.email }),
       });
 
       if (res.ok) {

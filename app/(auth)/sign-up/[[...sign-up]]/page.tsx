@@ -5,7 +5,8 @@ import TextInput from "@/components/AuthInput";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useSession } from "@/context/Provider";
+import { useSession } from "@/context/SessionContext";
+import { useSettings } from "@/context/SettingsContext";
 
 export default function SignUpPage() {
   const [name, setName] = useState("");
@@ -14,7 +15,13 @@ export default function SignUpPage() {
   const [loading, setLoading] = useState(false);
   const [isLoadingPage, setIsLoadingPage] = useState(false);
   const router = useRouter();
-  const { recheckSession, nightMode } = useSession();
+
+  // Get session-related functions from SessionContext
+  const { recheckSession } = useSession();
+  // Get UI settings from SettingsContext
+  const {
+    settings: { nightMode },
+  } = useSettings();
 
   useEffect(() => {
     setIsLoadingPage(false);

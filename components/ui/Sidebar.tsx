@@ -3,34 +3,40 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { Pacifico } from "next/font/google";
 import Link from "next/link";
-import { useSession } from "@/context/Provider";
 import Settings from "./Settings";
 import TooltipWrapper from "@/components/ui/TooltipWrapper";
 import SpeechRecognition from "react-speech-recognition";
 import { useRouter } from "next/navigation";
 import { stopSpeech } from "@/utils/tts/polly";
+import { useSettings } from "@/context/SettingsContext";
+import { useModal } from "@/context/ModalContext";
 
 const pacifico = Pacifico({ weight: ["400"], subsets: ["latin"] });
 
 const Sidebar = () => {
-  const {
-    selectedMode,
-    setSelectedMode,
-    showSideBar,
-    setShowSideBar,
-    showHelp,
-    setConfirmExitCallback,
-    setShowConfirmExit,
-    showSavedMessages,
-    setShowSavedMessages,
-    nightMode,
-  } = useSession();
+  const {settings: {nightMode, mode:selectedMode, showSideBar }, updateSettings} = useSettings();
+  const { 
+    showHelp, 
+    showSavedMessages, 
+    toggleSavedMessages,
+    openExitConfirm,
+  } = useModal();
 
   const [showSettings, setShowSettings] = useState(false);
   const router = useRouter();
 
   const toggleSideBar = () => {
-    setShowSideBar(!showSideBar);
+    updateSettings('showSideBar', !showSideBar);
+  };
+
+  const handleHomeNavigation = (e: React.MouseEvent) => {
+    stopSpeech();
+    e.preventDefault();
+    openExitConfirm(() => {
+      SpeechRecognition.stopListening();
+      window.speechSynthesis.cancel();
+      router.push("/home-page");
+    });
   };
 
   return (
@@ -58,16 +64,7 @@ const Sidebar = () => {
           >
             <Link
               href="#"
-              onClick={(e) => {
-                stopSpeech();
-                e.preventDefault(); // prevent default navigation
-                setConfirmExitCallback(() => () => {
-                  SpeechRecognition.stopListening();
-                  window.speechSynthesis.cancel();
-                  router.push("/home-page");
-                });
-                setShowConfirmExit(true);
-              }}
+              onClick={handleHomeNavigation}
               className={`${
                 showHelp ? "textbox-highlight-glow" : ""
               } px-3 py-1 rounded-lg ml-[-1rem]`}
@@ -91,8 +88,8 @@ const Sidebar = () => {
           <div className="flex flex-col gap-3">
             <div
               onClick={() => {
-                setSelectedMode("text-and-text");
-                setShowSavedMessages(false);
+                updateSettings('mode', "text-and-text");
+                toggleSavedMessages(false);
               }}
               className={`${
                 selectedMode === "text-and-text"
@@ -106,8 +103,8 @@ const Sidebar = () => {
             </div>
             <div
               onClick={() => {
-                setSelectedMode("text-and-voice");
-                setShowSavedMessages(false);
+                updateSettings('mode', "text-and-voice");
+                toggleSavedMessages(false);
               }}
               className={`${
                 selectedMode === "text-and-voice"
@@ -121,8 +118,8 @@ const Sidebar = () => {
             </div>
             <div
               onClick={() => {
-                setSelectedMode("voice-and-text");
-                setShowSavedMessages(false);
+                updateSettings('mode',"voice-and-text");
+                toggleSavedMessages(false);
               }}
               className={`${
                 selectedMode === "voice-and-text"
@@ -136,8 +133,8 @@ const Sidebar = () => {
             </div>
             <div
               onClick={() => {
-                setSelectedMode("voice-and-voice");
-                setShowSavedMessages(false);
+                updateSettings('mode', "voice-and-voice");
+                toggleSavedMessages(false);
               }}
               className={`${
                 selectedMode === "voice-and-voice"
@@ -170,7 +167,7 @@ const Sidebar = () => {
               } rounded-lg drop-shadow-md text-left py-2 px-6 flex flex-row justify-between items-center hover:bg-white/70 hover:text-black hover:cursor-pointer ${
                 showHelp ? "textbox-highlight-glow" : ""
               }`}
-              onClick={() => setShowSavedMessages(!showSavedMessages)}
+              onClick={() => toggleSavedMessages(!showSavedMessages)}
             >
               <span>Saved messages</span>
               <Image

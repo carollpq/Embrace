@@ -1,7 +1,10 @@
 "use client";
 
-import { useSession } from "@/context/Provider";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useSession } from "@/context/SessionContext";
+import { useSettings } from "@/context/SettingsContext";
+import { useModal } from "@/context/ModalContext";
 import Toggle from "@/components/ui/toggle";
 import MoodSelection from "@/components/MoodSelection";
 import ModeSelection from "@/components/ModeSelection";
@@ -9,35 +12,32 @@ import PersonaSelection from "@/components/PersonaSelection";
 import PersonaCustomization from "@/components/PersonaCustomization";
 import Disclaimer from "@/components/Disclaimer";
 import About from "@/components/About";
-import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
+  const { user: session, isLoggingOut } = useSession();
+  const { settings: { nightMode } } = useSettings();
   const {
-    session,
-    nightMode,
-    isLoggingOut,
-    confirmedExit,
-    setConfirmedExit,
     showDisclaimer,
     showAbout,
-  } = useSession();
-  const [loadingMoodSelection, setLoadingMoodSelection] = useState(false); // Loads Mood Selection page
-  const [loadingModeSelection, setLoadingModeSelection] = useState(false); // Loads Mode Selection page
-  const [loadingPersonaSelection, setLoadingPersonaSelection] = useState(false); // Loads Persona Selection page
-  const [loadingPersonaCustomization, setLoadingCustomizationSelection] =
-    useState(false); // Loads Persona Selection page
-  const router = useRouter();
+    confirmedExit,
+    setConfirmedExit
+  } = useModal();
+
+  const [loadingMoodSelection, setLoadingMoodSelection] = useState(false);
+  const [loadingModeSelection, setLoadingModeSelection] = useState(false);
+  const [loadingPersonaSelection, setLoadingPersonaSelection] = useState(false);
+  const [loadingPersonaCustomization, setLoadingCustomizationSelection] = useState(false);
 
   useEffect(() => {
     if (confirmedExit) setConfirmedExit(false);
-  }, []);
+  }, [confirmedExit, setConfirmedExit]);
 
-  // Redirect to '/' if session doesn't
   useEffect(() => {
     if (session === null) {
       router.replace("/");
     }
-  }, [session]);
+  }, [session, router]);
 
   return (
     <div
@@ -52,7 +52,6 @@ export default function Home() {
           <h2 className="text-3xl font-medium text-white/70 animate-slideUp delay-1000">
             Logging Out ...
           </h2>
-          {/* Spinning Loader */}
           <div className="w-12 h-12 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin delay-1000 mt-3"></div>
         </div>
       ) : showDisclaimer ? (

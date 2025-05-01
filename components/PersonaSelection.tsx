@@ -1,9 +1,9 @@
 "use client";
 import GeneralButton from "@/components/ui/button";
 import SelectionCard from "@/components/ui/SelectionCard";
-import { useSession } from "@/context/Provider";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSettings } from "@/context/SettingsContext";
 
 const PersonaSelection = ({
   setLoadingPersonaSelection,
@@ -15,15 +15,14 @@ const PersonaSelection = ({
   setLoadingModeSelection: (status: boolean) => void;
 }) => {
   const router = useRouter();
-
-  const { setSelectedPersona, nightMode, selectedPersona } = useSession();
+  const { settings: { nightMode, persona: selectedPersona }, updateSettings } = useSettings();
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [loadCustomizationOption, setLoadCustomizationOption] = useState(false);
 
   const handleCardClick = (persona: string) => {
-    setSelectedPersona(persona); // Set the selected persona in your session
+    updateSettings('persona', persona); // Set the selected persona in your session
     setSelectedCard(persona); // Set the selected card locally
     setErrorMessage(""); // Clear error when user selects a persona
   };

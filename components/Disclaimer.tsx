@@ -1,10 +1,10 @@
 import React from "react";
 import SelectionCard from "./ui/SelectionCard";
 import GeneralButton from "./ui/button";
-import { useSession } from "@/context/Provider";
+import { useModal } from "@/context/ModalContext";
 
 const Disclaimer = () => {
-  const { setShowDisclaimer } = useSession();
+  const { toggleDisclaimer } = useModal();
   return (
     <div className="flex flex-col items-center mt-14 overflow-y-auto space-y-4 py-6">
       <h2 className="text-2xl sm:text-3xl font-medium text-white animate-slideUp delay-1000 text-center">
@@ -47,7 +47,7 @@ const Disclaimer = () => {
           className="bg-white/70 hover:bg-white/90 hover:text-black/90"
           text="Understood"
           onClick={() => {
-            setShowDisclaimer(false);
+            toggleDisclaimer(false);
           }}
         />
       </div>

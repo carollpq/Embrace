@@ -2,12 +2,13 @@
 
 import style from "@/styles/InputBox.module.css";
 import { useEffect, useRef } from "react";
-import { useSession } from "@/context/Provider";
 import HelpTooltip from "@/components/ui/HelpTooltip";
 import { useSpeechToText } from "@/hooks/useSpeechToText"; 
 import { VoiceInputButton } from "./VoiceInputButton";
 import { TextInputArea } from "./TextInputArea";
 import { SendButton } from "./SendButton";
+import { useSettings } from "@/context/SettingsContext";
+import { useModal } from "@/context/ModalContext";
 
 interface InputBoxProps {
   handleSubmit: () => void;
@@ -24,7 +25,8 @@ const InputBox = ({
   input,
   setHasUserTriggeredResponse,
 }: InputBoxProps) => {
-  const { selectedMode, selectedPersona, showHelp } = useSession();
+  const { settings: {mode: selectedMode, persona: selectedPersona }} = useSettings();
+  const { showHelp } = useModal();
   const inputBoxTextArea = useRef<HTMLTextAreaElement>(null);
 
   const {

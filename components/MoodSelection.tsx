@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useSession } from "@/context/Provider";
+import { useChat } from "@/context/ChatContext";
 import GeneralButton from "@/components/ui/button";
+import { useSettings } from "@/context/SettingsContext";
 
 const moods = [
   { label: "Anxious", emoji: "😟" },
@@ -20,11 +21,12 @@ const MoodSelection = ({
   setLoadingModeSelection: (status: boolean) => void;
   setLoadingMoodSelection: (status: boolean) => void;
 }) => {
-  const { setSelectedMood, nightMode } = useSession();
+  const { setMood } = useChat();
+  const { settings: { nightMode } } = useSettings();
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
 
   const handleCardClick = (mood: string) => {
-    setSelectedMood(mood); // Set the selected mode in your session
+    setMood(mood); // Set the selected mode in your session
     setSelectedCard(mood); // Set the selected card locally
   };
 

@@ -2,15 +2,19 @@
 import Link from "next/link";
 import { Pacifico, Quicksand } from "next/font/google";
 import Toggle from "@/components/ui/toggle";
-import { useSession } from "@/context/Provider";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "@/context/SessionContext";
+import { useSettings } from "@/context/SettingsContext";
+import { useModal } from "@/context/ModalContext";
 
 const pacifico = Pacifico({ weight: ["400"], subsets: ["latin"] });
 const quicksand = Quicksand({ weight: ["500"], subsets: ["latin"] });
 
 export default function StartPage() {
-  const { session, nightMode, setIsLoggingOut } = useSession();
+  const { user: session } = useSession();
+  const { settings: { nightMode } } = useSettings();
+  const { setLoggingOut } = useModal();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -21,15 +25,16 @@ export default function StartPage() {
   }, [session, router]);
 
   useEffect(() => {
-    setIsLoggingOut(false);
-  }, []);
+    setLoggingOut(false);
+  }, [setLoggingOut]);
 
   return (
     <div
       className={`flex flex-col justify-center gap-10 sm:gap-16 items-center h-screen bg-center transition-colors duration-500 ease-in-out px-4 sm:px-6 md:px-12
-      ${nightMode
-        ? "bg-home-screen-blue"
-        : "bg-home-screen-pink bg-black/20 bg-blend-overlay"
+      ${
+        nightMode
+          ? "bg-home-screen-blue"
+          : "bg-home-screen-pink bg-black/20 bg-blend-overlay"
       }`}
     >
       {isLoading ? (

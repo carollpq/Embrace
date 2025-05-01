@@ -2,7 +2,7 @@
 import GeneralButton from "@/components/ui/button";
 import SelectionCard from "@/components/ui/SelectionCard";
 import React, { useState, useRef } from "react";
-import { useSession } from "@/context/Provider";
+import { useSettings } from "@/context/SettingsContext";
 
 const ModeSelection = ({
   setLoadingModeSelection,
@@ -13,13 +13,13 @@ const ModeSelection = ({
   setLoadingPersonaSelection: (status: boolean) => void;
   setLoadingMoodSelection: (status: boolean) => void;
 }) => {
-  const { setSelectedMode, nightMode, setSelectedTTS } = useSession();
+  const { settings: { nightMode }, updateSettings } = useSettings();
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
   const [loadTTSOptions, setLoadTTSOptions] = useState(false);
   const continueButtonRef = useRef<HTMLDivElement | null>(null);
 
   const handleCardClick = (mode: string) => {
-    setSelectedMode(mode); // Set the selected mode in your session
+    updateSettings('mode', mode); // Set the selected mode in your session
     setSelectedCard(mode); // Set the selected card locally
 
     // Scroll the continue button into view on mobile
@@ -122,7 +122,7 @@ const ModeSelection = ({
               description="Great if you prefer a smoother, more natural tone and don’t mind waiting a moment."
               svg="/icons/online-icon.png"
               onClick={() => {
-                setSelectedTTS("polly");
+                updateSettings('tts', "polly");
                 setSelectedCard("polly");
               }}
               isSelected={selectedCard === "polly"}
@@ -132,7 +132,7 @@ const ModeSelection = ({
               description="Great if you like faster, more interactive conversations, even if the voice is less natural."
               svg="/icons/offline-icon.png"
               onClick={() => {
-                setSelectedTTS("browser");
+                updateSettings('tts', "browser");
                 setSelectedCard("browser");
               }}
               isSelected={selectedCard === "browser"}

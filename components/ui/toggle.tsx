@@ -1,5 +1,5 @@
 "use client";
-import { useSession } from "@/context/Provider";
+import { useSettings } from "@/context/SettingsContext";
 import Image from "next/image";
 
 interface ToggleProps {
@@ -7,7 +7,11 @@ interface ToggleProps {
 }
 
 const Toggle: React.FC<ToggleProps> = () => {
-  const { nightMode, setNightMode } = useSession();
+  const { settings: { nightMode }, updateSettings } = useSettings();
+
+  const toggleNightMode = () => {
+    updateSettings('nightMode', !nightMode);
+  };
 
   return (
     <>
@@ -18,7 +22,7 @@ const Toggle: React.FC<ToggleProps> = () => {
             ? "/icons/night-mode-toggle.png"
             : "/icons/day-mode-toggle.png"
         }
-        onClick={() => setNightMode(!nightMode)}
+        onClick={toggleNightMode}
         className="absolute left-8 bottom-5 cursor-pointer rounded-full p-1 transition-all duration-300 
              w-20 h-auto sm:w-24 md:w-28"
         width={0} // Prevent Next.js warning

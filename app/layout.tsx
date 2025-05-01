@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Raleway } from "next/font/google";
-import { SessionProvider } from "@/context/Provider";
+import { Providers } from "@/context/Providers";
 
 const raleway = Raleway({ subsets: ["latin"] });
 
@@ -14,9 +14,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body suppressContentEditableWarning suppressHydrationWarning className={raleway.className}>
-        <SessionProvider>
+        <Providers>
           {children}
-        </SessionProvider>
+        </Providers>
       </body>
     </html>
   );

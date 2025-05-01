@@ -1,8 +1,8 @@
 import React from "react";
-import { useSession } from "@/context/Provider";
+import { useSettings } from "@/context/SettingsContext";
 
 const Settings = () => {
-    const { nightMode, setNightMode, fontSize, setFontSize, highContrast, setHighContrast } = useSession();
+    const { settings: {nightMode, fontSize, highContrast}, updateSettings} = useSettings();
   return (
     <div className="flex flex-col gap-3 bg-white/10 p-4 rounded-lg">
       {/* Dark/Light Mode */}
@@ -11,7 +11,7 @@ const Settings = () => {
         <input
           type="checkbox"
           checked={nightMode}
-          onChange={() => setNightMode(!nightMode)}
+          onChange={() => updateSettings('nightMode', !nightMode)}
           className="w-5 h-5 hover:cursor-pointer"
         />
       </div>
@@ -21,7 +21,7 @@ const Settings = () => {
         <span>Font Size</span>
         <select
           value={fontSize ?? "base"}
-          onChange={(e) => setFontSize(e.target.value)}
+          onChange={(e) => updateSettings('fontSize', e.target.value)}
           className="bg-transparent border rounded px-2 py-1 hover:cursor-pointer"
         >
           <option value="sm" className="text-black">Small</option>
@@ -37,7 +37,7 @@ const Settings = () => {
         <input
           type="checkbox"
           checked={highContrast ?? false}
-          onChange={() => setHighContrast(!highContrast)}
+          onChange={() => updateSettings('highContrast', !highContrast)}
           className="w-5 h-5 hover:cursor-pointer"
         />
       </div>

@@ -4,9 +4,11 @@ import "../../globals.css";
 import { Quicksand } from "next/font/google";
 import ChatHeader from "@/components/ui/ChatHeader";
 import Sidebar from "@/components/ui/Sidebar";
-import { useSession } from "@/context/Provider";
 import ExitConfirmationModal from "@/components/ui/ExitConfirmationModal";
 import SessionExpiredModal from "@/components/ui/SessionExpiredModal";
+import { useModal } from "@/context/ModalContext";
+import { useSettings } from "@/context/SettingsContext";
+import { useSession } from "@/context/SessionContext";
 
 const quicksand = Quicksand({ weight: ["400"], subsets: ["latin"] });
 
@@ -20,16 +22,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { user } = useSession();
+
+  const { confirmedExit, showConfirmExit, showHelp } = useModal();
   const {
-    nightMode,
-    showSideBar,
-    showHelp,
-    fontSize,
-    highContrast,
-    showConfirmExit,
-    confirmedExit,
-    session,
-  } = useSession();
+    settings: { nightMode, fontSize, highContrast, showSideBar },
+  } = useSettings();
 
   return (
     <main
@@ -70,7 +68,7 @@ export default function RootLayout({
           {showConfirmExit && <ExitConfirmationModal />}
         </>
       )}
-      {!session && <SessionExpiredModal />}
+      {!user && <SessionExpiredModal />}
     </main>
   );
 }

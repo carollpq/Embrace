@@ -3,39 +3,25 @@ import { Quicksand } from "next/font/google";
 import Image from "next/image";
 import HelpTooltip from "@/components/ui/HelpTooltip";
 import SliderSetting from "@/components/ui/Slider";
-import {
-  useSession,
-  jennaDefaultTraits,
-  marcusDefaultTraits,
-  Traits,
-} from "@/context/Provider";
+import { Traits } from "@/types/context";
+import { jennaDefaultTraits, marcusDefaultTraits, useChat } from "@/context/ChatContext";
 import { useState, useEffect, useRef } from "react";
+import { useModal } from "@/context/ModalContext";
+import { useSettings } from "@/context/SettingsContext";
 
 const quicksand = Quicksand({ subsets: ["latin"] });
 
 const ChatHeader = () => {
-  const {
-    selectedPersona,
-    setShowSideBar,
-    showSideBar,
-    setSelectedPersona,
-    selectedTTS,
-    setSelectedTTS,
-    selectedMode,
-    showHelp,
-    //setShowHelp,
-    fontSize,
-    customTraits,
-    setCustomTraits,
-    showSavedMessages,
-  } = useSession();
+  const { customTraits, setCustomTraits } = useChat();
+  const { showSavedMessages, showHelp } = useModal();
+  const { settings: {showSideBar, fontSize, mode:selectedMode, tts:selectedTTS, persona: selectedPersona}, updateSettings} = useSettings();
   const [showPopUp, setShowPopUp] = useState(false);
   const [showCustomize, setShowCustomize] = useState(false);
 
   const popupRef = useRef<HTMLDivElement>(null);
 
   const toggleSideBar = () => {
-    setShowSideBar(!showSideBar);
+    updateSettings('showSideBar', !showSideBar);
   };
 
   //Debugging : whether customTraits update correctly
@@ -124,7 +110,7 @@ const ChatHeader = () => {
                   onClick={() => {
                     const newPersona =
                       selectedPersona === "Jenna" ? "Marcus" : "Jenna";
-                    setSelectedPersona(newPersona);
+                    updateSettings('persona', newPersona);
                     setCustomTraits(
                       newPersona === "Jenna"
                         ? jennaDefaultTraits
@@ -152,8 +138,8 @@ const ChatHeader = () => {
                     <p
                       className="underline text-white/70 text-xs hover:cursor-pointer"
                       onClick={() =>
-                        setSelectedTTS(
-                          selectedTTS === "polly" ? "browser" : "polly"
+                        updateSettings(
+                          'tts', selectedTTS === "polly" ? "browser" : "polly"
                         )
                       }
                     >

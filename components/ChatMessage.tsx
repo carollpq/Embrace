@@ -3,9 +3,10 @@
 import style from "../styles/ChatMessage.module.css";
 import { Message } from "ai/react";
 import { useState } from "react";
-import { useSession } from "@/context/Provider";
 import Image from "next/image";
 import { useTextToSpeech } from "@/hooks/useTextToSpeech";
+import { useSettings } from "@/context/SettingsContext";
+import { useChat } from "@/context/ChatContext";
 
 const ChatMessage = ({
   message,
@@ -18,18 +19,21 @@ const ChatMessage = ({
 }) => {
   const isUser = message.role === "user";
   const isTypingPlaceholder = message.content === "__typing__";
+
+  // Get settings from SettingsContext
+  const { settings } = useSettings();
   const {
-    selectedMode,
-    selectedPersona,
-    selectedTTS,
+    mode: selectedMode,
+    persona: selectedPersona,
+    tts: selectedTTS,
     fontSize,
-    messages,
-    hasUserTriggeredResponse,
-    setHasUserTriggeredResponse,
-  } = useSession();
+  } = settings;
+
+  // Get chat state from ChatContext
+  const { messages, hasUserTriggeredResponse, setHasUserTriggeredResponse } = useChat();
 
   const [isSavingMessage, setIsSavingMessage] = useState(false);
-  
+
   const { isSpeaking, isLoadingAudio, speak } = useTextToSpeech({
     message,
     isUser,
@@ -126,7 +130,11 @@ const ChatMessage = ({
                 ) : (
                   <Image
                     className="hover:cursor-pointer"
-                    src={isSpeaking ? "/icons/is-speaking.svg" : "/icons/not-speak.svg"}
+                    src={
+                      isSpeaking
+                        ? "/icons/is-speaking.svg"
+                        : "/icons/not-speak.svg"
+                    }
                     alt="Speaker icon"
                     width={18}
                     height={18}
