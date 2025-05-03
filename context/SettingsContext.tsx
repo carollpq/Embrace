@@ -71,7 +71,8 @@ export const SettingsProvider = ({
     value: AppSettings[K]
   ) => {
     try {
-      const setters = {
+      // Create a type-safe mapping of setters
+      const setters: Record<keyof AppSettings, (value: any) => void> = {
         mode: setMode,
         persona: setPersona,
         tts: setTts,
