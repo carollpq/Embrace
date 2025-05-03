@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { Pacifico } from "next/font/google";
 import Link from "next/link";
 import Settings from "./Settings";
-import TooltipWrapper from "./TooltipWrapper";
 import SpeechRecognition from "react-speech-recognition";
 import { useRouter } from "next/navigation";
 import { stopSpeech } from "@/utils/tts/polly";
@@ -62,16 +61,13 @@ const Sidebar = () => {
             className="hover:cursor-pointer"
             onClick={toggleSideBar}
           />
-          <TooltipWrapper tooltipText="Home page" showTooltip={showHelp} placement="right" className="w-16 mt-[-1.5rem] text-center">
-            <Link href="#" onClick={handleHomeNavigation} className={`${showHelp ? "textbox-highlight-glow" : ""} px-3 py-1 rounded-lg ml-[-1rem]`}>
+          <Link href="#" onClick={handleHomeNavigation} className={`${showHelp ? "textbox-highlight-glow" : ""} px-3 py-1 rounded-lg ml-[-1rem]`}>
               <span className={`${pacifico.className} text-2xl`}>Embrace</span>
             </Link>
-          </TooltipWrapper>
         </div>
 
         {/* Conversation Modes */}
-        <TooltipWrapper tooltipText="You can switch the mode of conversation at any time here!" showTooltip={showHelp} placement="right" className="mt-[2rem]">
-          <div className="flex flex-col text-lg font-medium">
+        <div className="flex flex-col text-lg font-medium">
             <span>Conversation Modes</span>
           </div>
           <div className="flex flex-col gap-3">
@@ -86,7 +82,6 @@ const Sidebar = () => {
               />
             ))}
           </div>
-        </TooltipWrapper>
 
         {/* Other Menu Items */}
         <div className="flex flex-col gap-3">
@@ -100,8 +95,6 @@ const Sidebar = () => {
             icon="/icons/save-icon.svg"
             onClick={() => toggleSavedMessages(!showSavedMessages)}
             showHelp={showHelp}
-            tooltipText="View your previously saved messages here"
-            placement="right"
           />
           
           <MenuItem
@@ -110,7 +103,6 @@ const Sidebar = () => {
             icon="/icons/gear-solid.svg"
             onClick={() => setShowSettings(!showSettings)}
             showHelp={showHelp}
-            tooltipText="Set Night/Day mode, adjust font size, and toggle between high contrast"
           >
           </MenuItem>
           {showSettings && <Settings />}

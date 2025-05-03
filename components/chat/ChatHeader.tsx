@@ -1,7 +1,6 @@
 import React from "react";
 import { Quicksand } from "next/font/google";
 import Image from "next/image";
-import HelpTooltip from "@/components/chat/HelpTooltip";
 import SliderSetting from "@/components/ui/Slider";
 import { Traits } from "@/types/context";
 import { jennaDefaultTraits, marcusDefaultTraits, useChat } from "@/context/ChatContext";
@@ -13,7 +12,7 @@ const quicksand = Quicksand({ subsets: ["latin"] });
 
 const ChatHeader = () => {
   const { customTraits, setCustomTraits } = useChat();
-  const { showSavedMessages, showHelp } = useModal();
+  const { showSavedMessages, showHelp, toggleHelp } = useModal();
   const { settings: {showSideBar, fontSize, mode:selectedMode, tts:selectedTTS, persona: selectedPersona}, updateSettings} = useSettings();
   const [showPopUp, setShowPopUp] = useState(false);
   const [showCustomize, setShowCustomize] = useState(false);
@@ -226,14 +225,6 @@ const ChatHeader = () => {
               );
             })()}
         </div>
-
-        {/* Help Popup Card */}
-        {showHelp && (
-          <HelpTooltip
-            text="This is your current persona that you are talking to. You can switch the persona or voice mode here !"
-            className="ml-[25rem] mt-[4rem]"
-          />
-        )}
       </div>
       {/* Right side header items */}
       <div
@@ -251,7 +242,7 @@ const ChatHeader = () => {
       >
         <div
           className="flex flex-row justify-center items-center gap-2 hover:cursor-pointer"
-          //onClick={() => setShowHelp(!showHelp)}
+          onClick={() => toggleHelp}
         >
           <span
             className={`

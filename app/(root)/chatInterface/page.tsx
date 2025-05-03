@@ -1,6 +1,5 @@
 "use client";
 
-import InputBox from "@/components/inputBox/InputBox";
 import ChatMessage from "@/components/chat/ChatMessage";
 import { useRef, useLayoutEffect, useEffect, FormEvent, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -10,6 +9,7 @@ import { useSession } from "@/context/SessionContext";
 import { useSettings } from "@/context/SettingsContext";
 import { useChat } from "@/context/ChatContext";
 import { useModal } from "@/context/ModalContext";
+import InputBox from "@/components/inputBox/InputBox";
 
 const ChatInterface: React.FC = () => {
   const messageContainerRef = useRef<HTMLDivElement | null>(null);

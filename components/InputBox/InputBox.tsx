@@ -2,7 +2,6 @@
 
 import style from "@/styles/InputBox.module.css";
 import { useEffect, useRef } from "react";
-import HelpTooltip from "@/components/chat/HelpTooltip";
 import { useSpeechToText } from "@/hooks/useSpeechToText"; 
 import { VoiceInputButton } from "./VoiceInputButton";
 import { TextInputArea } from "./TextInputArea";
@@ -80,13 +79,6 @@ const InputBox = ({
           />
           <SendButton onClick={handleSubmit} showHelp={showHelp} />
         </>
-      )}
-
-      {!isVoiceMode && showHelp && (
-        <HelpTooltip
-          text="Type your messages here, click the send button or press enter to send the message"
-          className="right-40 bottom-20"
-        />
       )}
     </div>
   );

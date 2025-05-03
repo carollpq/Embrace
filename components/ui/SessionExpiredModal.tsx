@@ -1,4 +1,4 @@
-// components/ui/SessionExpiredModal.tsx
+
 "use client";
 
 import { useEffect } from "react";
@@ -10,7 +10,7 @@ export default function SessionExpiredModal() {
   useEffect(() => {
     const timeout = setTimeout(() => {
       router.push("/sign-in");
-    }, 3000); // Redirect after 3 seconds
+    }, 6000); // Redirect after 3 seconds
 
     return () => clearTimeout(timeout);
   }, [router]);
