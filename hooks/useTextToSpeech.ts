@@ -4,6 +4,15 @@ import { TTSFactory } from "@/utils/tts/TTSFactory";
 import { removeEmojis, isLastAssistantMessage } from "@/utils/chatMessageUtils";
 import { useModal } from "@/context/ModalContext";
 
+type TTSEngineType = "polly" | "browser" | "fallback";
+
+const getValidTTSEngine = (engine: string | null, isOffline: boolean): TTSEngineType => {
+  if (isOffline) return "browser";
+  return engine && ["polly", "browser", "fallback"].includes(engine) 
+    ? engine as TTSEngineType 
+    : "polly";
+};
+
 export const useTextToSpeech = ({
   message,
   isUser,
@@ -38,11 +47,12 @@ export const useTextToSpeech = ({
    */
   const speak = async () => {
     if (!message.content) return;
+    const isOffline = typeof window !== "undefined" && !navigator.onLine;
+      const engine = getValidTTSEngine(selectedTTS, isOffline);
     const cleanedText = removeEmojis(message.content);
     try {
       setIsLoadingAudio(true);
-      const isOffline = typeof window !== "undefined" && !navigator.onLine;
-      const ttsEngine = TTSFactory.create(selectedTTS);
+      const ttsEngine = TTSFactory.create(engine);
 
       if (isOffline) {
         throw new Error("Offline mode detected. Falling back to browser TTS.");
