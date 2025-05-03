@@ -9,7 +9,7 @@ import { useSession } from "@/context/SessionContext";
 import { useSettings } from "@/context/SettingsContext";
 import { useChat } from "@/context/ChatContext";
 import { useModal } from "@/context/ModalContext";
-import InputBox from "@/components/inputBox/InputBox";
+import InputBox from "@/components/inputbox/InputBox";
 
 const ChatInterface: React.FC = () => {
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
