@@ -1,21 +1,38 @@
 /* eslint-disable react/no-unescaped-entities */
-import { PollyClient, SynthesizeSpeechCommand, Engine, OutputFormat, VoiceId } from "@aws-sdk/client-polly";
+import {
+  PollyClient,
+  SynthesizeSpeechCommand,
+  Engine,
+  OutputFormat,
+  VoiceId,
+} from "@aws-sdk/client-polly";
 
 const pollyClient = new PollyClient({
   region: process.env.AWS_REGION || "us-east-1",
   credentials: {
     accessKeyId: process.env.AWS_ACCESS_KEY_ID! || "AKIATJHQD2HBDTZTB2EN",
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY! || "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",
+    secretAccessKey:
+      process.env.AWS_SECRET_ACCESS_KEY! ||
+      "1LkPQX30B2ei/cofv5BnBtEDBmwbjermmzgE/JoY",
   },
 });
 
-async function convertAudioStreamToUint8Array(stream: any): Promise<Uint8Array> {
+/**
+ * Converts the audio stream from Polly into a usable format
+ */
+async function convertAudioStreamToUint8Array(
+  stream: any
+): Promise<Uint8Array> {
   const chunks: Uint8Array[] = [];
   for await (const chunk of stream) {
     chunks.push(Buffer.from(chunk));
   }
   return Buffer.concat(chunks);
 }
+
+/**
+ * Calls Polly to synthesize speech from text
+ */
 
 export async function getSpeech(text: string, voiceId = "Danielle") {
   const params = {
@@ -41,8 +58,12 @@ export async function getSpeech(text: string, voiceId = "Danielle") {
   }
 }
 
+// Keep reference to currently playing audio for control
 let currentAudio: HTMLAudioElement | null = null;
 
+/**
+ * Stops any active Polly playback
+ */
 export function stopSpeech() {
   if (currentAudio) {
     currentAudio.pause();
@@ -51,46 +72,70 @@ export function stopSpeech() {
   }
 }
 
-export async function playSpeech(text: string, voiceId = "Danielle", onEnd?: () => void, onStart?: () => void, onStopLoad?: () => void) {
+/**
+ * Plays synthesized speech using HTMLAudioElement
+ */
+export async function playSpeech(
+  text: string,
+  voiceId = "Danielle",
+  audioRef?: React.MutableRefObject<HTMLAudioElement | null>,
+  onEnd?: () => void,
+  onStart?: () => void,
+  onStopLoad?: () => void
+) {
   const audioStream = await getSpeech(text, voiceId);
-
   const audioBlob = new Blob([audioStream], { type: "audio/mpeg" });
   const audioUrl = URL.createObjectURL(audioBlob);
 
   // Stop and cleanup any currently playing audio
   stopSpeech();
 
-  currentAudio = new Audio(audioUrl);
+  const audio = new Audio(audioUrl);
+  if (audioRef) audioRef.current = audio;
 
-  currentAudio.onended = () => {
-    currentAudio = null; // Reset after playback ends
-    onEnd?.(); // 👈 Call the callback when audio ends
+  audio.onended = () => {
+    if (audioRef) audioRef.current = null;
+    onEnd?.();
   };
 
   onStopLoad?.();
   onStart?.();
-  currentAudio.play().catch((err) => {
+
+  try {
+    await audio.play();
+  } catch (err) {
     console.error("Audio playback failed:", err);
-    currentAudio = null;
-    onEnd?.(); // Also call it if there's an error
-  });
+    if (audioRef) audioRef.current = null;
+    onEnd?.();
+  }
 }
 
-// Persona-specific speech
+/**
+ * Maps personas to Polly voices
+ */
 const personaVoices = {
   Jenna: "Danielle",
   Marcus: "Matthew",
 };
 
-export async function playPersonaSpeech(text: string, persona: string | null, onEnd?: () => void, onStart?: () => void, onStopLoad?: () => void) {
+/**
+ * High-level function to play Polly speech for a persona
+ */
+export async function playPersonaSpeech(
+  text: string,
+  persona: string | null,
+  audioRef?: React.MutableRefObject<HTMLAudioElement | null>,
+  onEnd?: () => void,
+  onStart?: () => void,
+  onStopLoad?: () => void
+) {
   if (!persona || !(persona in personaVoices)) {
     console.error(`Voice ID not found for persona: ${persona}`);
     return;
   }
 
   const voiceId = personaVoices[persona as keyof typeof personaVoices];
-  await playSpeech(text, voiceId, onEnd, onStart, onStopLoad);
+  await playSpeech(text, voiceId, audioRef, onEnd, onStart, onStopLoad);
 }
-
 
 export default pollyClient;

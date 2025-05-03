@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import { SignJWT } from "jose";  // Import SignJWT from jose
+import { SignJWT } from "jose"; 
 import User from "@/utils/models/User";
 import { connect } from "@/utils/config/dbConfig";
 

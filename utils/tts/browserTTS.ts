@@ -1,30 +1,41 @@
 export const playBrowserTTS = (
   text: string,
   persona: string | null,
+  utteranceRef: React.MutableRefObject<SpeechSynthesisUtterance | null>,
   onEnd?: () => void,
   onStart?: () => void,
-  onStopLoad?: () => void,
+  onStopLoad?: () => void
 ) => {
-  // Cancel any current speech before starting a new one
+  // Cancel current speech to avoid overlap
   speechSynthesis.cancel();
 
   const utterance = new SpeechSynthesisUtterance(text);
+  utteranceRef.current = utterance;
 
-  if (onEnd) {
-    utterance.onend = onEnd;
-  }
+  utterance.onend = () => {
+    onEnd?.();
+    utteranceRef.current = null;
+  };
 
+  utterance.onstart = () => {
+    onStart?.();
+  };
+
+  // Ensure voices are loaded (especially on iOS where it can be delayed)
   const setVoiceAndSpeak = () => {
     const voices = speechSynthesis.getVoices();
     let selectedVoice: SpeechSynthesisVoice | undefined = undefined;
 
+    // Prefer common, US English voices
     const americanVoices = voices.filter(
       (v) =>
         v.lang === "en-US" &&
         (v.name.includes("Google") ||
           v.name.includes("Microsoft") ||
           v.name.includes("Apple") ||
-          true)
+          v.name.toLowerCase().includes("samantha") ||
+          v.name.toLowerCase().includes("zira") ||
+          v.name.toLowerCase().includes("david"))
     );
 
     // Match by known voice names for reliability
@@ -46,7 +57,7 @@ export const playBrowserTTS = (
         americanVoices.find((v) => v.name.toLowerCase().includes("microsoft"));
     }
 
-    // Fallback
+    // Fallback to any available voice
     if (!selectedVoice && voices.length > 0) {
       selectedVoice = voices[0];
     }
@@ -61,11 +72,10 @@ export const playBrowserTTS = (
     speechSynthesis.speak(utterance);
   };
 
-  // Wait until voices are loaded before proceeding
+  // Wait for voices to be ready if not yet loaded
   if (speechSynthesis.getVoices().length === 0) {
     speechSynthesis.onvoiceschanged = () => {
       setVoiceAndSpeak();
-      // Remove handler to prevent multiple calls
       speechSynthesis.onvoiceschanged = null;
     };
   } else {

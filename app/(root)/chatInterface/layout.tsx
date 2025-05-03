@@ -9,6 +9,7 @@ import SessionExpiredModal from "@/components/ui/SessionExpiredModal";
 import { useModal } from "@/context/ModalContext";
 import { useSettings } from "@/context/SettingsContext";
 import { useSession } from "@/context/SessionContext";
+import TTSFallbackModal from "@/components/ui/TTSFallbackModal";
 
 const quicksand = Quicksand({ weight: ["400"], subsets: ["latin"] });
 
@@ -24,7 +25,7 @@ export default function RootLayout({
 }>) {
   const { user } = useSession();
 
-  const { confirmedExit, showConfirmExit, showHelp } = useModal();
+  const { confirmedExit, showConfirmExit, showHelp, showTTSFallback } = useModal();
   const {
     settings: { nightMode, fontSize, highContrast, showSideBar },
   } = useSettings();
@@ -66,6 +67,7 @@ export default function RootLayout({
             {children}
           </div>
           {showConfirmExit && <ExitConfirmationModal />}
+          {showTTSFallback && <TTSFallbackModal />}
         </>
       )}
       {!user && <SessionExpiredModal />}

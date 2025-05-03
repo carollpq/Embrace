@@ -37,6 +37,12 @@ export default function SignUpPage() {
         console.log(`name: ${name}, email: ${email}, password: ${password}`);
       }
 
+      if (password.length < 8) {
+        setLoading(false);
+        alert("Password must be at least 6 characters");
+        return;
+      }
+
       const emailRegex = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
       if (!emailRegex.test(email)) {
         setLoading(false);

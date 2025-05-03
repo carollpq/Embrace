@@ -30,11 +30,19 @@ const ChatMessage = ({
   } = settings;
 
   // Get chat state from ChatContext
-  const { messages, hasUserTriggeredResponse, setHasUserTriggeredResponse } = useChat();
+  const { messages, hasUserTriggeredResponse, setHasUserTriggeredResponse } =
+    useChat();
 
   const [isSavingMessage, setIsSavingMessage] = useState(false);
 
-  const { isSpeaking, isLoadingAudio, speak } = useTextToSpeech({
+  const {
+    isSpeaking,
+    isLoadingAudio,
+    isPaused,
+    speak,
+    pause,
+    resume,
+  } = useTextToSpeech({
     message,
     isUser,
     selectedMode,
@@ -119,10 +127,11 @@ const ChatMessage = ({
           !isTypingPlaceholder &&
           (selectedMode === "text-and-voice" ||
             selectedMode === "voice-and-voice") && (
-            <div className="absolute top-2 left-3 flex gap-3">
+            <div className="absolute top-2 left-3 flex gap-3 items-center">
+              {/* Play / Replay */}
               <button
                 title="Play audio"
-                onClick={speak}
+                onClick={!isSpeaking ? speak : () => {}} // Prevents audio overlapping
                 className="text-blue-500 hover:text-blue-700 text-sm underline"
               >
                 {isLoadingAudio ? (
@@ -132,8 +141,7 @@ const ChatMessage = ({
                     className="hover:cursor-pointer"
                     src={
                       isSpeaking
-                        ? "/icons/is-speaking.svg"
-                        : "/icons/not-speak.svg"
+                        ? "/icons/is-speaking.svg" : "/icons/not-speak.svg"
                     }
                     alt="Speaker icon"
                     width={18}
@@ -141,6 +149,27 @@ const ChatMessage = ({
                   />
                 )}
               </button>
+
+              {/* Pause / Resume */}
+              {isSpeaking && (
+                <button
+                  title={isPaused ? "Resume" : "Pause"}
+                  onClick={isPaused ? resume : pause}
+                  className="text-xs text-blue-600 underline"
+                >
+                  <Image
+                    className="hover:cursor-pointer"
+                    src={
+                      isPaused
+                        ? "/icons/resume-icon.svg"
+                        : "/icons/pause-icon.svg"
+                    }
+                    alt="Play/Pause icon"
+                    width={18}
+                    height={18}
+                  />
+                </button>
+              )}
             </div>
           )}
       </div>

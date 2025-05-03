@@ -10,7 +10,7 @@ import { useSettings } from "@/context/SettingsContext";
 export default function SigninPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false); // <-- Loading state
+  const [loading, setLoading] = useState(false); 
   const [isLoadingPage, setIsLoadingPage] = useState(false);
   const router = useRouter();
 
@@ -28,6 +28,12 @@ export default function SigninPage() {
       if (!email || !password) {
         setLoading(false);
         alert("Please enter both email and password.");
+        return;
+      }
+
+      if (password.length < 8) {
+        setLoading(false);
+        alert("Password must be at least 6 characters");
         return;
       }
 

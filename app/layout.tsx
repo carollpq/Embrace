@@ -13,7 +13,16 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      {/* 
+        suppressContentEditableWarning: Prevents warnings about contentEditable
+        suppressHydrationWarning: Prevents Next.js hydration mismatch warnings
+        className: Applies Raleway font to entire app
+      */}
       <body suppressContentEditableWarning suppressHydrationWarning className={raleway.className}>
+        {/* 
+          Providers: Wraps app with all context providers 
+          (Session, Settings, Modal, etc.)
+        */}
         <Providers>
           {children}
         </Providers>

@@ -1,5 +1,5 @@
-'use client';
-import { createContext, useContext, useState, useCallback } from 'react';
+"use client";
+import { createContext, useContext, useState, useCallback } from "react";
 
 type ModalContextType = {
   showHelp: boolean;
@@ -9,6 +9,7 @@ type ModalContextType = {
   showAbout: boolean;
   showSavedMessages: boolean;
   isLoggingOut: boolean;
+  showTTSFallback: boolean;
   toggleHelp: (show?: boolean) => void;
   openExitConfirm: (callback: () => void) => void;
   closeExitConfirm: () => void;
@@ -18,6 +19,8 @@ type ModalContextType = {
   toggleAbout: (show?: boolean) => void;
   toggleSavedMessages: (show?: boolean) => void;
   setLoggingOut: (state: boolean) => void;
+  triggerTTSFallback: () => void;
+  closeTTSFallback: () => void;
 };
 
 const ModalContext = createContext<ModalContextType | null>(null);
@@ -31,9 +34,10 @@ export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
   const [showSavedMessages, setShowSavedMessages] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [exitCallback, setExitCallback] = useState(() => () => {});
+  const [showTTSFallback, setShowTTSFallback] = useState(false);
 
   const toggleHelp = useCallback((show?: boolean) => {
-    setShowHelp(prev => show ?? !prev);
+    setShowHelp((prev) => show ?? !prev);
   }, []);
 
   const openExitConfirm = useCallback((callback: () => void) => {
@@ -50,25 +54,34 @@ export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
     exitCallback();
   }, [exitCallback]);
 
+  const triggerTTSFallback = () => setShowTTSFallback(true);
+  const closeTTSFallback = () => setShowTTSFallback(false);
+
   return (
-    <ModalContext.Provider value={{
-      showHelp,
-      showConfirmExit,
-      confirmedExit,
-      showDisclaimer,
-      showAbout,
-      showSavedMessages,
-      isLoggingOut,
-      toggleHelp,
-      openExitConfirm,
-      closeExitConfirm,
-      confirmExit,
-      setConfirmedExit,
-      toggleDisclaimer: (show) => setShowDisclaimer(show ?? !showDisclaimer),
-      toggleAbout: (show) => setShowAbout(show ?? !showAbout),
-      toggleSavedMessages: (show) => setShowSavedMessages(show ?? !showSavedMessages),
-      setLoggingOut: setIsLoggingOut
-    }}>
+    <ModalContext.Provider
+      value={{
+        showHelp,
+        showConfirmExit,
+        confirmedExit,
+        showDisclaimer,
+        showAbout,
+        showSavedMessages,
+        isLoggingOut,
+        toggleHelp,
+        openExitConfirm,
+        closeExitConfirm,
+        confirmExit,
+        setConfirmedExit,
+        toggleDisclaimer: (show) => setShowDisclaimer(show ?? !showDisclaimer),
+        toggleAbout: (show) => setShowAbout(show ?? !showAbout),
+        toggleSavedMessages: (show) =>
+          setShowSavedMessages(show ?? !showSavedMessages),
+        setLoggingOut: setIsLoggingOut,
+        showTTSFallback,
+        triggerTTSFallback,
+        closeTTSFallback,
+      }}
+    >
       {children}
     </ModalContext.Provider>
   );
@@ -76,6 +89,6 @@ export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
 
 export const useModal = () => {
   const context = useContext(ModalContext);
-  if (!context) throw new Error('useModal must be used within ModalProvider');
+  if (!context) throw new Error("useModal must be used within ModalProvider");
   return context;
 };
