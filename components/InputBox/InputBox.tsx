@@ -4,8 +4,8 @@ import style from "@/styles/InputBox.module.css";
 import { useEffect, useRef } from "react";
 import { useSpeechToText } from "@/hooks/useSpeechToText"; 
 import { VoiceInputButton } from "./VoiceInputButton";
-import { TextInputArea } from "./TextInputArea";
-import { SendButton } from "./SendButton";
+import { TextInputArea } from "./TextInputArea"
+import { SendButton } from "./SendButton"
 import { useSettings } from "@/context/SettingsContext";
 import { useModal } from "@/context/ModalContext";
 
