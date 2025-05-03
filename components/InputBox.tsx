@@ -3,9 +3,9 @@
 import style from "@/styles/InputBox.module.css";
 import { useEffect, useRef } from "react";
 import { useSpeechToText } from "@/hooks/useSpeechToText"; 
-import { VoiceInputButton } from "./VoiceInputButton";
-import { TextInputArea } from "./TextInputArea"
-import { SendButton } from "./SendButton"
+import { VoiceInputButton } from "@/components/inputbox/VoiceInputButton";
+import { TextInputArea } from "@/components/inputbox/TextInputArea"
+import { SendButton } from "@/components/inputbox/SendButton"
 import { useSettings } from "@/context/SettingsContext";
 import { useModal } from "@/context/ModalContext";
 
