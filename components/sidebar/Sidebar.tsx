@@ -23,7 +23,7 @@ const MODES = [
 
 const Sidebar = () => {
   const { settings: { nightMode, mode: selectedMode, showSideBar }, updateSettings } = useSettings();
-  const { showHelp, showSavedMessages, toggleSavedMessages, openExitConfirm } = useModal();
+  const { showSavedMessages, toggleSavedMessages, openExitConfirm } = useModal();
   const [showSettings, setShowSettings] = useState(false);
   const router = useRouter();
 
@@ -45,7 +45,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className={`relative ${showHelp ? "pointer-events-none" : ""} ${showSideBar ? "z-20" : ""}`}>
+    <div className={`relative ${showSideBar ? "z-20" : ""}`}>
       <div
         className={`${nightMode ? "bg-[#021017]" : "bg-[#1d1629]"} w-[300px] min-w-[300px] h-screen flex flex-col drop-shadow-lg p-6 gap-10 transform transition-transform duration-300 ease-in-out ${
           showSideBar ? "translate-x-0" : "-translate-x-full"
@@ -61,7 +61,7 @@ const Sidebar = () => {
             className="hover:cursor-pointer"
             onClick={toggleSideBar}
           />
-          <Link href="#" onClick={handleHomeNavigation} className={`${showHelp ? "textbox-highlight-glow" : ""} px-3 py-1 rounded-lg ml-[-1rem]`}>
+          <Link href="#" onClick={handleHomeNavigation} className="px-3 py-1 rounded-lg ml-[-1rem]">
               <span className={`${pacifico.className} text-2xl`}>Embrace</span>
             </Link>
         </div>
@@ -78,7 +78,6 @@ const Sidebar = () => {
                 currentMode={selectedMode}
                 label={mode.label}
                 onClick={handleModeChange}
-                showHelp={showHelp}
               />
             ))}
           </div>
@@ -94,7 +93,6 @@ const Sidebar = () => {
             label="Saved messages"
             icon="/icons/save-icon.svg"
             onClick={() => toggleSavedMessages(!showSavedMessages)}
-            showHelp={showHelp}
           />
           
           <MenuItem
@@ -102,7 +100,6 @@ const Sidebar = () => {
             label="Settings"
             icon="/icons/gear-solid.svg"
             onClick={() => setShowSettings(!showSettings)}
-            showHelp={showHelp}
           >
           </MenuItem>
           {showSettings && <Settings />}

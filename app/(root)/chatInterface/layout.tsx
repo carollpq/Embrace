@@ -10,6 +10,7 @@ import { useModal } from "@/context/ModalContext";
 import { useSettings } from "@/context/SettingsContext";
 import { useSession } from "@/context/SessionContext";
 import TTSFallbackModal from "@/components/ui/TTSFallbackModal";
+import HelpModal from "@/components/chat/HelpModal";
 
 const quicksand = Quicksand({ weight: ["400"], subsets: ["latin"] });
 
@@ -64,6 +65,7 @@ export default function RootLayout({
             } flex flex-col h-screen transition-all duration-300 ease-in-out z-10`}
           >
             <ChatHeader />
+            <HelpModal />
             {children}
           </div>
           {showConfirmExit && <ExitConfirmationModal />}

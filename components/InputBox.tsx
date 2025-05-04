@@ -55,7 +55,7 @@ const InputBox = ({
                       selectedMode === "voice-and-voice";
 
   return (
-    <div className={`${style["chat-input-holder"]} ${showHelp ? "pointer-events-none" : ""}`}>
+    <div className={style["chat-input-holder"]}>
       {isVoiceMode ? (
         <div className="flex flex-col justify-center items-center gap-6">
           <span className="sm:text-xl text-lg text-center">

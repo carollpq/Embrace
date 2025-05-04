@@ -3,7 +3,11 @@ import { Quicksand } from "next/font/google";
 import Image from "next/image";
 import SliderSetting from "@/components/ui/Slider";
 import { Traits } from "@/types/context";
-import { jennaDefaultTraits, marcusDefaultTraits, useChat } from "@/context/ChatContext";
+import {
+  jennaDefaultTraits,
+  marcusDefaultTraits,
+  useChat,
+} from "@/context/ChatContext";
 import { useState, useEffect, useRef } from "react";
 import { useModal } from "@/context/ModalContext";
 import { useSettings } from "@/context/SettingsContext";
@@ -12,15 +16,24 @@ const quicksand = Quicksand({ subsets: ["latin"] });
 
 const ChatHeader = () => {
   const { customTraits, setCustomTraits } = useChat();
-  const { showSavedMessages, showHelp, toggleHelp } = useModal();
-  const { settings: {showSideBar, fontSize, mode:selectedMode, tts:selectedTTS, persona: selectedPersona}, updateSettings} = useSettings();
+  const { showSavedMessages, toggleHelp } = useModal();
+  const {
+    settings: {
+      showSideBar,
+      fontSize,
+      mode: selectedMode,
+      tts: selectedTTS,
+      persona: selectedPersona,
+    },
+    updateSettings,
+  } = useSettings();
   const [showPopUp, setShowPopUp] = useState(false);
   const [showCustomize, setShowCustomize] = useState(false);
 
   const popupRef = useRef<HTMLDivElement>(null);
 
   const toggleSideBar = () => {
-    updateSettings('showSideBar', !showSideBar);
+    updateSettings("showSideBar", !showSideBar);
   };
 
   //Debugging : whether customTraits update correctly
@@ -54,7 +67,11 @@ const ChatHeader = () => {
   }, [showPopUp]);
 
   return (
-    <div className={`relative z-[50] flex flex-row justify-between top-0 left-0 sm:text-xl text-lg py-3 px-9 ${showSavedMessages ? "bg-transparent h-[10vh]" : "bg-[#010f17]/40"}  drop-shadow-md`}>
+    <div
+      className={`relative z-[50] flex flex-row justify-between top-0 left-0 sm:text-xl text-lg py-3 px-9 ${
+        showSavedMessages ? "bg-transparent h-[10vh]" : "bg-[#010f17]/40"
+      }  drop-shadow-md`}
+    >
       {/* Chatbot Persona */}
       <div className={`flex flex-row sm:gap-5 gap-2 flex-center`}>
         {!showSideBar && (
@@ -69,9 +86,7 @@ const ChatHeader = () => {
         )}
         <div className={`relative ${showSavedMessages ? "hidden" : "block"}`}>
           <div
-            className={`flex items-center sm:gap-4 gap-2 hover:cursor-pointer hover:bg-white/10 rounded-xl py-2 px-3 ${
-              showHelp ? "textbox-highlight-glow pointer-events-none" : ""
-            }`}
+            className="flex items-center sm:gap-4 gap-2 hover:cursor-pointer hover:bg-white/10 rounded-xl py-2 px-3"
             onClick={() => setShowPopUp(!showPopUp)}
           >
             <div
@@ -97,9 +112,9 @@ const ChatHeader = () => {
           {/* Popup Card */}
           {showPopUp && (
             <div
-            //ref={popupRef}
-            className="absolute left-0 mt-4 w-[15rem] sm:w-[20rem] bg-black shadow-lg rounded-lg py-4 px-5 text-black z-[999]"
-          >
+              //ref={popupRef}
+              className="absolute left-0 mt-4 w-[15rem] sm:w-[20rem] bg-black shadow-lg rounded-lg py-4 px-5 text-black z-[999]"
+            >
               <div className="flex sm:flex-row flex-col sm:items-center items-start justify-between">
                 <h3 className="sm:text-lg text-md font-semibold text-white">
                   About {selectedPersona}
@@ -109,7 +124,7 @@ const ChatHeader = () => {
                   onClick={() => {
                     const newPersona =
                       selectedPersona === "Jenna" ? "Marcus" : "Jenna";
-                    updateSettings('persona', newPersona);
+                    updateSettings("persona", newPersona);
                     setCustomTraits(
                       newPersona === "Jenna"
                         ? jennaDefaultTraits
@@ -138,7 +153,8 @@ const ChatHeader = () => {
                       className="underline text-white/70 text-xs hover:cursor-pointer"
                       onClick={() =>
                         updateSettings(
-                          'tts', selectedTTS === "polly" ? "browser" : "polly"
+                          "tts",
+                          selectedTTS === "polly" ? "browser" : "polly"
                         )
                       }
                     >
@@ -195,7 +211,7 @@ const ChatHeader = () => {
 
                             return {
                               ...baseTraits,
-                              [trait as keyof Traits]: val
+                              [trait as keyof Traits]: val,
                             };
                           })
                         }
@@ -242,15 +258,9 @@ const ChatHeader = () => {
       >
         <div
           className="flex flex-row justify-center items-center gap-2 hover:cursor-pointer"
-          onClick={() => toggleHelp}
+          onClick={() => toggleHelp()}
         >
-          <span
-            className={`
-              ${showHelp ? "text-white font-medium z-20" : "text-white/60"} sm:block hidden
-            `}
-          >
-            Help
-          </span>
+          <span className="text-white/60 sm:block hidden">Help</span>
           <Image
             src="/icons/circle-info-solid.svg"
             alt="Help Icon"

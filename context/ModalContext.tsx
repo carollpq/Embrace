@@ -36,10 +36,6 @@ export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
   const [exitCallback, setExitCallback] = useState(() => () => {});
   const [showTTSFallback, setShowTTSFallback] = useState(false);
 
-  const toggleHelp = useCallback((show?: boolean) => {
-    setShowHelp((prev) => show ?? !prev);
-  }, []);
-
   const openExitConfirm = useCallback((callback: () => void) => {
     setExitCallback(() => callback);
     setShowConfirmExit(true);
@@ -67,11 +63,11 @@ export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
         showAbout,
         showSavedMessages,
         isLoggingOut,
-        toggleHelp,
         openExitConfirm,
         closeExitConfirm,
         confirmExit,
         setConfirmedExit,
+        toggleHelp: (show) => setShowHelp(show ?? !showHelp),
         toggleDisclaimer: (show) => setShowDisclaimer(show ?? !showDisclaimer),
         toggleAbout: (show) => setShowAbout(show ?? !showAbout),
         toggleSavedMessages: (show) =>
