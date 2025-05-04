@@ -6,78 +6,86 @@ export const playBrowserTTS = (
   onStart?: () => void,
   onStopLoad?: () => void
 ) => {
-  // Cancel current speech to avoid overlap
-  speechSynthesis.cancel();
+  // 1. Cancel any ongoing speech (works everywhere)
+  try {
+    speechSynthesis.cancel();
+  } catch (e) {
+    console.warn("Failed to cancel speech:", e);
+  }
 
   const utterance = new SpeechSynthesisUtterance(text);
   utteranceRef.current = utterance;
 
+  // 2. Set default TTS properties (cross-browser safe)
+  utterance.rate = 1.0;
+  utterance.pitch = 1.0;
+  utterance.volume = 1.0;
+
+  // 3. Event handlers (universal)
   utterance.onend = () => {
     onEnd?.();
     utteranceRef.current = null;
   };
-
-  utterance.onstart = () => {
-    onStart?.();
+  utterance.onerror = (e) => {
+    console.error("TTS Error:", e.error);
+    onEnd?.();
   };
+  utterance.onstart = () => onStart?.();
 
-  // Ensure voices are loaded (especially on iOS where it can be delayed)
+  // 4. Voice selection logic (browser-specific)
   const setVoiceAndSpeak = () => {
     const voices = speechSynthesis.getVoices();
-    let selectedVoice: SpeechSynthesisVoice | undefined = undefined;
-
-    // Prefer common, US English voices
-    const americanVoices = voices.filter(
-      (v) =>
-        v.lang === "en-US" &&
-        (v.name.includes("Google") ||
-          v.name.includes("Microsoft") ||
-          v.name.includes("Apple") ||
-          v.name.toLowerCase().includes("samantha") ||
-          v.name.toLowerCase().includes("zira") ||
-          v.name.toLowerCase().includes("david"))
-    );
-
-    // Match by known voice names for reliability
-    if (persona === "Jenna") {
-      selectedVoice =
-        americanVoices.find(
-          (v) =>
-            v.name.includes("Google") && v.name.toLowerCase().includes("female")
-        ) ||
-        americanVoices.find((v) => v.name.toLowerCase().includes("zira")) ||
-        americanVoices.find((v) => v.name.toLowerCase().includes("samantha"));
-    } else if (persona === "Marcus") {
-      selectedVoice =
-        americanVoices.find(
-          (v) =>
-            v.name.includes("Google") && v.name.toLowerCase().includes("male")
-        ) ||
-        americanVoices.find((v) => v.name.toLowerCase().includes("david")) ||
-        americanVoices.find((v) => v.name.toLowerCase().includes("microsoft"));
+    
+    // Retry if no voices (Safari/Edge sometimes empty first)
+    if (voices.length === 0) {
+      setTimeout(setVoiceAndSpeak, 100);
+      return;
     }
 
-    // Fallback to any available voice
+    // Select voice based on persona + browser
+    let selectedVoice = voices.find((v) => {
+      if (persona === "Jenna") {
+        return (
+          v.name.includes("Female") ||
+          v.name.includes("Samantha") || // Safari
+          v.name.includes("Google US Female") || // Chrome
+          v.name.includes("Zira") // Edge
+        );
+      } else if (persona === "Marcus") {
+        return (
+          v.name.includes("Male") ||
+          v.name.includes("Daniel") || // Safari
+          v.name.includes("Google US Male") || // Chrome
+          v.name.includes("David") // Edge
+        );
+      }
+      return false;
+    });
+
+    // Fallback: Use first available voice
     if (!selectedVoice && voices.length > 0) {
       selectedVoice = voices[0];
+      console.warn("No persona match, using default voice");
     }
 
     if (selectedVoice) {
-      console.log("Selected voice:", selectedVoice?.name);
       utterance.voice = selectedVoice;
+      console.log("Using voice:", selectedVoice.name);
     }
 
-    onStopLoad?.();
-    onStart?.();
-    speechSynthesis.speak(utterance);
+    // 5. Finally, speak (works on all browsers if triggered by user)
+    try {
+      onStopLoad?.();
+      speechSynthesis.speak(utterance);
+    } catch (e) {
+      console.error("speak() failed:", e);
+      onEnd?.();
+    }
   };
 
-  // Wait for voices to be ready if not yet loaded
+  // 6. Load voices (Safari needs this, others ignore)
   if (speechSynthesis.getVoices().length === 0) {
-    speechSynthesis.onvoiceschanged = () => {
-      setVoiceAndSpeak();
-      speechSynthesis.onvoiceschanged = null;
-    };
+    speechSynthesis.onvoiceschanged = setVoiceAndSpeak;
   } else {
     setVoiceAndSpeak();
   }

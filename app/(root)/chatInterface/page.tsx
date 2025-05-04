@@ -12,12 +12,11 @@ import { useModal } from "@/context/ModalContext";
 import InputBox from "@/components/InputBox";
 
 const ChatInterface: React.FC = () => {
+  // Reference to message container for scrolling
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
   
-  // Get session data
-  const { user } = useSession();
-  
-  // Get chat state and methods
+  // Context hooks
+  const { user } = useSession(); // Current user session data
   const {
     messages,
     setMessages,
@@ -26,21 +25,20 @@ const ChatInterface: React.FC = () => {
     setHasUserTriggeredResponse,
     mood: selectedMood,
     customTraits,
-  } = useChat();
+  } = useChat(); // Chat state management
   
-  // Get settings
   const { 
     settings: { 
       persona: selectedPersona,
     } 
-  } = useSettings();
-  
-  // Get modal state
-  const { showSavedMessages } = useModal();
+  } = useSettings(); // User settings
+  const { showSavedMessages } = useModal();  // Get modal state
 
-  const [bookmarkedMessages, setBookmarkedMessages] = useState<string[]>([]);
-  const [hasLoadedBookmarks, setHasLoadedBookmarks] = useState(false);
+  // State hooks
+  const [bookmarkedMessages, setBookmarkedMessages] = useState<string[]>([]); // Stores IDs of bookmarked messages
+  const [hasLoadedBookmarks, setHasLoadedBookmarks] = useState(false); // Tracks if bookmarks have loaded
 
+  // Maps mood values to corresponding prompt messages
   const moodToPrompt: Record<string, string> = {
     Anxious: `Hey there, ${user ? `I'm ${user.name}.` : ""} I'm feeling anxious.`,
     Sad: `Hey there, ${user ? `I'm ${user.name}.` : ""} I'm feeling really sad today.`,
@@ -50,13 +48,14 @@ const ChatInterface: React.FC = () => {
     Stressed: `Hey there, ${user ? `I'm ${user.name}.` : ""} I'm stressed and overwhelmed.`,
   };
 
-  // Bookmark management effects remain the same
+   // Load saved bookmarks from localStorage on component mount
   useEffect(() => {
     const saved = localStorage.getItem("bookmarkedMessages");
     if (saved) setBookmarkedMessages(JSON.parse(saved));
     setHasLoadedBookmarks(true);
   }, []);
 
+   // Clean up localStorage on window close
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       e.preventDefault();
@@ -66,25 +65,27 @@ const ChatInterface: React.FC = () => {
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, []);
 
+  // Persist bookmarks to localStorage when they change
   useEffect(() => {
     if (hasLoadedBookmarks) {
       localStorage.setItem("bookmarkedMessages", JSON.stringify(bookmarkedMessages));
     }
   }, [bookmarkedMessages, hasLoadedBookmarks]);
 
-  // Speech and message effects
+  // Stop any ongoing speech when component unmounts
   useEffect(() => {
     stopSpeech();
     return () => stopSpeech();
   }, []);
 
+  // Prevent accidental tab closure when messages exist
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => e.preventDefault();
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [messages]);
 
-  // Mood-based intro
+  // Send introductory message based on selected mood if chat is empty
   useEffect(() => {
     const sendIntroFromMood = async () => {
       if (messages.length === 0 && selectedMood && moodToPrompt[selectedMood]) {
@@ -121,6 +122,10 @@ const ChatInterface: React.FC = () => {
     sendIntroFromMood();
   }, [messages.length, selectedMood, selectedPersona, customTraits]);
 
+  /**
+   * Toggles bookmark status for a message
+   * @param message The message to bookmark/unbookmark
+   */
   const toggleBookmark = async (message: { id: string; content: string }) => {
     try {
       const isBookmarked = bookmarkedMessages.includes(message.id);
@@ -148,6 +153,7 @@ const ChatInterface: React.FC = () => {
       }
     } catch (error) {
       console.error("Error toggling bookmark:", error);
+      // Revert changes if API call fails
       setBookmarkedMessages(prev => 
         bookmarkedMessages.includes(message.id)
           ? [...prev, message.id]
@@ -156,8 +162,13 @@ const ChatInterface: React.FC = () => {
     }
   };
 
+  // Checks if a message is bookmarked
   const isBookmarked = (messageId: string) => bookmarkedMessages.includes(messageId);
 
+  /**
+   * Handles form submission for chat input
+   * @param e Optional form event
+   */
   const handleSubmit = async (e?: FormEvent<HTMLFormElement>) => {
     e?.preventDefault();
     stopSpeech();
@@ -169,13 +180,15 @@ const ChatInterface: React.FC = () => {
       content: chatInput,
     };
 
+    // Add user message and typing indicator
     setMessages(prev => [...prev, userMessage, {
       id: "typing-placeholder",
       role: "assistant",
       content: "__typing__",
     }]);
-    setChatInput("");
+    setChatInput(""); // Clear input field
 
+    // Send message to chatbot API
     const res = await fetch("/api/chatbot", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -187,6 +200,7 @@ const ChatInterface: React.FC = () => {
       }),
     });
 
+    // Replace typing indicator with actual response
     const data = await res.json();
     setMessages(prev => prev
       .filter(msg => msg.id !== "typing-placeholder")
@@ -198,6 +212,10 @@ const ChatInterface: React.FC = () => {
     );
   };
 
+  /**
+   * Handles direct message submission
+   * @param text The message text to send
+   */
   const handleDirectSubmit = async (text: string) => {
     stopSpeech();
     const userMessage = {
@@ -234,6 +252,7 @@ const ChatInterface: React.FC = () => {
     );
   };
 
+  // Auto-scroll to bottom when messages change
   useLayoutEffect(() => {
     if (messageContainerRef.current) {
       messageContainerRef.current.scrollTo({
@@ -246,16 +265,20 @@ const ChatInterface: React.FC = () => {
   return (
     <div className="relative px-6">
       {!showSavedMessages ? (
+        // Main chat interface
         <div className="flex flex-col h-[85vh] justify-between mt-4">
+          {/* Messages container */}
           <div
             ref={messageContainerRef}
             className="flex-1 overflow-y-auto h-[100px] hide-scrollbar"
           >
+            {/* Empty state */}
             {messages.length === 0 && (
               <div className="flex items-center justify-center h-full sm:text-4xl text-2xl text-white animate-slideUp delay-1000">
                 Hi, I&apos;m here for you 🤗
               </div>
             )}
+            {/* Animated messages list */}
             <AnimatePresence initial={false}>
               {messages.map((message, index) => (
                 <motion.div
@@ -275,6 +298,8 @@ const ChatInterface: React.FC = () => {
               ))}
             </AnimatePresence>
           </div>
+
+          {/* Input box at bottom */}
           <div className="mb-[40px]">
             <InputBox
               handleSubmit={handleSubmit}
@@ -286,6 +311,7 @@ const ChatInterface: React.FC = () => {
           </div>
         </div>
       ) : (
+        // Saved messages view
         <SavedMessages />
       )}
     </div>
