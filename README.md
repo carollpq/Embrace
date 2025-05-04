@@ -45,10 +45,18 @@ npm install
 Create a `.env.local` file with the following:
 
 ```env
-MONGODB_URI=your_mongodb_connection_string
-GEMINI_API_KEY=your_google_gemini_key
-NEXTAUTH_SECRET=your_auth_secret
+AUTH_SECRET="sH6EoOjGVNWJZWRkUm/AP29Fxk1MaiC7NuMXJyNZZKg="
+CLIENT_ID="1015776937666-5joran5u3a9cjo4p7738s3m26usmdk4o.apps.googleusercontent.com"
+CLIENT_SECRET="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"
+GOOGLE_CLIENT_ID={CLIENT_ID}
+GOOGLE_CLIENT_SECRET={CLIENT_SECRET}
 NEXTAUTH_URL=http://localhost:3000
+MONGODB_URI="mongodb+srv://carollpq:bMc8pGxsG6DIxWBK@embrace.ewwhl.mongodb.net/"
+GEMINI_API_KEY="AIzaSyDgwaX4OsZ7IAIAg81qYXXWTRAlxjhtnzo"
+JWT_SECRET="e075733c6a06e03515e2cfb8ca2a11f9871c5fd56c412ab2f9b10ba5fd72e029"
+AWS_ACCESS_KEY_ID="AKIATJHQD2HBDTZTB2EN"
+AWS_SECRET_ACCESS_KEY="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"
+AWS_REGION=us-east-1
 ```
 
 ### Run the Development Server
