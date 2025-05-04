@@ -159,12 +159,23 @@ const personaVoices: Record<Persona, VoiceId> = {
  */
 export async function playPersonaSpeech(
   text: string,
-  persona: Persona | null,
+  persona: string | Persona | null,
   audioRef?: React.MutableRefObject<HTMLAudioElement | null>,
   onEnd?: () => void,
   onStart?: () => void,
   onStopLoad?: () => void
 ): Promise<void> {
+  // Type guard to check valid persona
+  const isValidPersona = (p: string | null): p is Persona => {
+    return p !== null && p in personaVoices;
+  };
+
+  if (!isValidPersona(persona)) {
+    const validOptions = Object.keys(personaVoices).join(", ");
+    console.error(`Invalid persona "${persona}". Valid options: ${validOptions}`);
+    throw new Error(`Unsupported persona. Valid options: ${validOptions}`);
+  }
+  
   if (!persona || !personaVoices[persona]) {
     console.error(`No voice mapped for persona: ${persona}`);
     throw new Error(`Unsupported persona: ${persona}`);
