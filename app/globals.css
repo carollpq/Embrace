@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CSS variables for consistent theming */
+:root {
+  --background: #171717;
+  --foreground: #ffffff;
+}
+
+/* Global box-sizing rule for consistent element sizing */
+* {
+  box-sizing: border-box;
+}
+
+/* Base body styles */
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+/* Tailwind utility layer for custom utilities */
+@layer utilities {
+  /* Smooth transition for button states */
+  .button-transition {
+    @apply transition ease-in-out duration-200;
+  }
+
+  /* Centering utility using flexbox */
+  .flex-center {
+    @apply flex justify-center items-center;
+  }
+}
+
+/* Keyframes for pulsing glow animation */
+@keyframes textBoxPulseGlow {
+  0% {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 255, 255, 1);
+  }
+  100% {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+  }
+}
+
+/* Wave animation keyframes for different elements */
+@keyframes wave1 {
+  0%, 100% { height: 0.5rem; }
+  50% { height: 1.5rem; }
+}
+@keyframes wave2 {
+  0%, 100% { height: 1rem; }
+  50% { height: 2rem; }
+}
+@keyframes wave3 {
+  0%, 100% { height: 0.25rem; }
+  50% { height: 1rem; }
+}
+
+/* Wave animation classes */
+.animate-wave1 {
+  animation: wave1 1s infinite ease-in-out;
+}
+.animate-wave2 {
+  animation: wave2 1s infinite ease-in-out;
+}
+.animate-wave3 {
+  animation: wave3 1s infinite ease-in-out;
+}
+.animate-pulse-slow {
+  animation: pulse 2s infinite;
+}
+
+
+/* Scrollbar hiding utilities - note the duplication warning */
+/* Hide the scrollbar but keep scrolling functionality */
+.overflow-y-auto {
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+  scrollbar-width: none; /* For Firefox */
+}
+
+.overflow-y-auto::-webkit-scrollbar {
+  display: none; /* For Chrome, Safari, and Opera */
+}
