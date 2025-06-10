@@ -78,7 +78,7 @@ const PersonaSelection = () => {
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 animate-slideUp delay-1000">
             <SelectionCard
-              title="Say Hi to Jenn!"
+              title="Say Hi to Jenna!"
               description="Jenna is a warm and empathetic AI companion who helps users feel safe, heard, and gently supported."
               svg="/img/Jenna.png"
               onClick={() => handleCardClick("Jenna")}

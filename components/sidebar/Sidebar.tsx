@@ -11,6 +11,7 @@ import { useSettings } from "@/context/SettingsContext";
 import { useModal } from "@/context/ModalContext";
 import { ModeButton } from "./ModeButton";
 import { MenuItem } from "./MenuItem";
+import { useOnboarding } from "@/context/OnboardingContext";
 
 const pacifico = Pacifico({ weight: ["400"], subsets: ["latin"] });
 
@@ -22,12 +23,17 @@ const MODES = [
 ];
 
 const Sidebar = () => {
-  const { settings: { nightMode, mode: selectedMode, showSideBar }, updateSettings } = useSettings();
-  const { showSavedMessages, toggleSavedMessages, openExitConfirm } = useModal();
+  const {
+    settings: { nightMode, mode: selectedMode, showSideBar },
+    updateSettings,
+  } = useSettings();
+  const { showSavedMessages, toggleSavedMessages, openExitConfirm } =
+    useModal();
+  const { exitOnboarding } = useOnboarding();
   const [showSettings, setShowSettings] = useState(false);
   const router = useRouter();
 
-  const toggleSideBar = () => updateSettings('showSideBar', !showSideBar);
+  const toggleSideBar = () => updateSettings("showSideBar", !showSideBar);
 
   const handleHomeNavigation = (e: React.MouseEvent) => {
     stopSpeech();
@@ -35,19 +41,22 @@ const Sidebar = () => {
     openExitConfirm(() => {
       SpeechRecognition.stopListening();
       window.speechSynthesis.cancel();
+      exitOnboarding();
       router.push("/home-page");
     });
   };
 
   const handleModeChange = (mode: string) => {
-    updateSettings('mode', mode);
+    updateSettings("mode", mode);
     toggleSavedMessages(false);
   };
 
   return (
     <div className={`relative ${showSideBar ? "z-20" : ""}`}>
       <div
-        className={`${nightMode ? "bg-[#021017]" : "bg-[#1d1629]"} w-[300px] min-w-[300px] h-screen flex flex-col drop-shadow-lg p-6 gap-10 transform transition-transform duration-300 ease-in-out ${
+        className={`${
+          nightMode ? "bg-[#021017]" : "bg-[#1d1629]"
+        } w-[300px] min-w-[300px] h-screen flex flex-col drop-shadow-lg p-6 gap-10 transform transition-transform duration-300 ease-in-out ${
           showSideBar ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -61,47 +70,48 @@ const Sidebar = () => {
             className="hover:cursor-pointer"
             onClick={toggleSideBar}
           />
-          <Link href="#" onClick={handleHomeNavigation} className="px-3 py-1 rounded-lg ml-[-1rem]">
-              <span className={`${pacifico.className} text-2xl`}>Embrace</span>
-            </Link>
+          <Link
+            href="#"
+            onClick={handleHomeNavigation}
+            className="px-3 py-1 rounded-lg ml-[-1rem]"
+          >
+            <span className={`${pacifico.className} text-2xl`}>Embrace</span>
+          </Link>
         </div>
 
         {/* Conversation Modes */}
         <div className="flex flex-col text-lg font-medium">
-            <span>Conversation Modes</span>
-          </div>
-          <div className="flex flex-col gap-3">
-            {MODES.map((mode) => (
-              <ModeButton
-                key={mode.value}
-                mode={mode.value}
-                currentMode={selectedMode}
-                label={mode.label}
-                onClick={handleModeChange}
-              />
-            ))}
-          </div>
+          <span>Conversation Modes</span>
+        </div>
+        <div className="flex flex-col gap-3">
+          {MODES.map((mode) => (
+            <ModeButton
+              key={mode.value}
+              mode={mode.value}
+              currentMode={selectedMode}
+              label={mode.label}
+              onClick={handleModeChange}
+            />
+          ))}
+        </div>
 
         {/* Other Menu Items */}
         <div className="flex flex-col gap-3">
           <div className="flex flex-col text-lg font-medium">
             <span>Other</span>
           </div>
-          
           <MenuItem
             active={showSavedMessages}
             label="Saved messages"
             icon="/icons/save-icon.svg"
             onClick={() => toggleSavedMessages(!showSavedMessages)}
           />
-          
           <MenuItem
             active={showSettings}
             label="Settings"
             icon="/icons/gear-solid.svg"
             onClick={() => setShowSettings(!showSettings)}
-          >
-          </MenuItem>
+          ></MenuItem>
           {showSettings && <Settings />}
         </div>
       </div>

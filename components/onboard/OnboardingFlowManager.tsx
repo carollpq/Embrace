@@ -1,4 +1,3 @@
-// components/onboard/OnboardingFlowManager.tsx
 'use client';
 
 import { useOnboarding } from '@/context/OnboardingContext';
