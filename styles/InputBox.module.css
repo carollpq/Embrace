@@ -1,0 +1,116 @@
+.chat-input-holder {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+    align-items: center;
+    position: relative;
+  }
+  
+  .chat-svg-container {
+    border-radius: 0.75rem;
+    padding: 14px;
+    background-color: rgba(0,0,0, 0.8);
+    transition: ease 0.25s;
+  }
+  
+  .chat-svg-container:hover {
+    cursor: pointer;
+    background-color: black;
+  }
+  
+  .chat-input-textarea {
+    background-color: rgba(255, 255, 255, 0.75);
+    width: 80%;
+    padding: 12px;
+    border-radius: 15px;
+    color: black;
+    font-weight: 400;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    outline: none;
+    box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.4);
+    resize: none;
+  
+    transition-duration: 0.3s;
+  }
+  
+  .chat-input-textarea-red-border{
+    background-color: white;
+    width: 70%;
+    padding: 12px;
+    border-radius: 5px;
+    color: #40414f;
+    outline: none;
+    box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.25);
+    resize: none;
+    border: 2px solid rgba(244, 26, 26);
+  
+    transition-duration: 0.3s;
+  }
+  
+  .message-modal {
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(244, 26, 26);
+    color: #fff;
+    padding: 5px 20px;
+    border-radius: 4px;
+    user-select: none;
+    text-wrap: nowrap;
+  }
+  
+  .message-modal .arrow {
+    width: 10px;
+    height: 10px;
+    background-color: rgba(244, 26, 26);
+    transform: rotate(45deg);
+    position: absolute;
+    left: calc(50% - 5px);
+    top: -5px;
+  }
+  
+
+  /* Pulsating effect */
+.listening {
+  animation: pulse 1.5s infinite;
+  background-color: #ff5252 !important; /* Change the color when listening */
+}
+
+/* Keyframes for pulsating animation */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 10px rgba(255, 82, 82, 0.5);
+  }
+  50% {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(255, 82, 82, 0.8);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 10px rgba(255, 82, 82, 0.5);
+  }
+}
+
+/* Mic SVG animation */
+.mic-animate {
+  animation: mic-scale 1.5s infinite;
+}
+
+/* Keyframes for mic scaling */
+@keyframes mic-scale {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

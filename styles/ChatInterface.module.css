@@ -1,0 +1,73 @@
+/**
+  * Set the light mode of the website when enabled.
+  */
+
+  #light {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+/**
+  * Set the dark mode of the website when enabled.
+  */
+
+#dark {
+    background-color: #131314;
+    color: #ffffff;
+}
+
+.chat-interface-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
+}
+
+.chat-log-container {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  height: 100px;
+}
+
+.input-box-container {
+  margin-bottom: 40px;
+}
+
+/**
+  * Set the sizes of the text.
+  */
+
+.font-size-small {
+    font-size: 10px;
+  }
+  
+  .font-size-medium {
+    font-size: 14px;
+  }
+  
+  .font-size-large {
+    font-size: 20px;
+  }
+
+/**
+  * Scrollbar customization.
+  */
+
+/* ::-webkit-scrollbar {
+    width: 10px;
+}  */
+
+/* Track */
+/* ::-webkit-scrollbar-track {
+    background-color: transparent;
+} */
+
+/* Handle */
+/* ::-webkit-scrollbar-thumb {
+    background-color: rgba(232, 230, 230, 0.1);
+} */
+
+/* Handle on hover */
+/* ::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255,255,255,0.3);
+} */
