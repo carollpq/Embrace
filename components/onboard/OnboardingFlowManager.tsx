@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useOnboarding } from '@/context/OnboardingContext';

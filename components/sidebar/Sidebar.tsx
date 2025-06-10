@@ -100,14 +100,12 @@ const Sidebar = () => {
           <div className="flex flex-col text-lg font-medium">
             <span>Other</span>
           </div>
-
           <MenuItem
             active={showSavedMessages}
             label="Saved messages"
             icon="/icons/save-icon.svg"
             onClick={() => toggleSavedMessages(!showSavedMessages)}
           />
-
           <MenuItem
             active={showSettings}
             label="Settings"
