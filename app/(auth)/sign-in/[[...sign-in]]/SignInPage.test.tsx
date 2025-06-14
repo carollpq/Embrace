@@ -29,8 +29,8 @@ describe("SigninPage", () => {
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve({}),
-      })
-    ) as any;
+      } as Response)
+    ) as typeof fetch;
   });
 
   it("renders email and password inputs", () => {

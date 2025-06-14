@@ -25,10 +25,10 @@ describe("SignUpPage", () => {
 
     global.fetch = vi.fn(() =>
       Promise.resolve({
-        status: 200,
+        ok: true,
         json: () => Promise.resolve({}),
-      })
-    ) as any;
+      } as Response)
+    ) as typeof fetch;
   });
 
   it("renders name, email, and password inputs", () => {
