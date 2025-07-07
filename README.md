@@ -59,6 +59,8 @@ AWS_SECRET_ACCESS_KEY=
 AWS_REGION=us-east-1
 ```
 
+Replace with your own credentials
+
 ### Run the Development Server
 
 ```bash
