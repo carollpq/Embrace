@@ -70,7 +70,6 @@ export const playBrowserTTS = (
 
     if (selectedVoice) {
       utterance.voice = selectedVoice;
-      console.log("Using voice:", selectedVoice.name);
     }
 
     // 5. Finally, speak (works on all browsers if triggered by user)

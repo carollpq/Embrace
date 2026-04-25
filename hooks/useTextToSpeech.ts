@@ -35,7 +35,6 @@ export const useTextToSpeech = ({
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isLoadingAudio, setIsLoadingAudio] = useState(false);
   const lastSpokenMessage = useRef<string | null>(null);
-  const hasPlayedTTS = useRef(false);
   const [isPaused, setIsPaused] = useState(false);
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -80,12 +79,13 @@ export const useTextToSpeech = ({
           setIsSpeaking(false);
           setIsPaused(false);
         };
+        setIsLoadingAudio(false);
+        speechSynthesis.speak(utterance);
       } catch (fallbackError) {
         console.error("Browser TTS fallback failed:", fallbackError);
+        setIsSpeaking(false);
+        setIsLoadingAudio(false);
       }
-
-      setIsSpeaking(false);
-      setIsLoadingAudio(false);
     }
   };
 
@@ -132,6 +132,7 @@ export const useTextToSpeech = ({
       lastSpokenMessage.current = message.content;
       setHasUserTriggeredResponse(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     message.content,
     isUser,
@@ -141,11 +142,6 @@ export const useTextToSpeech = ({
     messages,
     hasUserTriggeredResponse,
   ]);
-
-  // Optional cleanup effect
-  useEffect(() => {
-    hasPlayedTTS.current = false;
-  }, [message.content]);
 
   return { isSpeaking, isLoadingAudio, speak, isPaused, pause, resume };
 };

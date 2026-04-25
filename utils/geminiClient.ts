@@ -1,7 +1,6 @@
-type Mood = "Anxious" | "Sad" | "Angry" | "Happy" | "Stressed" | "Neutral";
-
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { generatePersonalityDescription } from "@/utils/personaPrompt";
+import type { Mood, Persona, Traits } from "@/types/context";
 
 const apiKey = process.env.GEMINI_API_KEY!;
 if (!apiKey) {
@@ -15,19 +14,13 @@ const systemInstructionConfig = {
 };
 
 export const getModel = (
-  persona: "Jenna" | "Marcus",
-  customTraits?: {
-    empathy: number;
-    warmth: number;
-    supportStyle: number;
-    energy: number;
-    directness: number;
-  } | null,
+  persona: Persona,
+  customTraits?: Traits | null,
   mood?: Mood
 ) => {
   const systemInstructionText = customTraits
     ? generatePersonalityDescription(customTraits, persona, mood)
-    : systemInstructionConfig[persona] + mood;
+    : `${systemInstructionConfig[persona]}${mood ? ` The user is feeling ${mood}.` : ""}`;
 
   return genAI.getGenerativeModel({
     model: "gemini-2.0-flash",

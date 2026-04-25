@@ -36,13 +36,6 @@ const ChatHeader = () => {
     updateSettings("showSideBar", !showSideBar);
   };
 
-  //Debugging : whether customTraits update correctly
-  useEffect(() => {
-    if (customTraits) {
-      console.log("Current custom traits:", customTraits);
-    }
-  }, [customTraits]);
-
   // Detect outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -112,7 +105,7 @@ const ChatHeader = () => {
           {/* Popup Card */}
           {showPopUp && (
             <div
-              //ref={popupRef}
+              ref={popupRef}
               className="absolute left-0 mt-4 w-[15rem] sm:w-[20rem] bg-black shadow-lg rounded-lg py-4 px-5 text-black z-[999]"
             >
               <div className="flex sm:flex-row flex-col sm:items-center items-start justify-between">

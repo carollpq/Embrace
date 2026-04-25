@@ -8,7 +8,6 @@ export const startSpeechRecognition = (
   onTranscript: (transcript: string) => void
 ) => {
   if (isRunning) {
-    console.warn("Recognition already running.");
     return null;
   }
 
@@ -21,7 +20,6 @@ export const startSpeechRecognition = (
     recognition.continuous = true;
 
     recognition.onstart = () => {
-      console.log("Recognition started");
       isRunning = true;
       isStopping = false;
     };
@@ -31,21 +29,15 @@ export const startSpeechRecognition = (
       if (result.isFinal) {
         const transcript = result[0].transcript.trim();
         if (transcript) {
-          console.log("Final transcript:", transcript);
           onTranscript(transcript);
         }
       }
     };
 
     recognition.onspeechend = () => {
-      if (isStopping) {
-        console.log("Speech ended — but already stopping, ignoring timeout.");
-        return;
-      }
+      if (isStopping) return;
 
-      console.log("Pause detected — setting timeout");
       stopTimeout = setTimeout(() => {
-        console.log("Stopping after pause");
         recognition.stop();
       }, 30000);
     };
@@ -54,12 +46,10 @@ export const startSpeechRecognition = (
       if (stopTimeout) {
         clearTimeout(stopTimeout);
         stopTimeout = null;
-        console.log("Speech resumed. Canceling stop.");
       }
     };
 
     recognition.onend = () => {
-      console.log("Recognition ended");
       isRunning = false;
       recognitionInstance = null;
       isStopping = false;
@@ -76,7 +66,6 @@ export const startSpeechRecognition = (
 
     recognition.start();
     recognitionInstance = recognition;
-    console.log("Speech recognition started.");
     return recognition;
   } else {
     console.error("Speech Recognition not supported in this browser");
@@ -87,7 +76,6 @@ export const startSpeechRecognition = (
 /** Stop speech recognition manually */
 export const stopSpeechRecognition = () => {
   if (recognitionInstance) {
-    console.log("Manually stopped recognition");
     isStopping = true;
     recognitionInstance.stop();
     recognitionInstance = null;

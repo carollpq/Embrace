@@ -34,43 +34,6 @@
     transition-duration: 0.3s;
   }
   
-  .chat-input-textarea-red-border{
-    background-color: white;
-    width: 70%;
-    padding: 12px;
-    border-radius: 5px;
-    color: #40414f;
-    outline: none;
-    box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.25);
-    resize: none;
-    border: 2px solid rgba(244, 26, 26);
-  
-    transition-duration: 0.3s;
-  }
-  
-  .message-modal {
-    position: absolute;
-    bottom: -40px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: rgba(244, 26, 26);
-    color: #fff;
-    padding: 5px 20px;
-    border-radius: 4px;
-    user-select: none;
-    text-wrap: nowrap;
-  }
-  
-  .message-modal .arrow {
-    width: 10px;
-    height: 10px;
-    background-color: rgba(244, 26, 26);
-    transform: rotate(45deg);
-    position: absolute;
-    left: calc(50% - 5px);
-    top: -5px;
-  }
-  
 
   /* Pulsating effect */
 .listening {

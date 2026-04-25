@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import SliderSetting from "@/components/ui/Slider"; // ensure default export
+import SliderSetting from "@/components/ui/Slider";
 import GeneralButton from "@/components/ui/button";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { useSettings } from "@/context/SettingsContext";
 import { useChat, defaultTraits, jennaDefaultTraits, marcusDefaultTraits } from "@/context/ChatContext";
 import { useRouter } from "next/navigation";
@@ -47,8 +48,7 @@ const PersonaCustomization = () => {
           <h2 className="sm:text-2xl text-xl font-medium text-white/70 animate-slideUp delay-1000">
             Loading Your Chat Page, Be Ready to Talk Soon!
           </h2>
-          {/* Spinning Loader */}
-          <div className="w-10 h-10 sm:w-12 sm:h-12 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin delay-1000 mt-3"></div>
+          <LoadingSpinner />
         </div>
       ) : (
         <>

@@ -54,6 +54,7 @@ class BrowserTTS implements TTSStrategy {
     onStart?: () => void,
     onStopLoad?: () => void,
     utteranceRef?: React.MutableRefObject<SpeechSynthesisUtterance | null>,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _audioRef?: React.MutableRefObject<HTMLAudioElement | null>
   ): Promise<void> {
     try {
@@ -121,7 +122,7 @@ class FallbackTTS implements TTSStrategy {
  * Factory class to choose between TTS engines
  */
 export class TTSFactory {
-  static getTTS(engine: "polly" | "browser" | "fallback"): TTSStrategy {
+  static create(engine: "polly" | "browser" | "fallback"): TTSStrategy {
     if (engine === "polly") {
       return new PollyTTS();
     } else if (engine === "fallback") {
@@ -129,9 +130,5 @@ export class TTSFactory {
     } else {
       return new BrowserTTS();
     }
-  }
-
-  static create(engine: "polly" | "browser" | "fallback"): TTSStrategy {
-    return this.getTTS(engine);
   }
 }

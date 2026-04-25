@@ -9,6 +9,7 @@ export async function POST() {
 
     return response;
   } catch (error) {
-    return NextResponse.json({ error: error }, { status: 500 });
+    console.error("Error during logout:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

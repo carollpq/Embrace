@@ -1,5 +1,6 @@
 import React from "react";
 import { useSettings } from "@/context/SettingsContext";
+import type { FontSize } from "@/types/context";
 
 const Settings = () => {
     const { settings: {nightMode, fontSize, highContrast}, updateSettings} = useSettings();
@@ -21,7 +22,7 @@ const Settings = () => {
         <span>Font Size</span>
         <select
           value={fontSize ?? "base"}
-          onChange={(e) => updateSettings('fontSize', e.target.value)}
+          onChange={(e) => updateSettings('fontSize', e.target.value as FontSize)}
           className="bg-transparent border rounded px-2 py-1 hover:cursor-pointer"
         >
           <option value="sm" className="text-black">Small</option>

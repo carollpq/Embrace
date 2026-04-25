@@ -64,7 +64,7 @@ describe("SignUpPage", () => {
     fireEvent.click(screen.getByText("Sign Up"));
     await waitFor(() => {
       expect(window.alert).toHaveBeenCalledWith(
-        "Password must be at least 6 characters"
+        "Password must be at least 8 characters"
       );
     });
   });

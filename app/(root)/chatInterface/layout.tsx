@@ -1,6 +1,5 @@
 "use client";
 
-import "../../globals.css";
 import { Quicksand } from "next/font/google";
 import ChatHeader from "@/components/chat/ChatHeader";
 import Sidebar from "@/components/sidebar/Sidebar";
@@ -11,13 +10,9 @@ import { useSettings } from "@/context/SettingsContext";
 import { useSession } from "@/context/SessionContext";
 import TTSFallbackModal from "@/components/ui/TTSFallbackModal";
 import HelpModal from "@/components/chat/HelpModal";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 const quicksand = Quicksand({ weight: ["400"], subsets: ["latin"] });
-
-export type Message = {
-  role: "user" | "model";
-  content: string;
-};
 
 export default function RootLayout({
   children,
@@ -49,10 +44,9 @@ export default function RootLayout({
       {confirmedExit ? (
         <div className="flex flex-col items-center justify-center gap-4 w-screen h-screen">
           <h2 className="text-3xl font-medium text-white/70 animate-slideUp delay-1000">
-            Exitting Chat Session ...
+            Exiting Chat Session ...
           </h2>
-          {/* Spinning Loader */}
-          <div className="w-12 h-12 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin delay-1000 mt-3"></div>
+          <LoadingSpinner size="lg" />
         </div>
       ) : (
         <>

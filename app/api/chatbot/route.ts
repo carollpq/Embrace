@@ -10,12 +10,12 @@ const generationConfig = {
   maxOutputTokens: 500,
 };
 
-// Hanle POST requests
+// Handle POST requests
 export async function POST(req: Request) {
   try {
     const { messages, selectedPersona, customTraits, mood } = await req.json();
     const model = getModel(
-      selectedPersona as "Jenna" | "Marcus",
+      selectedPersona,
       customTraits ?? null,
       mood ?? ""
     );

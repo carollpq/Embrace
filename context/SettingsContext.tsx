@@ -71,7 +71,9 @@ export const SettingsProvider = ({
     value: AppSettings[K]
   ) => {
     try {
-      // Create a type-safe mapping of setters
+      // Each setter has a specific type, but we index dynamically — the outer
+      // generic signature already guarantees type-safe calls at the public API.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const setters: Record<keyof AppSettings, (value: any) => void> = {
         mode: setMode,
         persona: setPersona,

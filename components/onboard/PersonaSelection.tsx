@@ -1,10 +1,12 @@
 "use client";
 import GeneralButton from "@/components/ui/button";
 import SelectionCard from "@/components/ui/SelectionCard";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSettings } from "@/context/SettingsContext";
 import { useOnboarding } from '@/context/OnboardingContext';
+import type { Persona } from "@/types/context";
 
 const PersonaSelection = () => {
   const router = useRouter();
@@ -16,7 +18,7 @@ const PersonaSelection = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [showCustomizationChoice, setShowCustomizationChoice] = useState(false);
 
-  const handleCardClick = (persona: string) => {
+  const handleCardClick = (persona: Persona) => {
     updateSettings('persona', persona);
     setSelectedCard(persona);
     setErrorMessage("");
@@ -51,7 +53,7 @@ const PersonaSelection = () => {
           <h2 className="text-2xl font-medium text-white/70 animate-slideUp delay-1000">
             Loading Your Chat Page, Be Ready to Talk Soon!
           </h2>
-          <div className="w-12 h-12 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin delay-1000 mt-3"></div>
+          <LoadingSpinner size="lg" />
         </div>
       ) : showCustomizationChoice ? (
         <div className="flex flex-col items-center justify-center gap-8 px-4 py-10">

@@ -4,15 +4,16 @@ import SelectionCard from "@/components/ui/SelectionCard";
 import React, { useState, useRef } from "react";
 import { useSettings } from "@/context/SettingsContext";
 import { useOnboarding } from '@/context/OnboardingContext';
+import type { ChatMode, TTSEngine } from "@/types/context";
 
 const ModeSelection = () => {
   const { settings: { nightMode }, updateSettings } = useSettings();
-  const [selectedCard, setSelectedCard] = useState<string | null>(null);
+  const [selectedCard, setSelectedCard] = useState<ChatMode | TTSEngine | null>(null);
   const [loadTTSOptions, setLoadTTSOptions] = useState(false);
   const continueButtonRef = useRef<HTMLDivElement | null>(null);
   const { goNext, goBack } = useOnboarding();
 
-  const handleCardClick = (mode: string) => {
+  const handleCardClick = (mode: ChatMode) => {
     updateSettings('mode', mode); // Set the selected mode in your session
     setSelectedCard(mode); // Set the selected card locally
 
@@ -71,7 +72,7 @@ const ModeSelection = () => {
             />
             <SelectionCard
               title="Voice and Voice"
-              description="Have a verbal conversatio with the chatbot!"
+              description="Have a verbal conversation with the chatbot!"
               svg="/img/voice-and-voice.png"
               onClick={() => handleCardClick("voice-and-voice")}
               isSelected={selectedCard === "voice-and-voice"}

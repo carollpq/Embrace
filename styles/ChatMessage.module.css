@@ -28,30 +28,7 @@
     gap: 16px;
   }
     
-  
-  /* Below are not really used but kept in just in case */  
-  .avatar {
-    background: white;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-  }
-    
-  .avatar.chatgpt {
-    background: #0da37f;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-  }
-    
-  .acc-btn {
-    padding: 10px;
-    color: #ffffff;
-    border-radius: 3.652px;
-    background: #000;
-    margin-right: 2px;
-  }
-  
+
   /* Media query for screens smaller than 900px wide */
   @media (max-width: 600px) {
     .chat-message-user {
@@ -73,11 +50,4 @@
       margin-left: 2%;
     }
   }
-  
-  /* Media query for screens ranging 900px - 1200px
-  @media (min-width: 900px) and (max-width: 1200px) {
-    .chat-message {
-      margin: 0 auto;
-    }
-  } */
   

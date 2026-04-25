@@ -62,7 +62,7 @@ describe("SigninPage", () => {
     fireEvent.click(screen.getByText("Log In"));
     await waitFor(() => {
       expect(window.alert).toHaveBeenCalledWith(
-        "Password must be at least 6 characters"
+        "Password must be at least 8 characters"
       );
     });
   });

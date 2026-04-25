@@ -1,10 +1,17 @@
 import { NextRequest } from "next/server";
-import { connect } from "@/utils/config/dbConfig"; // Adjust path as needed
+import { connect } from "@/utils/config/dbConfig";
 import { SavedMessageModel } from "@/utils/models/SavedMessage";
+import { verifyRequest } from "@/utils/auth/verifyRequest";
 
 export async function DELETE(req: NextRequest) {
   try {
     await connect();
+
+    const session = await verifyRequest();
+    if (!session) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
+    }
+
     const { messageId, userId } = await req.json();
 
     if (!messageId || !userId) {
@@ -12,6 +19,10 @@ export async function DELETE(req: NextRequest) {
         JSON.stringify({ error: "Missing messageId or userId" }),
         { status: 400 }
       );
+    }
+
+    if (session.email !== userId) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
     }
 
     const deleted = await SavedMessageModel.findOneAndDelete({

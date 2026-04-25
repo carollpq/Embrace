@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import { SignJWT } from "jose"; 
 import User from "@/utils/models/User";
 import { connect } from "@/utils/config/dbConfig";
+import { generateToken, setAuthCookie } from "@/utils/auth/jwt";
+import { isValidEmail } from "@/utils/validation";
 
 export async function POST(req: Request) {
   await connect();
@@ -13,44 +14,24 @@ export async function POST(req: Request) {
     if (!email || !password) {
       return NextResponse.json({ error: "Email and password are required" }, { status: 400 });
     }
-    
-    // Optional: Add regex to validate email format if needed
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+
+    if (!isValidEmail(email)) {
       return NextResponse.json({ error: "Invalid email format" }, { status: 400 });
     }
-    
 
-    // Find user
     const user = await User.findOne({ email });
     if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
-    // Check password
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
 
-    // Generate JWT using jose
-    const secretKey = new TextEncoder().encode(process.env.JWT_SECRET); // Ensure JWT secret is encoded as a Uint8Array
-
-    // Generate JWT using jose
-    const token = await new SignJWT({ id: user._id, email: user.email, name: user.name })
-      .setProtectedHeader({ alg: 'HS256' })  // Set the JWT algorithm (HS256)
-      .setIssuedAt()  // Set issued time
-      .setExpirationTime("3h")  // Set expiration time
-      .sign(secretKey);  // Sign with the JWT secret
-
-    // Set cookie
+    const token = await generateToken({ id: user._id, email: user.email, name: user.name });
     const response = NextResponse.json({ success: true, message: "Login successful" });
-    response.cookies.set("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax", // Can be "strict" if you want maximum CSRF protection
-      path: "/",
-      maxAge: 60 * 60 * 3, // 3 hours
-    });
+    setAuthCookie(response, token);
 
     return response;
   } catch (error) {
-    return NextResponse.json({ error: error }, { status: 500 });
+    console.error("Error during signin:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

@@ -12,10 +12,11 @@ import { useModal } from "@/context/ModalContext";
 import { ModeButton } from "./ModeButton";
 import { MenuItem } from "./MenuItem";
 import { useOnboarding } from "@/context/OnboardingContext";
+import type { ChatMode } from "@/types/context";
 
 const pacifico = Pacifico({ weight: ["400"], subsets: ["latin"] });
 
-const MODES = [
+const MODES: { value: ChatMode; label: string }[] = [
   { value: "text-and-text", label: "Text and text" },
   { value: "text-and-voice", label: "Text and voice" },
   { value: "voice-and-text", label: "Voice and text" },
@@ -46,7 +47,7 @@ const Sidebar = () => {
     });
   };
 
-  const handleModeChange = (mode: string) => {
+  const handleModeChange = (mode: ChatMode) => {
     updateSettings("mode", mode);
     toggleSavedMessages(false);
   };

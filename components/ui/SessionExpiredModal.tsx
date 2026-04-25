@@ -3,6 +3,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 export default function SessionExpiredModal() {
   const router = useRouter();
@@ -10,7 +11,7 @@ export default function SessionExpiredModal() {
   useEffect(() => {
     const timeout = setTimeout(() => {
       router.push("/sign-in");
-    }, 6000); // Redirect after 3 seconds
+    }, 6000);
 
     return () => clearTimeout(timeout);
   }, [router]);
@@ -22,7 +23,7 @@ export default function SessionExpiredModal() {
         <p className="text-gray-700 mb-4">
           You will be redirected to the sign-in page shortly.
         </p>
-        <div className="w-10 h-10 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin mx-auto" />
+        <div className="mx-auto flex justify-center"><LoadingSpinner size="sm" /></div>
       </div>
     </div>
   );

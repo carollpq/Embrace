@@ -120,6 +120,7 @@ const ChatInterface: React.FC = () => {
       }
     };
     sendIntroFromMood();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages.length, selectedMood, selectedPersona, customTraits]);
 
   /**
@@ -165,63 +166,16 @@ const ChatInterface: React.FC = () => {
   // Checks if a message is bookmarked
   const isBookmarked = (messageId: string) => bookmarkedMessages.includes(messageId);
 
-  /**
-   * Handles form submission for chat input
-   * @param e Optional form event
-   */
-  const handleSubmit = async (e?: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e?: FormEvent<HTMLFormElement>, directText?: string) => {
     e?.preventDefault();
     stopSpeech();
-    if (!chatInput.trim()) return;
+    const messageText = directText || chatInput.trim();
+    if (!messageText) return;
 
     const userMessage = {
       id: Date.now().toString(),
       role: "user" as const,
-      content: chatInput,
-    };
-
-    // Add user message and typing indicator
-    setMessages(prev => [...prev, userMessage, {
-      id: "typing-placeholder",
-      role: "assistant",
-      content: "__typing__",
-    }]);
-    setChatInput(""); // Clear input field
-
-    // Send message to chatbot API
-    const res = await fetch("/api/chatbot", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        messages: [...messages, userMessage],
-        selectedPersona,
-        selectedMood,
-        ...(customTraits && { customTraits }),
-      }),
-    });
-
-    // Replace typing indicator with actual response
-    const data = await res.json();
-    setMessages(prev => prev
-      .filter(msg => msg.id !== "typing-placeholder")
-      .concat({
-        id: Date.now().toString(),
-        role: "assistant",
-        content: data.content,
-      })
-    );
-  };
-
-  /**
-   * Handles direct message submission
-   * @param text The message text to send
-   */
-  const handleDirectSubmit = async (text: string) => {
-    stopSpeech();
-    const userMessage = {
-      id: Date.now().toString(),
-      role: "user" as const,
-      content: text,
+      content: messageText,
     };
 
     setMessages(prev => [...prev, userMessage, {
@@ -229,6 +183,7 @@ const ChatInterface: React.FC = () => {
       role: "assistant",
       content: "__typing__",
     }]);
+    if (!directText) setChatInput("");
 
     const res = await fetch("/api/chatbot", {
       method: "POST",
@@ -251,6 +206,8 @@ const ChatInterface: React.FC = () => {
       })
     );
   };
+
+  const handleDirectSubmit = (text: string) => handleSubmit(undefined, text);
 
   // Auto-scroll to bottom when messages change
   useLayoutEffect(() => {

@@ -1,15 +1,17 @@
 'use client';
 
+import type { ChatMode } from "@/types/context";
+
 export const ModeButton = ({
   mode,
   currentMode,
   label,
   onClick,
 }: {
-  mode: string;
-  currentMode: string;
+  mode: ChatMode;
+  currentMode: ChatMode;
   label: string;
-  onClick: (mode: string) => void;
+  onClick: (mode: ChatMode) => void;
 }) => (
   <div
     onClick={() => onClick(mode)}

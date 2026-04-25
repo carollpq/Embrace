@@ -51,8 +51,7 @@ const InputBox = ({
     };
   }, []);
 
-  const isVoiceMode = selectedMode === "voice-and-text" || 
-                      selectedMode === "voice-and-voice";
+  const isVoiceMode = selectedMode === "voice-and-voice";
 
   return (
     <div className={style["chat-input-holder"]}>

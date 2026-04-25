@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
 import {
   PollyClient,
   SynthesizeSpeechCommand,
@@ -7,15 +6,13 @@ import {
   VoiceId,
 } from "@aws-sdk/client-polly";
 
-type Persona = "Jenna" | "Marcus";
+import type { Persona } from "@/types/context";
 
 const pollyClient = new PollyClient({
   region: process.env.AWS_REGION || "us-east-1",
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID! || "AKIATJHQD2HBDTZTB2EN",
-    secretAccessKey:
-      process.env.AWS_SECRET_ACCESS_KEY! ||
-      "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",
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
   },
 });
 
@@ -26,6 +23,7 @@ let currentAudio: HTMLAudioElement | null = null;
  * Converts the audio stream from Polly into a usable format
  */
 async function convertAudioStreamToUint8Array(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   stream: any
 ): Promise<Uint8Array> {
   const chunks: Uint8Array[] = [];
@@ -192,18 +190,6 @@ export async function playPersonaSpeech(
     );
   } catch (error) {
     console.error(`Failed to play speech for persona ${persona}:`, error);
-    throw error;
-  }
-}
-
-// Utility function to preload audio (useful for mobile)
-export async function preloadPersonaAudio(text: string, persona: Persona): Promise<string> {
-  try {
-    const audioStream = await getSpeech(text, personaVoices[persona]);
-    const audioBlob = new Blob([audioStream.buffer as ArrayBuffer], { type: "audio/mpeg" });
-    return URL.createObjectURL(audioBlob);
-  } catch (error) {
-    console.error("Preload failed:", error);
     throw error;
   }
 }

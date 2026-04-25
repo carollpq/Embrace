@@ -1,11 +1,13 @@
 "use client";
 import GeneralButton from "@/components/ui/button";
 import TextInput from "@/components/ui/AuthInput";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/context/SessionContext";
 import { useSettings } from "@/context/SettingsContext";
+import { isValidEmail, MIN_PASSWORD_LENGTH } from "@/utils/validation";
 
 export default function SigninPage() {
   const [email, setEmail] = useState("");
@@ -33,14 +35,13 @@ export default function SigninPage() {
         return;
       }
 
-      if (password.length < 8) {
+      if (password.length < MIN_PASSWORD_LENGTH) {
         setLoading(false);
-        alert("Password must be at least 6 characters");
+        alert(`Password must be at least ${MIN_PASSWORD_LENGTH} characters`);
         return;
       }
 
-      const emailRegex = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
-      if (!emailRegex.test(email)) {
+      if (!isValidEmail(email)) {
         setLoading(false);
         alert("Invalid email ID.");
         return;
@@ -82,8 +83,7 @@ export default function SigninPage() {
           <h2 className="text-lg md:text-2xl font-medium text-white/60 animate-slideUp delay-1000">
             Loading Authentication Page ...
           </h2>
-          {/* Spinning Loader */}
-          <div className="w-10 h-10 md:w-12 md:h-12 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin delay-1000 mt-3"></div>
+          <LoadingSpinner />
         </div>
       ) : (
         <>

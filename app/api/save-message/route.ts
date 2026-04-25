@@ -1,9 +1,15 @@
 import { SavedMessageModel } from "@/utils/models/SavedMessage";
 import { NextRequest } from "next/server";
 import { connect } from "@/utils/config/dbConfig";
+import { verifyRequest } from "@/utils/auth/verifyRequest";
 
 export async function POST(req: NextRequest) {
   await connect();
+
+  const session = await verifyRequest();
+  if (!session) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
+  }
 
   const { messageId, userId, content } = await req.json();
 
@@ -11,6 +17,10 @@ export async function POST(req: NextRequest) {
     return new Response(JSON.stringify({ error: "Missing userId or content" }), {
       status: 400,
     });
+  }
+
+  if (session.email !== userId) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
   }
 
   // Prevent duplicate saves of same message by same user

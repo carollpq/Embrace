@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useSession } from "@/context/SessionContext";
 import { stopSpeech } from "@/utils/tts/polly";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 type SavedMessage = {
   _id: string;
@@ -65,7 +66,7 @@ const SavedMessages = () => {
         <h2 className="sm:text-3xl text-2xl font-medium text-white/70 animate-slideUp delay-1000">
           Loading saved messages ...
         </h2>
-        <div className="sm:w-12 sm:h-12 w-10 h-10 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin delay-1000 mt-3"></div>
+        <LoadingSpinner />
       </div>
     );
   }
@@ -92,7 +93,7 @@ const SavedMessages = () => {
             {deletingMessageId === msg._id ? ( // If the message is being deleted
               <div className="flex flex-col items-center justify-center gap-4 w-full">
                 <h3 className="text-sm text-gray-600 mt-2">Deleting...</h3>
-                <div className="w-8 h-8 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin mt-3"></div>
+                <LoadingSpinner size="sm" />
               </div>
             ) : (
               <>
