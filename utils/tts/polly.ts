@@ -99,7 +99,7 @@ export async function playSpeech(
 
   try {
     const audioStream = await getSpeech(text, voiceId);
-    const audioBlob = new Blob([audioStream], { type: "audio/mpeg" });
+    const audioBlob = new Blob([audioStream.buffer as ArrayBuffer], { type: "audio/mpeg" });
     const audioUrl = URL.createObjectURL(audioBlob);
 
     const audio = new Audio(audioUrl);
@@ -200,7 +200,7 @@ export async function playPersonaSpeech(
 export async function preloadPersonaAudio(text: string, persona: Persona): Promise<string> {
   try {
     const audioStream = await getSpeech(text, personaVoices[persona]);
-    const audioBlob = new Blob([audioStream], { type: "audio/mpeg" });
+    const audioBlob = new Blob([audioStream.buffer as ArrayBuffer], { type: "audio/mpeg" });
     return URL.createObjectURL(audioBlob);
   } catch (error) {
     console.error("Preload failed:", error);

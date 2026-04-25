@@ -1,7 +1,7 @@
 "use client";
 
 import style from "@/styles/ChatMessage.module.css";
-import { Message } from "ai/react";
+import { Message } from "@/types/context";
 import { useState } from "react";
 import Image from "next/image";
 import { useTextToSpeech } from "@/hooks/useTextToSpeech";

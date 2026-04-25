@@ -1,8 +1,7 @@
 'use client'
 
 import { createContext, useContext, useState, useCallback } from 'react'
-import { Message } from 'ai/react'
-import { Traits } from '@/types/context'
+import { Message, Traits } from '@/types/context'
 
 type ChatContextType = {
   messages: Message[]

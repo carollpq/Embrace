@@ -1,4 +1,4 @@
-import { Message } from "ai/react";
+import { Message } from "@/types/context";
 
 export function removeEmojis(text: string): string {
     return text

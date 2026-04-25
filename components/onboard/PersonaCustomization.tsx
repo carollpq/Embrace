@@ -32,6 +32,7 @@ const PersonaCustomization = () => {
   // Sync trait values when selectedPersona changes
   useEffect(() => {
     setTraits(getDefaultTraits());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedPersona]);
 
   return (

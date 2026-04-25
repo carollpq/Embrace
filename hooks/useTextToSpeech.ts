@@ -1,4 +1,4 @@
-import { Message } from "ai/react";
+import { Message } from "@/types/context";
 import { useState, useRef, useEffect } from "react";
 import { TTSFactory } from "@/utils/tts/TTSFactory";
 import { removeEmojis, isLastAssistantMessage } from "@/utils/chatMessageUtils";

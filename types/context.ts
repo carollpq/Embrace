@@ -1,4 +1,9 @@
-import { Message } from "ai/react";
+export type Message = {
+  id: string;
+  role: 'system' | 'user' | 'assistant';
+  content: string;
+  createdAt?: Date;
+};
 
 export type Traits = {
     empathy: number;
