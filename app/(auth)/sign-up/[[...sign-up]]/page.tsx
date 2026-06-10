@@ -4,74 +4,41 @@ import GeneralButton from "@/components/ui/button";
 import TextInput from "@/components/ui/AuthInput";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useActionState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/context/SessionContext";
 import { useSettings } from "@/context/SettingsContext";
-import { isValidEmail, MIN_PASSWORD_LENGTH } from "@/utils/validation";
+import { createUser, type SignUpState } from "@/actions/create-user";
+
+const initialState: SignUpState = {
+  name: '',
+  email: '',
+  password: '',
+};
 
 export default function SignUpPage() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
   const [isLoadingPage, setIsLoadingPage] = useState(false);
   const router = useRouter();
-
-  // Get session-related functions from SessionContext
   const { recheckSession } = useSession();
-  // Get UI settings from SettingsContext
+
   const {
     settings: { nightMode },
   } = useSettings();
 
   useEffect(() => {
     setIsLoadingPage(false);
-  }, []); // Runs once when the component mounts
+  }, []);
 
-  const handleSubmit = async () => {
-    try {
-      if (!email || !password || !name) {
-        setLoading(false);
-        alert("Please enter name, email and password.");
-        return;
-      }
+  const [state, formAction, pending] = useActionState(createUser, initialState);
 
-      if (password.length < MIN_PASSWORD_LENGTH) {
-        setLoading(false);
-        alert(`Password must be at least ${MIN_PASSWORD_LENGTH} characters`);
-        return;
-      }
-
-      if (!isValidEmail(email)) {
-        setLoading(false);
-        alert("Invalid email ID.");
-        return;
-      }
-
-      setLoading(true);
-
-      const response = await fetch("/api/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, email, password }),
-      });
-
-      if (response.ok) {
-        recheckSession();
-        router.push("/home-page");
-      } else {
-        const errorData = await response.json();
-        alert(errorData.message || "Sign-up failed. Please try again.");
-      }
-    } catch (error) {
-      setLoading(false);
-      alert("Sign-up failed. Please try again.");
-      console.error(error);
+  useEffect(() => {
+    if (!state.success) return;
+    const run = async () => {
+      await recheckSession();
+      router.push("/home-page");
     }
-  };
+    run();
+  }, [state.success, recheckSession, router]);
 
   return (
     <div
@@ -92,30 +59,37 @@ export default function SignUpPage() {
           <h2 className="text-2xl md:text-3xl animate-slideUp text-white/80 mb-4">
             Create An Account
           </h2>
-          <form className="text-md sm:text-lg flex flex-col items-center gap-4 w-full animate-slideUp max-w-[90vw] sm:max-w-[350px]">
+          <form className="text-md sm:text-lg flex flex-col items-center gap-4 w-full animate-slideUp max-w-[90vw] sm:max-w-[350px]" action={formAction}>
             <TextInput
               label="Name"
+              name="name"
               type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              defaultValue={state.name}
+              error={state.errors?.name?.[0]}
             />
             <TextInput
               label="Email"
+              name="email"
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              defaultValue={state.email}
+              error={state.errors?.email?.[0]}
             />
             <TextInput
               label="Password"
+              name="password"
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              error={state.errors?.password?.[0]}
             />
+            {state.errors?.form?.[0] && (
+              <p className="text-sm text-rose-300/90 text-center w-full">
+                {state.errors.form[0]}
+              </p>
+            )}
             <GeneralButton
               className="bg-white/70 hover:bg-white/90 hover:text-black/90"
               text="Sign Up"
-              isLoading={loading}
-              onClick={handleSubmit}
+              type="submit"
+              isLoading={pending}
             />
           </form>
 

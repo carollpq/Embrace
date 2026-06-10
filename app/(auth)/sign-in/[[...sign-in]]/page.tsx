@@ -3,22 +3,22 @@ import GeneralButton from "@/components/ui/button";
 import TextInput from "@/components/ui/AuthInput";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useActionState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/context/SessionContext";
 import { useSettings } from "@/context/SettingsContext";
-import { isValidEmail, MIN_PASSWORD_LENGTH } from "@/utils/validation";
+import { type SignInState, loginUser } from "@/actions/login-user";
+
+const initialState: SignInState = {
+  email: '',
+  password: '',
+};
 
 export default function SigninPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
   const [isLoadingPage, setIsLoadingPage] = useState(false);
   const router = useRouter();
-
-  // Get session-related functions from SessionContext
   const { recheckSession } = useSession();
-  // Get UI settings from SettingsContext
+
   const {
     settings: { nightMode },
   } = useSettings();
@@ -27,50 +27,16 @@ export default function SigninPage() {
     setIsLoadingPage(false);
   }, []); // Runs once when the component mounts
 
-  const handleSubmit = async () => {
-    try {
-      if (!email || !password) {
-        setLoading(false);
-        alert("Please enter both email and password.");
-        return;
-      }
+  const [state, formAction, pending] = useActionState(loginUser, initialState); 
 
-      if (password.length < MIN_PASSWORD_LENGTH) {
-        setLoading(false);
-        alert(`Password must be at least ${MIN_PASSWORD_LENGTH} characters`);
-        return;
-      }
-
-      if (!isValidEmail(email)) {
-        setLoading(false);
-        alert("Invalid email ID.");
-        return;
-      }
-
-      setLoading(true);
-
-      // Send a POST request to the /api/sign-in endpoint
-      const response = await fetch("/api/signin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const result = await response.json();
-      if (response.ok) {
-        // Redirect to /home-page on successful login
-        recheckSession();
-        router.push("/home-page");
-      } else {
-        setLoading(false);
-        alert(result.error || "Sign-in failed. Please check your credentials.");
-      }
-    } catch (error) {
-      console.error(error);
-      setLoading(false);
-      alert("Sign-in failed.");
+  useEffect(() => {
+    if (!state.success) return;
+    const run = async () => {
+      await recheckSession();
+      router.push("/home-page");
     }
-  };
+    run();
+  }, [state.success, recheckSession, router]);
 
   return (
     <div
@@ -91,24 +57,31 @@ export default function SigninPage() {
           <h2 className="text-2xl md:text-3xl animate-slideUp text-white/80 mb-4">
             Welcome Back!
           </h2>
-          <form className="text-md sm:text-lg flex flex-col items-center gap-4 w-full animate-slideUp max-w-[90vw] sm:max-w-[350px]">
+          <form className="text-md sm:text-lg flex flex-col items-center gap-4 w-full animate-slideUp max-w-[90vw] sm:max-w-[350px]" action={formAction}>
             <TextInput
               label="Email"
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              name="email"
+              defaultValue={state.email}
+              error={state.errors?.email?.[0]}
             />
             <TextInput
               label="Password"
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              name="password"
+              defaultValue={state.password}
+              error={state.errors?.password?.[0]}
             />
+            {state.errors?.form?.[0] && (
+              <p className="text-sm text-rose-300/90 text-center w-full">
+                {state.errors.form[0]}
+              </p>
+            )}
             <GeneralButton
               className="bg-white/70 hover:bg-white/90 hover:text-black/90"
               text="Log In"
-              isLoading={loading}
-              onClick={handleSubmit}
+              type="submit"
+              isLoading={pending}
             />
           </form>
 

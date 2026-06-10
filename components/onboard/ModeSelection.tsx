@@ -10,7 +10,7 @@ const ModeSelection = () => {
   const { settings: { nightMode }, updateSettings } = useSettings();
   const [selectedCard, setSelectedCard] = useState<ChatMode | TTSEngine | null>(null);
   const [loadTTSOptions, setLoadTTSOptions] = useState(false);
-  const continueButtonRef = useRef<HTMLDivElement | null>(null);
+  const continueButtonRef = useRef<HTMLButtonElement | null>(null);
   const { goNext, goBack } = useOnboarding();
 
   const handleCardClick = (mode: ChatMode) => {
